@@ -1,0 +1,76 @@
+$def with (error = None, data = None)
+
+$if error:
+	$if data["complexity"] == '0':
+		$ inputType = "Only Numbers"
+	$elif data["complexity"] == '1':
+		$ inputType = "Only Letters"
+	$elif data["complexity"] == '2':
+		$ inputType = "Both Numbers and Letters"
+	
+	<h3>$error</h3>
+
+	<h3> Number of Password Digits: $data["digits"]
+	<br>
+	Complexity of the Password: $inputType
+	<br>
+	Gold Coin Amount: $data["goldCoins"]
+	<br>
+	Silver Coin Amount: $data["silverCoins"]
+
+	</h3>
+	<br>
+	<br>
+	$if data["goldCoins"] == "" or data["silverCoins"] == "":
+		<p><a href="/setup">OK. Reset and start over.</a></p>
+	$else:
+		<p><a href="/setup">OK. Reset and start over.</a></p>
+		<p><a href="/game">I'm good. Let's start!</a></p>
+
+	<!-- <form>
+		
+		<button type="submit" href="/game">I'm good. Let's start!</button>
+		<button type="submit" href="/setup">OK. Reset and start over.</button>
+
+	</form> -->
+
+$else:
+	<h3>Set the password parameters</h3>
+
+	<form name="main" method="POST">
+
+		<label>Number of Password Digits</label>
+		<select name="digits">
+			<option>4</option>
+			<option>5</option>
+			<option>6</option>
+			<option>7</option>
+			<option>8</option>
+		</select>
+		<br>
+
+		<label>Complexity of the Password</label>
+		<select name="complexity" defaultValue="0">
+			<option value="0">Only Numbers</option>
+			<option value="1">Only Letters</option>
+			<option value="2">Both Numbers and Letters</option>
+		</select>
+		<br>
+
+		<label>Gold Coin Amount</label>
+		<input type="text" name="goldCoins" value="30">
+		<br>
+
+		<label>Silver Coin Amount</label>
+		<input type="text" name="silverCoins" value="30">
+		<br>
+
+		<button type="submit">Done! Let's Start!</button>
+
+	</form>
+
+
+
+	<!-- <p><a href="/game">Done! Let's Start!</a></p> -->
+
+

@@ -1,0 +1,70 @@
+<h2>Sample Game with only Letters:</h2>
+
+<br>
+$ m = '*' * 6
+$ t = '*'
+
+$for i in range(6):
+	 $m &nbsp; &nbsp; &nbsp;            
+<br>
+$for i in range(6):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+<br>
+$for i in range(6):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(6):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(6):
+	 $m &nbsp; &nbsp; &nbsp; 
+
+<br>
+<h3>Password Parameters:</h3>
+<br>
+
+<h4>Length:</h4> <p>4</p>
+<br>
+
+<h4>Complexity:</h4> <p>Only Numbers</p>
+<br>
+
+<h4>Gold Coins in the bag:</h4> <p>30</p>
+
+<br>
+<h4>Silver Coins in the bag:</h4> <p>30</p>
+
+<br>
+<h3>Guess 1:</h3> 
+<br><p>Let's say you submitted '1-2-3-4' and received 1 Gold and 2 Silver coins. Then, you should keep one of the numbers you submitted (i.e. 1-2-3-4) in place; and change the places of the two of your numbers. total number of coins received is 3, which means 1 number you submitted does not even exists in the Password.</p>
+<br>
+<p>Let's now try with a new guess:</p>
+<br>
+<h3>Guess 2:</h3> 
+<br><p>Let's say now you submitted '1-2-4-5' and received 2 Gold and no Silver coins. This should be a good guess, as throwing out number '3' in the second guess, you now know that is actually existed in the Password - although you cannot be sure if it was in the right spot.</p>
+<br>
+<h3>Guess 3:</h3>
+<br><p>Say now you submit '1-2-6-3' based on the number of Gold and Silver coins you received in the previous guesses</p>
+<br>
+<p>And Voila!! You guesses the Password correctly.</p>
+
+$ m = '*' * 6
+$ t = ['d', 'a', 'e', 'k', 'm', 'z']
+
+$for i in range(6):
+	 $m &nbsp; &nbsp; &nbsp;            
+<br>
+$for i in range(6):
+	* &nbsp; &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp; &nbsp;      
+<br>
+$for i in range(6):
+	* &nbsp; $t[i] &nbsp; * &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(6):
+	* &nbsp; &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(6):
+	 $m &nbsp; &nbsp; &nbsp; 
+
+<p><a href="/setup">Got it. Let's start!</a></p>
+<p><a href="/howtoplay">Go back to 'How To Play'.</a></p>

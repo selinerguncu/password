@@ -1,0 +1,47 @@
+$def with (session)
+
+$ round = session.updated["round"]
+$ goldCoinsInBag = session.updated["goldCoinsInBag"] + int(session.updated["goldCoinsReceived"])
+$ silverCoinsInBag = int(session.updated["silverCoinsInBag"])
+$ password = session.password
+$ length = int(session.setup["digits"])
+
+
+<h1>YOU WON!</h1>
+<br>       
+
+
+<br>
+
+<p> You discovered the Password in $round rounds.
+</p>
+<br>
+<br>
+	$ m = '*' * 6
+	$ t = '*'
+
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp;            
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+	<br>
+	$for i in range(length):
+		$t &nbsp; $password[i] &nbsp; $t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp; 
+
+
+<p> You have $goldCoinsInBag Gold and $silverCoinsInBag Silver coins left.
+</p>
+<br>
+
+<p> Congrats! :)
+</p>
+<br>
+
+<p><a href="/setup">Play again?</a></p>	

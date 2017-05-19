@@ -1,0 +1,97 @@
+$def with (session, error = None)
+
+$ round = session.updated["round"]
+$ guess = session.updated["guess"]
+$ goldCoinsReceived = session.updated["goldCoinsReceived"]
+$ silverCoinsReceived = session.updated["silverCoinsReceived"]
+$ goldCoinsInBag = session.updated["goldCoinsInBag"]
+$ silverCoinsInBag = session.updated["silverCoinsInBag"]
+
+$ pastGuesses = session.pastGuess
+$ pastGoldReceived = session.pastGold
+$ pastSilverReceived = session.pastSilver
+$ pastRound = session.pastRound
+
+$ past = session.past
+
+$ goldCoins = int(session.setup["goldCoins"])
+$ silverCoins = int(session.setup["silverCoins"])
+$ length = int(session.setup["digits"])
+$ complexity = int(session.setup["complexity"])
+
+$if complexity == 0:
+	$ inputType = "only numbers"
+$elif complexity == 1:
+	$ inputType = "only letters"
+$elif complexity == 2:
+	$ inputType = "both numbers and letters"
+
+$if error:
+	$error
+	<br>
+
+<h3>Here is the $length-digit password created by $inputType:</h3>
+<br>
+$ m = '*' * 6
+$ t = '*'
+
+$for i in range(length):
+	 $m &nbsp; &nbsp; &nbsp;            
+<br>
+$for i in range(length):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+<br>
+$for i in range(length):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(length):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(length):
+	 $m &nbsp; &nbsp; &nbsp;            
+
+
+<h3>Past Guesses:</h3>
+
+$for i in range(len(past)):
+	Round: $(past[i][0] - 1)
+	Guess: *
+	$for k in range(len(past[0][1])):
+		* $past[i][1][k] *
+	* Gold Coins: $past[i][2]
+	Silver Coins: $past[i][3] <br><br>
+
+
+<h5>Round: $round</h5>
+
+<br>
+<h3>Number of Gold Coins in your bag: $goldCoinsInBag</h3>
+<h3>Number of Silver Coins in your bag: $silverCoinsInBag</h3>
+
+<h3>Make a guess:</h3>
+
+<form name="main" method="POST">
+
+	<input type="text" name="first" maxlength=1 size=1> 
+	<input type="text" name="second" maxlength=1 size=1> 
+	<input type="text" name="third" maxlength=1 size=1> 
+	<input type="text" name="fourth" maxlength=1 size=1>
+
+$if length > 4:
+	<input type="text" name="fifth" maxlength=1 size=1> 
+
+$if length >5:
+	<input type="text" name="sixth" maxlength=1 size=1>
+
+$if length >6:
+	<input type="text" name="seventh" maxlength=1 size=1>
+
+$if length >7:
+	<input type="text" name="eighth" maxlength=1 size=1>
+
+<br>
+<br>
+<br>
+<button type="submit">Go!</button>
+
+</form>

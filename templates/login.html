@@ -1,0 +1,28 @@
+$def with (error = None)
+
+<h1>Passzle Game</h1>
+
+<br>
+
+<p> Here is a brief explanation of the game:</p>
+
+
+<body>
+Logging in will allow you to save your scores and access them when you come back later.
+</body>
+
+<br>
+<br>
+$if error:
+	<h3>$error</h3>
+<br>
+
+<form method="POST">
+	<label>Username</label>
+	<input type="text" name="username"><br>
+	<label>Password </label>
+	<input type="password" name="password"><br><br>
+	<button type="submit">Submit</button>
+</form>
+
+<!-- <p><a href="/howtoplay">How To Play</a></p> -->
