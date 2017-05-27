@@ -1,10 +1,10 @@
-$def with (session)
+$def with (activeSession)
 
-$ round = session.updated["round"]
-$ goldCoinsInBag = session.updated["goldCoinsInBag"]
-$ silverCoinsInBag = session.updated["silverCoinsInBag"]
-$ password = session.password
-$ length = int(session.setup["digits"])
+$ round = activeSession["updated"]["round"]
+$ goldCoinsInBag = activeSession["updated"]["goldCoinsInBag"]
+$ silverCoinsInBag = activeSession["updated"]["silverCoinsInBag"]
+$ password = activeSession["password"]
+$ length = int(activeSession["setup"]["digits"])
 
 
 <h1>YOU LOST!</h1>

@@ -1,9 +1,9 @@
-$def with (session, error = None)
+$def with (activeSession, error = None)
 
-$ goldCoins = int(session.setup["goldCoins"])
-$ silverCoins = int(session.setup["silverCoins"])
-$ length = int(session.setup["digits"])
-$ complexity = int(session.setup["complexity"])
+$ goldCoins = int(activeSession["setup"]["goldCoins"])
+$ silverCoins = int(activeSession["setup"]["silverCoins"])
+$ length = int(activeSession["setup"]["digits"])
+$ complexity = int(activeSession["setup"]["complexity"])
 
 $if complexity == 0:
 	$ inputType = "only numbers"
@@ -41,6 +41,12 @@ $for i in range(length):
 $for i in range(length):
 	 $m &nbsp; &nbsp; &nbsp;  
      
+<h3>Past Guesses:</h3>
+
+<h4>Round &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Guess &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gold Coins &nbsp;&nbsp; Silver Coins</h4>
+
+<h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - </h5>
+
 
 <h5>Round: 1</h5>
 

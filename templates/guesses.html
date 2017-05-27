@@ -1,23 +1,23 @@
-$def with (session, error = None)
+$def with (activeSession, error = None)
 
-$ round = session.updated["round"]
-$ guess = session.updated["guess"]
-$ goldCoinsReceived = session.updated["goldCoinsReceived"]
-$ silverCoinsReceived = session.updated["silverCoinsReceived"]
-$ goldCoinsInBag = session.updated["goldCoinsInBag"]
-$ silverCoinsInBag = session.updated["silverCoinsInBag"]
+$ round = activeSession["updated"]["round"]
+$ guess = activeSession["updated"]["guess"]
+$ goldCoinsReceived = activeSession["updated"]["goldCoinsReceived"]
+$ silverCoinsReceived = activeSession["updated"]["silverCoinsReceived"]
+$ goldCoinsInBag = activeSession["updated"]["goldCoinsInBag"]
+$ silverCoinsInBag = activeSession["updated"]["silverCoinsInBag"]
 
-$ pastGuesses = session.pastGuess
-$ pastGoldReceived = session.pastGold
-$ pastSilverReceived = session.pastSilver
-$ pastRound = session.pastRound
+$ pastGuesses = activeSession["pastGuess"]
+$ pastGoldReceived = activeSession["pastGold"]
+$ pastSilverReceived = activeSession["pastSilver"]
+$ pastRound = activeSession["pastRound"]
 
-$ past = session.past
+$ past = activeSession["past"]
 
-$ goldCoins = int(session.setup["goldCoins"])
-$ silverCoins = int(session.setup["silverCoins"])
-$ length = int(session.setup["digits"])
-$ complexity = int(session.setup["complexity"])
+$ goldCoins = int(activeSession["setup"]["goldCoins"])
+$ silverCoins = int(activeSession["setup"]["silverCoins"])
+$ length = int(activeSession["setup"]["digits"])
+$ complexity = int(activeSession["setup"]["complexity"])
 
 $if complexity == 0:
 	$ inputType = "only numbers"
@@ -53,13 +53,14 @@ $for i in range(length):
 
 <h3>Past Guesses:</h3>
 
+<h4>Round &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Guess &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gold Coins &nbsp;&nbsp; Silver Coins</h4>
+
 $for i in range(len(past)):
-	Round: $(past[i][0] - 1)
-	Guess: *
-	$for k in range(len(past[0][1])):
-		* $past[i][1][k] *
-	* Gold Coins: $past[i][2]
-	Silver Coins: $past[i][3] <br><br>
+	&nbsp;&nbsp;&nbsp;&nbsp; $(past[i][0] - 1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		$for k in range(len(past[0][1])):
+		$past[i][1][k]
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $past[i][2] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	 $past[i][3] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
 
 
 <h5>Round: $round</h5>
