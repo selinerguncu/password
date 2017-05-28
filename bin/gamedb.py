@@ -14,6 +14,7 @@ cur.executescript('''
 DROP TABLE IF EXISTS Leaderboard;
 DROP TABLE IF EXISTS Player;
 DROP TABLE IF EXISTS Game;
+DROP TABLE IF EXISTS History;
 DROP TABLE IF EXISTS sessions;
 
 CREATE TABLE Leaderboard (
@@ -38,16 +39,29 @@ CREATE TABLE Player (
 
 CREATE TABLE Game (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	username	TEXT,
-	gameover	TEXT,
+	won	BOOLEAN DEFAULT FALSE,
 	score	INTEGER DEFAULT 0,
-	totalRounds	INTEGER,
+	totalRounds	INTEGER DEFAULT 0,
 	digits	INTEGER,
 	complexity	INTEGER,
-	goldSpent	INTEGER,
-	silverSpent	INTEGER,
+	goldCoins INTEGER,
+	silverCoins INTEGER,
+	goldSpent	INTEGER DEFAULT 0,
+	silverSpent	INTEGER DEFAULT 0,
 	player_id	INTEGER,
 	FOREIGN KEY(player_id) REFERENCES Player(id)
+);
+
+CREATE TABLE History(
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	round INTEGER, 
+	guess INTEGER, 
+	goldReceived INTEGER, 
+	silverReceived INTEGER, 
+	goldInBag INTEGER, 
+	silverInBag INTEGER,
+	game_id INTEGER,
+	FOREIGN KEY(game_id) REFERENCES Game(id)
 );
 
 CREATE TABLE sessions (
@@ -65,7 +79,6 @@ CREATE TABLE sessions (
 conn.commit()
 
 conn.close()
-
 
 
 
