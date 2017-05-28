@@ -1,102 +1,45 @@
-import sys
+global conn
+global cur
+global session
 global appPath
-appPath = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/TestGame"
 
-sys.path.append(appPath)
-
+import sys
 import web
 import sqlite3 as sqlite
 import base64
+
+appPath = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/TestGame"
+templatePath = appPath + '/templates'
+# to be able to import local modules
+sys.path.append(appPath)
 
 from numberGame import code
 from utils.parseFormData import parseFormData
 from utils.getSession import getSession
 from utils.errors import errors
 
+
+
+
+web.config.debug = False
+web.config.session_parameters['cookie_name'] = 'session_id'
+
+
 urls = (
 	'/', 'Login',
 	'/intro', 'Intro',
 	'/howtoplay', 'HowToPlay',
 	'/setup', 'Setup',
-	'/sample2', 'Sample2',
 	'/game', 'Game',
 	'/guesses', 'Guesses',
 	'/end', 'End'
 )
 
-global activeSession
-global conn
-global cur
-global session
-
 app = web.application(urls, globals())
-
-templatePath = appPath + '/templates'
 render = web.template.render(templatePath)
-
-# if web.config.get('_session') is None:
-#     session = web.session.Session(app, web.session.DBStore('sessions'))
-#     web.config._session = session
-# else:
-#     session = web.config._session
-
-
-web.config.session_parameters['cookie_name'] = 'session_id'
 db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same_thread=False)
 store = web.session.DBStore(db, 'sessions')
-session = web.session.Session(app, store, initializer={'player_id':'guest'})
-# print session
-
-
-activeSession = {}
-conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-
-
-
-class Login():
-	def GET(self):
-		session_id = web.cookies()["session_id"]
-		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-		cur = conn.cursor()
-		cur.execute('''SELECT data FROM sessions WHERE session_id = (?)''', (session_id,))
-		session_data = web.session.Store.decode(store, cur.fetchone()[0])
-
-		# print session_data["player_id"], session_data["session_id"]
-		return render.login()
-
-	def POST(self):
-		data = parseFormData(web.data())
-
-		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-		cur = conn.cursor()
-
-		session.username = data["username"]
-		session.userpassword = data["userpassword"]
-		
-		activeSession["username"] = session.username
-		activeSession["userpassword"] = session.userpassword
-		print 'is?', session.username
-
-		cur.execute('''INSERT INTO Player(username, userpassword) VALUES (:username, :userpassword)''', activeSession)
-		conn.commit()
-		# vars = dict(username=activeSession['username'])
-		# db.insert('Player', username=vars)
-
-
-		#cur.execute (''' INSERT INTO Player(username) VALUES (?) ''' , activeSession['username'])
-		#conn.commit()
-
-
-		print 'app', session.get("username")
-		print 'session.username', session.username
-		print 'session.userpassword', session.userpassword
-		
-		if data["username"] == "":
-			return render.login(errors["username"])
-		elif data["userpassword"] == "":
-			return render.login(errors["password"])
-		else:
-			web.seeother("/intro")
+session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
 
 
 class Intro():
@@ -110,136 +53,125 @@ class HowToPlay():
 		return render.howtoplay()
 
 
-class Sample2():
+class Login():
 	def GET(self):
-		return render.sample2()
+		if session.player_id == 'guest':
+			return render.login()
+		else:
+			return web.seeother('/setup')
+
+	def POST(self):
+
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		data = parseFormData(web.data())
+		form_username = data["username"]
+		form_userPassword = data["userpassword"]
+
+		cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
+		pass_and_id = cur.fetchone()
+
+		if pass_and_id != None:
+			db_userPassword = pass_and_id[0]
+			player_id = pass_and_id[1]
+
+			if db_userPassword == form_userPassword:
+				session.player_id = player_id
+				return web.seeother('/setup')
+			else:
+				return render.login(errors["password"])
+
+		else:
+			cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
+			conn.commit()
+			session.player_id = cur.lastrowid
+			return web.seeother('/setup')
 
 
 class Setup(object):
 	def GET(self):
-		# if "round" in activeSession.keys():
-		# 	del activeSession["pastGuess"]
-		# 	del activeSession["updated"]
-		# 	del activeSession["setup"]
-		# 	del activeSession["pastSilver"]
-		# 	del activeSession["pastGold"]
-		# 	del activeSession["pastRound"]
-		# 	del activeSession["past"]
-		# 	del activeSession["score"]
-		# 	del activeSession["password"]
-		# 	del activeSession["evaluation"]
-		# 	del activeSession["round"]
-		# else:
-		
-		activeSession["pastGuess"] = []
-		activeSession["pastGold"] = []
-		activeSession["pastSilver"] = []
-		activeSession["pastRound"] = []
-		activeSession["past"] = []
+		if session.player_id == 'guest':
+			return web.seeother('/')
 
-		# session.pastGuess = []
-		# session.pastGold = []
-		# session.pastSilver = []
-		# session.pastRound = []
-		# session.past = []
-
-		print 'username in setup', activeSession['username']
-		print 'userpassword in setup', activeSession['userpassword']
-		return render.setup()
+		if session.game_id == 0:
+			return render.setup()
+		else:
+			return web.seeother('/game')
 
 	def POST(self):
 		data = parseFormData(web.data())
-		print 'data parsed', data
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
 
-		# verification:
+		error = self.validate(data)
+		warning = self.hasWarning(data)
+
+		if (error == None and warning == None) or (error == None and int(data["force"]) == 1):
+			cur.execute('''
+				INSERT INTO Game(digits, complexity, goldCoins, silverCoins, player_id) 
+				VALUES (?, ?, ?, ?, ?)
+				''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], session.player_id))
+			conn.commit()
+			session.game_id = cur.lastrowid
+			return web.seeother('/game')
+						
+		elif error == None and warning != None:
+			return render.setup(errors[warning], data)
+		else:
+			return render.setup(errors[error], data, True)
+
+	def hasWarning(self, data):
+		warning = None
+		
+		if int(data["goldCoins"]) > 100 or int(data["silverCoins"]) > 100:
+			warning = "max100"
+		elif int(data["goldCoins"]) < 20 or int(data["silverCoins"]) < 20:
+			warning = "min20"
+		else:
+			if int(data["goldCoins"]) < 50 and int(data["complexity"]) == 1:
+				warning = "gold50complex"
+			elif int(data["goldCoins"]) < 70 and int(data["complexity"]) == 2:
+				warning = "gold70complex"
+			if int(data["goldCoins"]) < 30 and int(data["digits"]) == 4:
+				warning = "gold30"
+			elif int(data["goldCoins"]) < 30 and int(data["digits"]) == 5:
+				warning = "gold30"
+			elif int(data["goldCoins"]) < 40 and int(data["digits"]) == 6:
+				warning = "gold40"
+			elif int(data["goldCoins"]) < 50 and int(data["digits"]) == 7:
+				warning = "gold50"
+			elif int(data["goldCoins"]) < 60 and int(data["digits"]) == 8:
+				warning = "gold60"
+			elif int(data["silverCoins"]) < 50 and int(data["complexity"]) == 1:
+				warning = "silver50complex"
+			elif int(data["silverCoins"]) < 70 and int(data["complexity"]) == 2:
+				warning = "silver70complex"
+			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 4:
+				warning = "silver30"
+			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 5:
+				warning = "silver30"
+			elif int(data["silverCoins"]) < 40 and int(data["digits"]) == 6:
+				warning = "silver40"
+			elif int(data["silverCoins"]) < 50 and int(data["digits"]) == 7:
+				warning = "silver50"
+			elif int(data["silverCoins"]) < 60 and int(data["digits"]) == 8:
+				warning = "silver60"
+
+		return warning
+
+
+	def validate(self, data):
+		
+		err = None
 
 		if data["goldCoins"] == "" and data["silverCoins"] != "":
-			return render.setup(errors["goldAmount"], data)
+			err = "goldAmount"
 		elif data["silverCoins"] == "" and data["goldCoins"] != "":
-			return render.setup(errors["silverAmount"], data)
+			err = "silverAmount"
 		elif data["silverCoins"] == "" and data["goldCoins"] == "":
-			return render.setup(errors["goldSilverAmount"], data)
-		elif int(data["goldCoins"]) > 100 or int(data["silverCoins"]) > 100:
-			session.setup = data
-			activeSession["setup"] = session.setup
-			return render.setup(errors["max100"], data)
-		elif int(data["goldCoins"]) < 20 or int(data["silverCoins"]) < 20:
-			session.setup = data
-			activeSession["setup"] = session.setup
-			return render.setup(errors["min20"], data)
-		else:
-			# if int(data["goldCoins"]) < 30 and int(data["complexity"]) == 0:
-			# 	session.setup = data
-			# 	return render.setup(errors.gold30complex, data)
-			if int(data["goldCoins"]) < 50 and int(data["complexity"]) == 1:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold50complex"], data)
-			elif int(data["goldCoins"]) < 70 and int(data["complexity"]) == 2:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold70complex"], data)
-			if int(data["goldCoins"]) < 30 and int(data["digits"]) == 4:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold30"], data)
-			elif int(data["goldCoins"]) < 30 and int(data["digits"]) == 5:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold30"], data)
-			elif int(data["goldCoins"]) < 40 and int(data["digits"]) == 6:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold40"], data)
-			elif int(data["goldCoins"]) < 50 and int(data["digits"]) == 7:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold50"], data)
-			elif int(data["goldCoins"]) < 60 and int(data["digits"]) == 8:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["gold60"], data)
-			# elif int(data["silverCoins"]) < 30 and int(data["complexity"]) == 0:
-			# 	session.setup = data
-			# 	return render.setup("You may wanto to increase the number of Silver coins in your bag", data)
-			elif int(data["silverCoins"]) < 50 and int(data["complexity"]) == 1:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver50complex"], data)
-			elif int(data["silverCoins"]) < 70 and int(data["complexity"]) == 2:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver70complex"], data)
-			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 4:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver30"], data)
-			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 5:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver30"], data)
-			elif int(data["silverCoins"]) < 40 and int(data["digits"]) == 6:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver40"], data)
-			elif int(data["silverCoins"]) < 50 and int(data["digits"]) == 7:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver50"], data)
-			elif int(data["silverCoins"]) < 60 and int(data["digits"]) == 8:
-				session.setup = data
-				activeSession["setup"] = session.setup
-				return render.setup(errors["silver60"], data)
-			else:
-				session.setup = data
-				activeSession["setup"] = session.setup
-
-				print 'is setup?', session.setup
-
-				print 'activeSession["setup"]', activeSession["setup"]
-				print 'activeSession["username"]', activeSession["username"]
-				print 'activeSession["setup"]["digits"]', activeSession["setup"]["digits"]
-				return web.seeother("/game")
+			err = "goldSilverAmount"
+		
+		return err
 
 	
 class Game(object):
@@ -251,6 +183,17 @@ class Game(object):
 
 
 	def GET(self):
+		# conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		# cur = conn.cursor()
+		
+		# cur.execute('''SELECT id FROM Game WHERE player_id = ?''', (session.player_id,))
+		# game_id = cur.fetchone()
+
+		# if game_id != None:
+		# 	return web.seeother('/guesses')
+		# else:
+		# 	return render.setup()
+
 		session.password = self.a.create()
 		activeSession["password"] = session.password
 		print 'is password?', session.password
@@ -565,7 +508,7 @@ class End():
 			if activeSession["score"] > maxScore:
 				cur.execute("UPDATE Player SET maxScore = (:score) WHERE username = (:username) ", activeSession)
 			else:
-				cur.execute("UPDATE Player SET maxScore = maxScore WHERE username = (:username) ", activeSession)
+				cur.execute("UPDATE Player SET maxScore = ? WHERE username = ? ", (maxScore, activeSession["username"]))
 
 			conn.commit()
 
