@@ -13,12 +13,13 @@ class Password:
 		self.numbersLetters = self.onlyNumbers + self.onlyLetters
 
 		if self.complexity == 0:
-			self.password = random.sample(self.onlyNumbers, self.length)
+			password = random.sample(self.onlyNumbers, self.length)
 		elif self.complexity == 1:
-			self.password = random.sample(self.onlyLetters, self.length)
+			password = random.sample(self.onlyLetters, self.length)
 		elif self.complexity == 2:
-			self.password = random.sample(self.numbersLetters, self.length)
-		return self.password
+			password = random.sample(self.numbersLetters, self.length)
+		
+		return password
 
 
 	def drawBoxes(self):
@@ -28,14 +29,9 @@ class Password:
 		print ((('*' * 5) + '   ') * self.length)
 
 	def evaluate(self, password, guess):
-		# while guess != password:
+
 		self.goldCoinsReceived = 0
 		self.silverCoinsReceived = 0
-
-		print self.length, guess, password, range(self.length)
-
-		print "guess[i]", guess
-		# print "password[i]", password
 
 		for i in range(self.length):
 			if guess[i] == password[i]:
@@ -146,7 +142,8 @@ class Score:
 			score = int(norm / ((prob * weightGold * self.goldCoinsSpent + prob * weightSilver * self.silverCoinsSpent) )) - (1 * self.round)
 
 
-		return "{:,}".format(score) #will be a string
+		# return "{:,}".format(score) #will be a string
+		return score # will be a string
 
 
 

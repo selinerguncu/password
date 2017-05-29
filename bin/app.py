@@ -27,12 +27,13 @@ web.config.session_parameters['cookie_name'] = 'session_id'
 
 urls = (
 	'/', 'Login',
+	'/login', 'Login',
 	'/intro', 'Intro',
 	'/howtoplay', 'HowToPlay',
 	'/setup', 'Setup',
 	'/game', 'Game',
 	'/guesses', 'Guesses',
-	'/end', 'End'
+	'/gameover', 'GameOver'
 )
 
 app = web.application(urls, globals())
@@ -40,6 +41,13 @@ render = web.template.render(templatePath)
 db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same_thread=False)
 store = web.session.DBStore(db, 'sessions')
 session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
+
+def rowToDict(cur, row):
+	d = {}
+	for index, description in enumerate(cur.description):
+		d[description[0]] = row[index]
+
+	return d
 
 
 class Intro():
@@ -96,7 +104,15 @@ class Setup(object):
 		if session.game_id == 0:
 			return render.setup()
 		else:
-			return web.seeother('/game')
+			conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+			cur = conn.cursor()
+			cur.execute('''SELECT won FROM Game WHERE id = ?''', (session.game_id,))
+			gameRow = cur.fetchone()
+			
+			if gameRow[0] in [0, 1]:
+				return render.setup()
+			else:
+				return web.seeother('/game')
 
 	def POST(self):
 		data = parseFormData(web.data())
@@ -176,40 +192,63 @@ class Setup(object):
 	
 class Game(object):
 	def __init__(self):
-		self.a = code.Password(activeSession["setup"]["digits"], activeSession["setup"]["complexity"], activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"])
-		print 'activeSession["setup"]["digits"]', activeSession["setup"]["digits"]
+		self.count = 0
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		game_id = session.game_id
+		cur.execute('''SELECT * FROM Game WHERE id = ?''', (game_id,))
+		gameRow = cur.fetchone()
 
-		print 'activeSession["setup"]', activeSession["setup"]
+		if gameRow == None:
+			return
+
+		self.game = rowToDict(cur, gameRow)
+		self.password = code.Password(self.game["digits"], self.game["complexity"], self.game["goldCoins"], self.game["silverCoins"])
+
+		self.password.drawBoxes()
+		
+		if self.game["password"] == None:
+			password = ''.join(self.password.create())
+			cur.execute("UPDATE Game SET password = ? WHERE id = ? ", (password, game_id))
+			conn.commit()
+			self.game["password"] = password
+
+	def writeHistory(self, evaluation):
+		print evaluation
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		cur.execute('''
+			INSERT INTO History(round, guess, goldReceived, silverReceived, goldInBag, silverInBag, game_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?)'''
+			, (evaluation["_round"], ''.join(evaluation["guess"]), evaluation["goldCoinsReceived"], evaluation["silverCoinsReceived"], evaluation["goldInBag"], evaluation["silverInBag"], session.game_id))
+		conn.commit()
 
 
 	def GET(self):
-		# conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-		# cur = conn.cursor()
+
+		if session.player_id == 'guest':
+			return web.seeother('/')
+
+		if session.game_id == '0':
+			return web.seeother('/setup')
+
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
 		
-		# cur.execute('''SELECT id FROM Game WHERE player_id = ?''', (session.player_id,))
-		# game_id = cur.fetchone()
+		cur.execute('''SELECT round, guess, goldReceived, silverReceived, goldInBag, silverInBag FROM History WHERE game_id = ?''', (session.game_id,))
+		history = cur.fetchall()
 
-		# if game_id != None:
-		# 	return web.seeother('/guesses')
-		# else:
-		# 	return render.setup()
+		past = []
+		for row in history:
+			past.append(row)
 
-		session.password = self.a.create()
-		activeSession["password"] = session.password
-		print 'is password?', session.password
+		return render.game(self.game, past) 
 
-		print 'GAME password 1', session.password
-		print 'GAME password 1', activeSession["password"]
-		return render.game(activeSession) 
 
 	def POST(self):
 		data = parseFormData(web.data())
-		guess = []
+		guess = [data["first"], data["second"], data["third"], data["fourth"]]
 
-		guess.append(data["first"])
-		guess.append(data["second"])
-		guess.append(data["third"])
-		guess.append(data["fourth"])
 		try:
 			guess.append(data["fifth"])
 			guess.append(data["sixth"])
@@ -217,302 +256,158 @@ class Game(object):
 			guess.append(data["eighth"])
 		except:
 			pass
-		print 'GAME password3', activeSession["password"]
-
-		# activeSession["pastGuess"] = guess
-		# print "activeSession['pastGuess']", activeSession["pastGuess"]
 
 		#check if all inputs are valid:
 
 		onlyNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 		onlyLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
 		numbersLetters = onlyNumbers + onlyLetters
-		
-		if activeSession["setup"]["complexity"] == '0' and len(guess) > len(set(guess)):
-			return render.game(activeSession, errors["uniqueNumbers"])
-		elif activeSession["setup"]["complexity"] == '1' and len(guess) > len(set(guess)):
-			return render.game(activeSession, errors["uniqueLetters"])
-		elif activeSession["setup"]["complexity"] == '2' and len(guess) > len(set(guess)):
-			return render.game(activeSession, errors["uniqueNumbersLetters"])
-		elif activeSession["setup"]["complexity"] == '0' and len([1 for i in guess if i in onlyNumbers]) != int(activeSession["setup"]["digits"]):
-			return render.game(activeSession, errors["onlyNumbers"])
-		elif activeSession["setup"]["complexity"] == '1' and len([1 for i in guess if i in onlyLetters]) != int(activeSession["setup"]["digits"]):
-			return render.game(activeSession, errors["onlyLetters"])
-		elif activeSession["setup"]["complexity"] == '2' and len([1 for i in guess if i in numbersLetters]) != int(activeSession["setup"]["digits"]):
-			return render.game(activeSession, errors["numbersLetters"])
-		else:
-			activeSession["round"] = 0
-			self.evaluation = self.a.evaluate(activeSession["password"], guess)
-			self.updated = self.a.update(activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"], activeSession["round"], self.evaluation)
 
-			session.evaluation = self.evaluation
-			activeSession["evaluation"] = session.evaluation
-			session.updated = self.updated
-			activeSession["updated"] = session.updated
-
-			print "before activeSession['round']", activeSession["round"]
-
-			activeSession["round"] = activeSession["updated"]["round"]
-
-			print "after activeSession['round']", activeSession["round"]
-
-			# print 'evaluation', session.evaluation
-			# print 'guess', session.updated["guess"]
-
-			if activeSession["updated"]["guess"] == activeSession["password"]:
-				return web.seeother('/end')
-			else:
-				temp = {}
-				temp["guess"] = activeSession["updated"]["guess"]
-				activeSession["round"] = activeSession["updated"]["round"]
-				temp["goldCoinsReceived"] = activeSession["updated"]["goldCoinsReceived"]
-				temp["silverCoinsReceived"] = activeSession["updated"]["silverCoinsReceived"]
-				activeSession["setup"]["goldCoins"] = activeSession["updated"]["goldCoinsInBag"]
-				activeSession["setup"]["silverCoins"] = activeSession["updated"]["silverCoinsInBag"]
-				activeSession["updated"] = self.a.update(activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"], activeSession["round"], temp)
-				
-				#recording previous guesses in the list:
-				# session.pastRound.append(activeSession["updated"]["round"])
-				# session.pastGuess.append(temp["guess"])
-				# session.pastGold.append(temp["goldCoinsReceived"])
-				# session.pastSilver.append(temp["silverCoinsReceived"])
-
-				# print "activeSession['pastGuess']", activeSession["pastGuess"]
-				# print "(temp['guess'])", (temp["guess"])
-
-				activeSession["pastRound"].append(activeSession["updated"]["round"])
-				activeSession["pastGuess"].append(temp["guess"])
-				activeSession["pastGold"].append(temp["goldCoinsReceived"])
-				activeSession["pastSilver"].append(temp["silverCoinsReceived"])
-				
-				activeSession["past"] = zip(activeSession["pastRound"], activeSession["pastGuess"], activeSession["pastGold"], activeSession["pastSilver"])
-
-				# print 'ilk round', activeSession["updated"]["round"]
-				# print 'session daki ilk round', session.pastRound
-				print len([1 for i in guess if i in onlyNumbers])
-				print int(activeSession["setup"]["digits"])
-				return web.seeother('/guesses')
-				# render.guesses(session)
-
-
-class Guesses(object):
-	def __init__(self):
-		self.a = code.Password(activeSession["setup"]["digits"], activeSession["setup"]["complexity"], activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"])
-
-	def GET(self):
-		return render.guesses(activeSession) 
-
-	def POST(self):
-		data = parseFormData(web.data())
-		guess = []
-
-		guess.append(data["first"])
-		guess.append(data["second"])
-		guess.append(data["third"])
-		guess.append(data["fourth"])
-		try:
-			guess.append(data["fifth"])
-			guess.append(data["sixth"])
-			guess.append(data["seventh"])
-			guess.append(data["eighth"])
-		except:
-			pass
-
-		# activeSession["pastGuess"] = guess
-
-		print 'len', len(guess)
-		print 'set', set(guess)
-		print 'lenSet', len(set(guess))
-		
-		#test if all inputs are valid:
-
-		onlyNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-		onlyLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
-		numbersLetters = onlyNumbers + onlyLetters
-
-		if activeSession["setup"]["complexity"] == '0' and len(guess) > len(set(guess)):
-			return render.guesses(activeSession, errors["uniqueNumbers"])
-		elif activeSession["setup"]["complexity"] == '1' and len(guess) > len(set(guess)):
-			return render.guesses(activeSession, errors["uniqueLetters"])
-		elif activeSession["setup"]["complexity"] == '2' and len(guess) > len(set(guess)):
-			return render.guesses(activeSession, errors["uniqueNumbersLetters"])
-		elif activeSession["setup"]["complexity"] == '0' and len([1 for i in guess if i in onlyNumbers]) != int(activeSession["setup"]["digits"]):
-			return render.guesses(activeSession, errors["onlyNumbers"])
-		elif activeSession["setup"]["complexity"] == '1' and len([1 for i in guess if i in onlyLetters]) != int(activeSession["setup"]["digits"]):
-			return render.guesses(activeSession, errors["onlyLetters"])
-		elif activeSession["setup"]["complexity"] == '2' and len([1 for i in guess if i in numbersLetters]) != int(activeSession["setup"]["digits"]):
-			return render.guesses(activeSession, errors["numbersLetters"])
-		else:
-			self.evaluation = self.a.evaluate(activeSession["password"], guess)
-			print "GUESS password", activeSession["password"]
-			self.updated = self.a.update(activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"], activeSession["round"], self.evaluation)
-
-			session.evaluation = self.evaluation
-			activeSession["evaluation"] = session.evaluation		
-			session.updated = self.updated
-			activeSession["updated"] = session.updated
-
-			activeSession["round"] = activeSession["updated"]["round"]
-
-			print "after activeSession['round']", activeSession["round"]		
-
-			if activeSession["updated"]["guess"] == activeSession["password"]:
-				return web.seeother('/end')
-			elif activeSession["updated"]["goldCoinsInBag"] == activeSession["updated"]["silverCoinsInBag"] == 0:
-				return web.seeother('/end')
-
-			else:
-				print 'password', activeSession["password"]
-				print 'evaluation', activeSession["evaluation"]
-				print 'coins in bag', activeSession["updated"]["goldCoinsInBag"], activeSession["updated"]["silverCoinsInBag"]
-				print 'updated', activeSession["updated"]
-				temp = {}
-				temp["guess"] = activeSession["updated"]["guess"]
-				session.round = activeSession["updated"]["round"]
-				temp["goldCoinsReceived"] = activeSession["updated"]["goldCoinsReceived"]
-				temp["silverCoinsReceived"] = activeSession["updated"]["silverCoinsReceived"]
-				activeSession["setup"]["goldCoins"] = activeSession["updated"]["goldCoinsInBag"]
-				activeSession["setup"]["silverCoins"] = activeSession["updated"]["silverCoinsInBag"]
-				activeSession["updated"] = self.a.update(activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"], activeSession["round"], temp)
-				
-				# #recording previous guesses in the list:
-				# session.pastRound.append(activeSession["updated"]["round"])
-				# session.pastGuess.append(temp["guess"])
-				# session.pastGold.append(temp["goldCoinsReceived"])
-				# session.pastSilver.append(temp["silverCoinsReceived"])
-
-
-				activeSession["pastRound"].append(activeSession["updated"]["round"])
-				activeSession["pastGuess"].append(temp["guess"])
-				activeSession["pastGold"].append(temp["goldCoinsReceived"])
-				activeSession["pastSilver"].append(temp["silverCoinsReceived"])
-
-				
-				activeSession["past"] = zip(activeSession["pastRound"], activeSession["pastGuess"], activeSession["pastGold"], activeSession["pastSilver"])
-
-				return web.seeother('/guesses')
-
-
-class End():
-	def GET(self):
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
+		cur.execute("SELECT goldInBag, silverInBag, round, guess, goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))
+		rows = cur.fetchall()
 
-		if activeSession["updated"]["guess"] == activeSession["password"]:
-			# print "END password", session.password
-			# print "session.pastGold", session.pastGold
-			# print "session.pastSilver", session.pastSilver
-
-			goldCoinsSpent = sum(activeSession["pastGold"])
-			silverCoinsSpent = sum(activeSession["pastSilver"])
-
-			print "session setup", activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"]
-			print sum(activeSession["pastGold"]), sum(activeSession["pastSilver"])
-			print "goldCoinsSpent", goldCoinsSpent
-			print "silverCoinsSpent", silverCoinsSpent
-			print "round", activeSession["updated"]["round"]
-
-			self.score = code.Score(activeSession["setup"]["digits"], activeSession["setup"]["complexity"], goldCoinsSpent, silverCoinsSpent, activeSession["updated"]["round"])
-			session.score = self.score.score()
-			activeSession["score"] = session.score
-			activeSession["gameOver"] = "won"
-			print 'activeSession', activeSession
-			#activeSession["setup"]["username"] = activeSession["username"]
-			activeSession["goldCoinsSpent"] = goldCoinsSpent
-			activeSession["silverCoinsSpent"] = silverCoinsSpent
-
-
-		#writing from the database:
-		#cur.execute("SELECT username, userpassword FROM Player")
-		#row = cur.fetchone()
-		#if row is None:
-		#	pass
-		#else:
-		#	username, userpassword = row[0], row[1]
-			cur.execute("SELECT id FROM Player WHERE username = (:username) ", activeSession)
-			playerID = cur.fetchone()[0]
-			print 'playerID', playerID
-
-			cur.execute('''INSERT INTO Game(username, gameover, score, totalRounds, digits, complexity, goldSpent, silverSpent, player_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-				(activeSession["username"], activeSession["gameOver"], activeSession["score"], activeSession["round"],
-					activeSession["setup"]["digits"], activeSession["setup"]["complexity"], activeSession["goldCoinsSpent"], activeSession["silverCoinsSpent"], playerID) )
+		past = []
+		for row in rows:
+			past.append((row[2], row[3], row[4], row[5], row[0], row[1]))
+		
+		if self.game["complexity"] == 0 and len(guess) > len(set(guess)):
+			return render.game(self.game, past, errors["uniqueNumbers"])
+		elif self.game["complexity"] == 1 and len(guess) > len(set(guess)):
+			return render.game(self.game, past, errors["uniqueLetters"])
+		elif self.game["complexity"] == 2 and len(guess) > len(set(guess)):
+			return render.game(self.game, past, errors["uniqueNumbersLetters"])
+		elif self.game["complexity"] == 0 and len([1 for i in guess if i in onlyNumbers]) != int(self.game["digits"]):
+			return render.game(self.game, past, errors["onlyNumbers"])
+		elif self.game["complexity"] == 1 and len([1 for i in guess if i in onlyLetters]) != int(self.game["digits"]):
+			return render.game(self.game, past, errors["onlyLetters"])
+		elif self.game["complexity"] == 2 and len([1 for i in guess if i in numbersLetters]) != int(self.game["digits"]):
+			return render.game(self.game, past, errors["numbersLetters"])
+		else:
+			evaluation = self.password.evaluate(self.game["password"], guess)
 			
-			#cur.execute("UPDATE Game SET gameover = (:gameOver) WHERE username = (:username) ", activeSession)
-			#cur.execute("UPDATE Game SET score = (:score) WHERE username = (:username) ", activeSession)
-			#cur.execute("UPDATE Game SET totalRounds = (:round) WHERE username = (:username) ", activeSession)
-			#cur.execute("UPDATE Game SET digits = (:digits) WHERE username = (:username) ", activeSession["setup"])
-			#cur.execute("UPDATE Game SET complexity = (:complexity) WHERE username = (:username) ", activeSession["setup"])
-			#cur.execute("UPDATE Game SET goldSpent = (:goldCoinsSpent) WHERE username = (:username) ", activeSession)
-			#cur.execute("UPDATE Game SET silverSpent = (:silverCoinsSpent) WHERE username = (:username) ", activeSession)
-
-
-			cur.execute("UPDATE Player SET wins = wins + 1 WHERE username = (:username) ", activeSession)
-			cur.execute("UPDATE Player SET games = games + 1 WHERE username = (:username) ", activeSession)
-			cur.execute("UPDATE Player SET totalScore = totalScore + (:score) WHERE username = (:username) ", activeSession)
-			
-
-			#maxScore in Player icin select yap: if maxScore > score: then update
-			cur.execute("SELECT maxScore FROM Player WHERE username = (:username) ", activeSession)
-			maxScore = cur.fetchone()
-			if activeSession["score"] > maxScore:
-				cur.execute("UPDATE Player SET maxScore = (:score) WHERE username = (:username) ", activeSession)
+			if len(rows) == 0:
+				_round = 1
+				goldInBag = self.game["goldCoins"] - evaluation["goldCoinsReceived"]
+				silverInBag = self.game["silverCoins"] - evaluation["silverCoinsReceived"]
 			else:
-				cur.execute("UPDATE Player SET maxScore = maxScore WHERE username = (:username) ", activeSession)
+				_round = len(rows) + 1
+				goldInBag = rows[_round - 2][0] - evaluation["goldCoinsReceived"]
+				silverInBag = rows[_round - 2][1] - evaluation["silverCoinsReceived"]
 
+			evaluation["_round"] = _round
+			evaluation["goldInBag"] = goldInBag
+			evaluation["silverInBag"] = silverInBag
 			
-			#if maxScore of a player is btw xxx and yyy then badge = diamond vs ruby vs sapphire vs emerald
-			if activeSession["score"] >= 10000000000:
-				activeSession["badge"] = 'Diamond'
-			elif activeSession["score"] >= 1000000:
-				activeSession["badge"] = 'Emerald'
-			elif activeSession["score"] >= 100000:
-				activeSession["badge"] = 'Sapphire'
-			else:
-				activeSession["badge"] = 'Ruby'
+			self.writeHistory(evaluation)
 			
-			print "score", activeSession["score"]
-			print "badge", activeSession["badge"]
+			#won or lost:
+			if ''.join(guess) == self.game["password"] or (goldInBag <= 0 and silverInBag <= 0):
+				self.gameEnded()
+				return web.seeother('/gameover')
 
-			cur.execute('''INSERT INTO Leaderboard(username, score, badge) VALUES (?, ?, ?)''', (activeSession["username"], activeSession["score"], activeSession["badge"]) )
-			
-			# if activeSession["score"] > 10000000000:
-			# 	cur.execute("UPDATE Leaderboard SET badge = 'Diamond' WHERE username = (:username) ", activeSession)
-			# elif activeSession["score"] > 1000000
-			# 	cur.execute("UPDATE Leaderboard SET badge = 'Emerald' WHERE username = (:username) ", activeSession)
-			# elif activeSession["score"] > 100000:
-			# 	cur.execute("UPDATE Leaderboard SET badge = 'Sapphire' WHERE username = (:username) ", activeSession)
-			# else:
-			# 	cur.execute("UPDATE Leaderboard SET badge = 'Ruby' WHERE username = (:username) ", activeSession)
+			return web.seeother('/game')
+	
+	def gameEnded(self):
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		cur.execute("SELECT * FROM Game WHERE id = ?", (session.game_id,))
+		game = rowToDict(cur, cur.fetchone())
+
+		cur.execute("SELECT guess, goldInBag, silverInBag, round FROM History WHERE game_id = ? ORDER BY round DESC", (session.game_id,))
+		lastRow = cur.fetchone()
+		guess = lastRow[0]
+		goldInBag = lastRow[1]
+		silverInBag = lastRow[2]
+		totalRounds = lastRow[3]
+		hasWon = guess == game["password"]
+
+		cur.execute("SELECT goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))			
+		prizeHistory = cur.fetchall()
+	
+		goldCoinsSpent = 0
+		silverCoinsSpent = 0
+
+		for row in prizeHistory:
+			goldCoinsSpent += row[0]
+			silverCoinsSpent += row[1]
+
+		scoreInstance = code.Score(game["digits"], game["complexity"], goldCoinsSpent, silverCoinsSpent, totalRounds)
+		score = scoreInstance.score()
+
+		print score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id
+		
+		if hasWon:
+			won = 1
+		else:
+			won = 0
+
+		cur.execute("UPDATE Game SET won = ?, score = ?, totalRounds = ?, goldSpent = ?, silverSpent = ? WHERE id = ? ", (won, score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id))
+		conn.commit()
+
+		#update Player table:
+		cur.execute("SELECT score FROM Game WHERE player_id = ? ", (session.player_id,))
+		allScores = cur.fetchall()
 
 
-			conn.commit()
-			return render.endwon(activeSession)
+		scores = []
+		for s in allScores:
+			scores.append(s[0])
 
-		elif activeSession["updated"]["goldCoinsInBag"] == activeSession["updated"]["silverCoinsInBag"] == 0:
-			print 'coins in bag', activeSession["updated"]["goldCoinsInBag"], activeSession["updated"]["silverCoinsInBag"]
-			
-			activeSession["gameOver"] = "lost"
-			activeSession["score"] = 0
-			#activeSession["setup"]["username"] = activeSession["username"]
+		totalScore = sum(scores)
+		maxScore = max(scores)
 
-			cur.execute('''INSERT INTO Game(username, gameover, score, totalRounds, digits, complexity, goldSpent, silverSpent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
-				(activeSession["username"], activeSession["gameOver"], activeSession["score"], activeSession["round"],
-					activeSession["setup"]["digits"], activeSession["setup"]["complexity"], activeSession["setup"]["goldCoins"], activeSession["setup"]["silverCoins"] ) )
-			
-			cur.execute("UPDATE Player SET wins = wins + 1 WHERE username = (:username) ", activeSession)
-			cur.execute("UPDATE Player SET games = games + 1 WHERE username = (:username) ", activeSession)
-			cur.execute("UPDATE Player SET totalScore = totalScore + (:score) WHERE username = (:username) ", activeSession)
-			
-			#maxScore in Player icin select yap: if maxScore > score: then update
-			cur.execute("SELECT maxScore FROM Player WHERE username = (:username) ", activeSession)
-			if activeSession["score"] > maxScore:
-				cur.execute("UPDATE Player SET maxScore = (:score) WHERE username = (:username) ", activeSession)
-			else:
-				cur.execute("UPDATE Player SET maxScore = ? WHERE username = ? ", (maxScore, activeSession["username"]))
+		if hasWon:
+			cur.execute("UPDATE Player SET wins = wins + 1, games = games + 1, totalScore = ?, maxScore = ? WHERE id = ? ", (totalScore, maxScore, session.player_id) )
+		else:
+			cur.execute("UPDATE Player SET losses = losses + 1, games = games + 1 WHERE id = ? ", (session.player_id,) )
+		conn.commit()
+		
+		#if maxScore of a player is btw xxx and yyy then badge = diamond vs ruby vs sapphire vs emerald
+		if score >= 10000000000:
+			badge = 'Diamond'
+		elif score >= 1000000:
+			badge = 'Emerald'
+		elif score >= 100000:
+			badge = 'Sapphire'
+		else:
+			badge = 'Ruby'
+		
+		print "score", score
+		print "badge", badge
 
-			conn.commit()
+		cur.execute('''INSERT INTO Leaderboard(score, badge, player_id) VALUES (?, ?, ?)''', (score, badge, session.player_id) )
+		conn.commit()
 
-			return render.endlost(activeSession)
+
+class GameOver():
+	def GET(self):
+
+		if session.player_id == 'guest':
+			return web.seeother('/')
+
+		if session.game_id == '0':
+			return web.seeother('/setup')
+
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		cur.execute("SELECT * FROM Game WHERE id = ?", (session.game_id,))
+		game = rowToDict(cur, cur.fetchone())
+
+		gameOver = {}
+
+		gameOver["hasWon"] = game["won"] == 1
+		gameOver["round"] = game["totalRounds"]
+
+		gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"] + game["digits"]
+		gameOver["silverInBag"] = game["silverCoins"] - game["silverSpent"]
+
+		gameOver["password"] = game["password"]
+		gameOver["digits"] = game["digits"]
+		gameOver["score"] = game["score"]
+
+		return render.gameover(gameOver)
 
 
 if __name__ == "__main__":
