@@ -1,9 +1,11 @@
-$def with (activeSession, error = None)
+$def with (game, past = [], error = None)
 
-$ goldCoins = int(activeSession["setup"]["goldCoins"])
-$ silverCoins = int(activeSession["setup"]["silverCoins"])
-$ length = int(activeSession["setup"]["digits"])
-$ complexity = int(activeSession["setup"]["complexity"])
+$ goldCoins = game["goldCoins"]
+$ silverCoins = game["silverCoins"]
+$ length = int(game["digits"])
+$ complexity = game["complexity"]
+$ _round = len(past) + 1
+$ password = game["password"]
 
 $if complexity == 0:
 	$ inputType = "only numbers"
@@ -15,6 +17,12 @@ $elif complexity == 2:
 	$ inputType = "both numbers and letters"
 	$ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
 
+$if len(past) == 0:
+	$ goldInBag = goldCoins
+	$ silverInBag = silverCoins
+$else:
+	$ goldInBag = past[len(past)-1][4]
+	$ silverInBag = past[len(past)-1][5]
 
 $if error:
 	$error
@@ -23,66 +31,106 @@ $if error:
 <h3>Here is the $length-digit password created by $inputType:</h3>
 
 <br>
-$ m = '*' * 6
-$ t = '*'
+$if game["won"] in [0, 1]:
+	$ m = '*' * 6
+	$ t = '*'
 
-$for i in range(length):
-	 $m &nbsp; &nbsp; &nbsp;            
-<br>
-$for i in range(length):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
-<br>
-$for i in range(length):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(length):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(length):
-	 $m &nbsp; &nbsp; &nbsp;  
-     
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp;            
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+	<br>
+	$for i in range(length):
+		$t &nbsp; $password[i] &nbsp; $t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp; 	
+$else:
+	$ m = '*' * 6
+	$ t = '*'
+
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp;            
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+	<br>
+	$for i in range(length):
+		 $m &nbsp; &nbsp; &nbsp; 	
+
 <h3>Past Guesses:</h3>
 
 <h4>Round &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Guess &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gold Coins &nbsp;&nbsp; Silver Coins</h4>
 
-<h5> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - </h5>
+
+$for row in past:
+	&nbsp;&nbsp;&nbsp;&nbsp; $row[0] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		$row[1]
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	$if row[2] == length:
+		-
+	$else:
+		$row[2]
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	$if row[2] == length:
+		-
+	$else:
+		$row[3]
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
 
 
-<h5>Round: 1</h5>
 
-<br>
-<h3>Number of Gold Coins in your bag: $goldCoins</h3>
-<h3>Number of Silver Coins in your bag: $silverCoins</h3>
+$if game["won"] == 1:
+	<h3>Number of Gold Coins in your bag: $(goldInBag + length)</h3>
+	<h3>Number of Silver Coins in your bag: $silverInBag</h3>
+	<h3>You won this game already!</h3>
+$elif game["won"] == 0:
+	<h3>Number of Gold Coins in your bag: 0</h3>
+	<h3>Number of Silver Coins in your bag: 0</h3>
+	<h3>You lost this game already!</h3>
+$else:
+	<h5>Round: $_round</h5>
+	<br>
+	<h3>Number of Gold Coins in your bag: $goldInBag</h3>
+	<h3>Number of Silver Coins in your bag: $silverInBag</h3>
+	<h3>Make a guess:</h3>
+	<form name="main" method="POST">
 
-<h3>Make a guess:</h3>
+		<input type="text" name="first" maxlength=1 size=1> 
+		<input type="text" name="second" maxlength=1 size=1> 
+		<input type="text" name="third" maxlength=1 size=1> 
+		<input type="text" name="fourth" maxlength=1 size=1>
 
-<form name="main" method="POST">
+	$if length > 4:
+		<input type="text" name="fifth" maxlength=1 size=1> 
 
-	<input type="text" name="first" maxlength=1 size=1> 
-	<input type="text" name="second" maxlength=1 size=1> 
-	<input type="text" name="third" maxlength=1 size=1> 
-	<input type="text" name="fourth" maxlength=1 size=1>
+	$if length >5:
+		<input type="text" name="sixth" maxlength=1 size=1>
 
-$if length > 4:
-	<input type="text" name="fifth" maxlength=1 size=1> 
+	$if length >6:
+		<input type="text" name="seventh" maxlength=1 size=1>
 
-$if length >5:
-	<input type="text" name="sixth" maxlength=1 size=1>
+	$if length >7:
+		<input type="text" name="eighth" maxlength=1 size=1>
 
-$if length >6:
-	<input type="text" name="seventh" maxlength=1 size=1>
+	<br>
+	<br>                   
+	<br>
 
-$if length >7:
-	<input type="text" name="eighth" maxlength=1 size=1>
+	<button type="submit"> Go! </button>
 
-<br>
-<br>                   
-<br>
-
-<button type="submit"<a href="/guesses"> Go! </button>
-
-</form>
-
+	</form>
+	
 
 
 
