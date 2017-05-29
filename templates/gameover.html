@@ -1,0 +1,53 @@
+$def with (gameOver)
+
+$ hasWon = gameOver["hasWon"]
+$ round = gameOver["round"]
+$ goldCoinsInBag = gameOver["goldInBag"]
+$ silverCoinsInBag = gameOver["silverInBag"]
+$ password = gameOver["password"]
+$ length = gameOver["digits"]
+$ score = gameOver["score"]
+
+$if hasWon:
+	<h1>YOU WON!</h1>
+	<br>       
+	<br>
+	<p> You discovered the Password in $round rounds.</p>
+	<br>
+	Your score is: $score
+	<br>
+$else:
+	<h1>YOU LOST!</h1>
+	<br>
+	<p> Sorry, you cannot continue without having any coins.</p>
+	<br>
+	<p> You spent all of your Gold and Silver coins, yet couldn't discover the Password.</p>
+	
+<br>
+$ m = '*' * 6
+$ t = '*'
+
+$for i in range(length):
+	 $m &nbsp; &nbsp; &nbsp;            
+<br>
+$for i in range(length):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
+<br>
+$for i in range(length):
+	$t &nbsp; $password[i] &nbsp; $t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(length):
+	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
+<br>
+$for i in range(length):
+	 $m &nbsp; &nbsp; &nbsp; 
+
+$if hasWon:
+	<p> You have $goldCoinsInBag Gold and $silverCoinsInBag Silver coins left.</p>
+	<br>
+	<p> Congrats! :)</p>
+$else:
+	<p> :(</p>
+
+<br>
+<p><a href="/setup">Play again?</a></p>	
