@@ -1,37 +1,68 @@
 $def with (leaders, error = None)
-
-
 $ leaders = leaders
 
-<h1>Leaderboard</h1>
-
-Rank &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Player &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Score &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Badge <br><br>
-$for i in range(len(leaders)):
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(i+1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $leaders[i][2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$leaders[i][0]  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$leaders[i][1] <br>
-
-<h1>P*a*5*S*w*0*r*D</h1>
-
-<br>
-
-<p> Here is a brief explanation of the game:</p>
-
-
-<body>
-Logging in will allow you to save your scores and access them when you come back later.
-</body>
-
-<br>
-<br>
-$if error:
-	<h3>$error</h3>
-<br>
-
-<form method="POST">
-	<label>Username</label>
-	<input type="text" name="username"><br>
-	<label>Password </label>
-	<input type="password" name="userpassword"><br><br>
-	<button type="submit">Submit</button>
-</form>
-
-<!-- <p><a href="/howtoplay">How To Play</a></p> -->
+<div class="login-page ui two column very relaxed stackable grid">
+  <div class="column">
+    <h3 class="ui header">Welcome!</h3>
+    <p>Please login with your username and password. If you don't have an account yet it will create you one.</p>
+    $if error:
+      <div class="ui red message">
+        <i class="warning sign icon"></i>$error
+      </div>
+    <form method="POST" class="ui form attached fluid">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Username..." />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="userpassword" placeholder="Password..." />
+      </div>
+      <div class="field">
+        <button class="ui blue submit button" type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+  <div class="divider-column">
+    <div class="ui vertical divider"></div>
+  </div>
+  <div class="column">
+    <h3 class="ui header">Hall of Fame</h3>
+    <table class="ui celled table unstackable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Score</th>
+          <th>Badge</th>
+        </tr>
+      </thead>
+      <tbody>
+        $ i = 0
+        $for leader in leaders:
+          $if leader[1] == "Ruby":
+            $ cls = "orange"
+          $elif leader[1] == "Sapphire":
+            $ cls = "blue"
+          $elif leader[1] == "Emerald":
+            $ cls = "green"
+          $elif leader[1] == "Diamond":
+            $ cls = "grey"
+          <tr>
+            <td>$(i+1)</td>
+            <td>$leader[2]</td>
+            <td>$leader[0]</td>
+            <td><i class="diamond $cls icon"></i> $leader[1]</td>
+          </tr>
+          $ i = i + 1
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4">
+            <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

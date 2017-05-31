@@ -20,11 +20,96 @@ div.boxes {
 	justify-content: center;
 	margin: 0 auto;
 }
-pre {
+div.boxes pre {
 	flex: 0 0 auto;
 	display: inline-block;
-	margin-right: 16px; 
+	margin-right: 16px;
 	line-height: 16px;
 	font-size: 16px;
 	overflow: hidden;
+	position: relative;
+}
+
+div.boxes pre:before {
+	content: attr(data-pass);
+	font-size: 70px;
+	position: absolute;
+	top: 48%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	color: rgba(0,0,0,.2)
+}
+div.boxes pre.azicik-asagida-olsun:before {
+	top: 53%;
+}
+
+/* because of https://github.com/Semantic-Org/Semantic-UI/issues/4342 */
+.divider-column {
+	position: relative;
+	padding: 0 !important;
+}
+.ui.vertical.divider:after, .ui.vertical.divider:before {
+	height: 100% !important;
+}
+
+.coin-bags {
+	display: flex;
+}
+
+.coin-bag {
+	flex: 1 1 auto;
+	position: relative;
+}
+.coin-bag span {
+	position: absolute;
+	font-size: 48px;
+	color: white;
+	top: 62%;
+	left: 50%;
+	z-index: 2;
+	transform: translateX(-50%);
+}
+.coin-bag.gold svg path {
+	fill: #FBBD08;
+}
+.coin-bag:before {
+	content: '';
+	position: absolute;
+	border-radius: 50%;
+	top: 42%;
+	left: 29%;
+	width: 37%;
+	height: 45%;
+	z-index: 1;
+}
+.coin-bag.gold:before {
+	background: #FBBD08;
+}
+
+.coin-bag.silver:before {
+	background: #767676;
+}
+
+.coin-bag.silver svg path {
+	fill: #767676;
+}
+
+form.guess {
+	text-align: center;
+}
+form.guess input {
+	text-align: center;
+}
+
+form.guess .submit-field {
+	margin-top: 1em;
+	margin-bottom: calc(2rem - .14285714em);
+}
+
+.gameover {
+	text-align: center;
+}
+.gameover .coin-bags {
+  max-width: 400px;
+  margin: 2em auto;
 }
