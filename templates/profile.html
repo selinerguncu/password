@@ -1,0 +1,34 @@
+$def with (player)
+
+$ username = player["username"]
+$ games = player["games"]
+$ difficulty = player["difficulty"]
+$ totalBadges = player["totalBadges"]
+$ badgeType = player["badgeType"]
+$ totalScore = player["totalScore"]
+$ maxScore = player["maxScore"]
+$ stages = player["stages"]
+$ level = player["level"]
+
+
+
+
+You have $games Password games in play:
+
+<br><br><br>
+
+$for i in range(games):
+	($(i+1)) Password: $difficulty[i]  &nbsp; &nbsp; &nbsp; &nbsp; <button type="submit">Continue</button>  &nbsp; &nbsp; &nbsp; &nbsp; <button type="submit">End</button> <br><br>
+
+
+ <br><br><br>
+ Active Game &nbsp; &nbsp; &nbsp; &nbsp; Password &nbsp; &nbsp; &nbsp; &nbsp; Total Badges &nbsp; &nbsp; &nbsp; &nbsp; Total Scores &nbsp; &nbsp; &nbsp; &nbsp; Max Score &nbsp; &nbsp; &nbsp; &nbsp; Passed Stages &nbsp; &nbsp; &nbsp; &nbsp; Current Level <br><br>
+
+$for i in range(games):
+	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $(i+1) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $difficulty[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  $totalBadges[i] $badgeType[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  $totalScore[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $maxScore[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  $stages[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Level $level[i] 
+	
+	
+
+
+	<br>
+	<br>
