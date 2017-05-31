@@ -27,52 +27,33 @@ $else:
 $if error:
 	$error
 
+<h2 class="ui header">Here is the $length-digit password created by $inputType:</h2>
 
-<h3>Here is the $length-digit password created by $inputType:</h3>
-
-<br>
+<div class="ui divider"></div>
+<div class="boxes">
 $if game["won"] in [0, 1]:
-	$ m = '*' * 6
-	$ t = '*'
-
+	$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
 	$for i in range(length):
-		 $m &nbsp; &nbsp; &nbsp;            
-	<br>
-	$for i in range(length):
-		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
-	<br>
-	$for i in range(length):
-		$t &nbsp; $password[i] &nbsp; $t &nbsp; &nbsp; &nbsp;
-	<br>
-	$for i in range(length):
-		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-	<br>
-	$for i in range(length):
-		 $m &nbsp; &nbsp; &nbsp; 	
+		<pre>$m</pre>
 $else:
-	$ m = '*' * 6
-	$ t = '*'
-
+	$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
 	$for i in range(length):
-		 $m &nbsp; &nbsp; &nbsp;            
-	<br>
+		<pre>$m</pre>
+</div>
+<figure>
+	<div class="lock-extension">
 	$for i in range(length):
-		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;      
-	<br>
-	$for i in range(length):
-		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-	<br>
-	$for i in range(length):
-		$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-	<br>
-	$for i in range(length):
-		 $m &nbsp; &nbsp; &nbsp; 	
+		<div class="asterisk"></div>
+	</div>
+	<div class="lock"></div>
+</figure>
 
-<h3>Past Guesses:</h3>
+<div class="ui divider"></div>
+<h3 class="ui header">Past Guesses</h3>
 
-<h4>Round &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Guess &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gold Coins &nbsp;&nbsp; Silver Coins</h4>
+<h4 class="ui header">Round &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Guess &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gold Coins &nbsp;&nbsp; Silver Coins</h4>
 
-
+ 
 $for row in past:
 	&nbsp;&nbsp;&nbsp;&nbsp; $row[0] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		$row[1]
@@ -90,56 +71,39 @@ $for row in past:
 
 
 
+<div class="ui divider"></div>
 $if game["won"] == 1:
-	<h3>Number of Gold Coins in your bag: $(goldInBag + length)</h3>
-	<h3>Number of Silver Coins in your bag: $silverInBag</h3>
-	<h3>You won this game already!</h3>
+	<h4 class="ui header">Number of Gold Coins in your bag: </h4><a class="ui yellow label">$(goldInBag + length)</a>
+	<h4 class="ui header">Number of Silver Coins in your bag:</h4> <a class="ui gray label">$silverInBag</a>
+	<h4 class="ui header">You won this game already!</h4>
 $elif game["won"] == 0:
-	<h3>Number of Gold Coins in your bag: 0</h3>
-	<h3>Number of Silver Coins in your bag: 0</h3>
-	<h3>You lost this game already!</h3>
+	<h4 class="ui header">Number of Gold Coins in your bag: </h4><a class="ui yellow label">0</a>
+	<h4 class="ui header">Number of Silver Coins in your bag:</h4> <a class="ui gray label">0</a>
+	<h4 class="ui header">You lost this game already!</h4>
 $else:
-	<h5>Round: $_round</h5>
-	<br>
-	<h3>Number of Gold Coins in your bag: $goldInBag</h3>
-	<h3>Number of Silver Coins in your bag: $silverInBag</h3>
-	<h3>Make a guess:</h3>
+	<h4 class="ui header">Round: $_round</h4>
+	<h4 class="ui header">Number of Gold Coins in your bag: </h4><a class="ui yellow label">$goldInBag</a>
+	<h4 class="ui header">Number of Silver Coins in your bag:</h4> <a class="ui gray label">$silverInBag</a>
+	<h4 class="ui header">Make a guess:</h4>
 	<form name="main" method="POST">
 
-		<input type="text" name="first" maxlength=1 size=1> 
-		<input type="text" name="second" maxlength=1 size=1> 
-		<input type="text" name="third" maxlength=1 size=1> 
-		<input type="text" name="fourth" maxlength=1 size=1>
+		<div class="ui input"><input type="text" name="first" maxlength=1 size=1></div>
+		<div class="ui input"><input type="text" name="second" maxlength=1 size=1></div>
+		<div class="ui input"><input type="text" name="third" maxlength=1 size=1></div>
+		<div class="ui input"><input type="text" name="fourth" maxlength=1 size=1></div>
 
 	$if length > 4:
-		<input type="text" name="fifth" maxlength=1 size=1> 
+		<div class="ui input"><input type="text" name="fifth" maxlength=1 size=1> </div>
 
 	$if length >5:
-		<input type="text" name="sixth" maxlength=1 size=1>
+		<div class="ui input"><input type="text" name="sixth" maxlength=1 size=1></div>
 
 	$if length >6:
-		<input type="text" name="seventh" maxlength=1 size=1>
+		<div class="ui input"><input type="text" name="seventh" maxlength=1 size=1></div>
 
 	$if length >7:
-		<input type="text" name="eighth" maxlength=1 size=1>
+		<div class="ui input"><input type="text" name="eighth" maxlength=1 size=1></div>
 
-	<br>
-	<br>                   
-	<br>
-
-	<button type="submit"> Go! </button>
+	<button type="submit" class="ui primary button"> Go! </button>
 
 	</form>
-	
-
-
-
-
-
-
-
-
-
-
-
-

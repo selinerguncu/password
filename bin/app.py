@@ -37,7 +37,7 @@ urls = (
 )
 
 app = web.application(urls, globals())
-render = web.template.render(templatePath)
+render = web.template.render(templatePath, base='layout')
 db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same_thread=False)
 store = web.session.DBStore(db, 'sessions')
 session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
@@ -64,9 +64,17 @@ class HowToPlay():
 class Login():
 	def GET(self):
 		if session.player_id == 'guest':
-			return render.login()
+			conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+			cur = conn.cursor()
+			cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username 
+				FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id 
+				ORDER BY Leaderboard.score DESC LIMIT 5''')
+			leaders = cur.fetchall()
+
+			return render.login(leaders)
 		else:
-			return web.seeother('/setup')
+			return web.seeother('/game')
+
 
 	def POST(self):
 
@@ -85,7 +93,7 @@ class Login():
 
 			if db_userPassword == form_userPassword:
 				session.player_id = player_id
-				return web.seeother('/setup')
+				return web.seeother('/game')
 			else:
 				return render.login(errors["password"])
 
@@ -93,8 +101,30 @@ class Login():
 			cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
 			conn.commit()
 			session.player_id = cur.lastrowid
-			return web.seeother('/setup')
+			return web.seeother('/game')
 
+
+class Profile():
+	def GET(self):
+		player = {}
+		player["username"] = 'sinan'
+		player["games"] = 3
+		player["difficulty"] = ['Easy', 'Mod', 'Hard']
+		player["totalBadges"] = [38, 12, 2]
+		player["badgeType"] = ['Ruby', 'Ruby', 'Emerald']
+		player["totalScore"] = [1234, 4567, 9870]
+		player["maxScore"] = [456, 1234, 643]
+		player["stages"] = [10, 8, 2]
+		player["level"] = [5, 4, 3]
+
+		return render.profile(player)
+
+	def POST(self):
+
+		print web.data()
+		return web.data()
+
+		
 
 class Setup(object):
 	def GET(self):
@@ -286,7 +316,7 @@ class Game(object):
 			return render.game(self.game, past, errors["numbersLetters"])
 		else:
 			evaluation = self.password.evaluate(self.game["password"], guess)
-			
+
 			if len(rows) == 0:
 				_round = 1
 				goldInBag = self.game["goldCoins"] - evaluation["goldCoinsReceived"]
@@ -296,6 +326,13 @@ class Game(object):
 				goldInBag = rows[_round - 2][0] - evaluation["goldCoinsReceived"]
 				silverInBag = rows[_round - 2][1] - evaluation["silverCoinsReceived"]
 
+			if goldInBag <= 0:
+				goldInBag = 0
+				evaluation["goldCoinsReceived"] = 0
+			if silverInBag <= 0:
+				silverInBag = 0
+				evaluation["silverCoinsReceived"] = 0
+
 			evaluation["_round"] = _round
 			evaluation["goldInBag"] = goldInBag
 			evaluation["silverInBag"] = silverInBag
@@ -303,7 +340,7 @@ class Game(object):
 			self.writeHistory(evaluation)
 			
 			#won or lost:
-			if ''.join(guess) == self.game["password"] or (goldInBag <= 0 and silverInBag <= 0):
+			if ''.join(guess) == self.game["password"] or (goldInBag == 0 and silverInBag == 0):
 				self.gameEnded()
 				return web.seeother('/gameover')
 
