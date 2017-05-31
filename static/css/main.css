@@ -1,0 +1,22 @@
+main {
+	margin: 50px auto;
+	max-width: 1000px;
+	min-width: 400px;
+	border: 1px solid rgba(34,36,38,.15);
+	border-radius: 4px;
+	padding: 30px;
+}
+
+div.boxes {
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+}
+pre {
+	flex: 0 0 auto;
+	display: inline-block;
+	margin-right: 16px; 
+	line-height: 16px;
+	font-size: 16px;
+	overflow: hidden;
+}
