@@ -3,9 +3,10 @@ $ complexity = ["Only Numbers", "Only Letters", "Both Numbers and Letters"]
 
 $if isError:
 	$ inputType = complexity[int(data["complexity"])]
-	
-	<h3>$msg</h3>
-
+	<div class="ui yellow message">
+		<i class="remove sign icon"></i>
+		$msg
+	</div>
 	<h3> Number of Password Digits: $data["digits"]
 	<br>
 	Complexity of the Password: $inputType
@@ -24,17 +25,20 @@ $if isError:
 		<p><a href="#" onclick="">I'm good. Let's start!</a></p>
 
 $elif msg and isError == False:
-	<h3>Set the password parameters</h3>
-	<p>$msg</p>
+	<h3 class="ui header">Set the password parameters</h3>
+	<div class="ui yellow message">
+		<i class="warning sign icon"></i>
+		$msg
+	</div>
 	<form name="main" method="POST">
 
 		<label>Number of Password Digits</label>
 		<select name="digits">
 			$for i in range(4,9):
 				$if i == int(data['digits']):
-					<option selected="selected">$i</option>	
+					<option selected="selected">$i</option>
 				$else:
-					<option>$i</option>	
+					<option>$i</option>
 		</select>
 		<br>
 
@@ -42,9 +46,9 @@ $elif msg and isError == False:
 		<select name="complexity">
 			$for i in range(0,3):
 				$if i == int(data['complexity']):
-					<option value="$i" selected="selected">$complexity[i]</option>	
+					<option value="$i" selected="selected">$complexity[i]</option>
 				$else:
-					<option value="$i">$complexity[i]</option>	
+					<option value="$i">$complexity[i]</option>
 		</select>
 		<br>
 
@@ -63,49 +67,43 @@ $elif msg and isError == False:
 
 
 $else:
-	<h3>Set the password parameters</h3>
+	<h3 class="ui header">Set the password parameters</h3>
 
-	<form name="main" method="POST">
-
-		<label>Number of Password Digits</label>
-		<select name="digits">
-			<option selected="selected">4</option>
-			<option>5</option>
-			<option>6</option>
-			<option>7</option>
-			<option>8</option>
-		</select>
-		<br>
-
-		<label>Complexity of the Password</label>
-		<select name="complexity">
-			<option value="0" selected="selected">Only Numbers</option>
-			<option value="1">Only Letters</option>
-			<option value="2">Both Numbers and Letters</option>
-		</select>
-		<br>
-
-		<label>Gold Coin Amount</label>
-		<input type="text" name="goldCoins" value="30">
-		<br>
-
-		<label>Silver Coin Amount</label>
-		<input type="text" name="silverCoins" value="30">
-		<br>
-		<input type="text" name="force" value="0" hidden="hidden">
-
-		<button type="submit">Done! Let's Start!</button>
-
+	<form method="POST" class="ui form attached fluid">
+		<div class="two fields">
+			<div class="field">
+				<label>Number of Password Digits</label>
+				<select class="ui compact selection dropdown" name="digits">
+					<option selected="selected">4</option>
+					<option>5</option>
+					<option>6</option>
+					<option>7</option>
+					<option>8</option>
+				</select>
+			</div>
+			<div class="field">
+				<label>Complexity of the Password</label>
+				<select class="ui compact selection dropdown" name="complexity">
+					<option value="0" selected="selected">Only Numbers</option>
+					<option value="1">Only Letters</option>
+					<option value="2">Both Numbers and Letters</option>
+				</select>
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label>Gold Coin Amount</label>
+				<input type="text" name="goldCoins" value="30">
+			</div>
+			<div class="field">
+				<label>Silver Coin Amount</label>
+				<input type="text" name="silverCoins" value="30">
+			</div>
+		</div>
+		<div class="field">
+			<input type="text" name="force" value="0" hidden="hidden">
+		</div>
+		<div class="field">
+			<button class="ui blue submit button" type="submit">Done! Let's Start!</button>
+		</div>
 	</form>
-
-
-<button class="ui green button">Easy</button>
-<button class="ui yellow button">Moderate</button>
-<button class="ui orange button">Difficult</button>
-<button class="ui red button">Impossible</button>
-
-<button onclick="location.href = ‘/gidecegin-adres’;"  class=“ui button” >Home</button>
-
-	<!-- <p><a href="/game">Done! Let's Start!</a></p> -->
-
-

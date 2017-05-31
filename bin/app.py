@@ -4,11 +4,13 @@ global session
 global appPath
 
 import sys
+import os
 import web
 import sqlite3 as sqlite
 import base64
 
-appPath = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/TestGame"
+appPath = os.getcwd()
+print appPath
 templatePath = appPath + '/templates'
 # to be able to import local modules
 sys.path.append(appPath)
@@ -62,18 +64,19 @@ class HowToPlay():
 
 
 class Login():
-	def GET(self):
-		if session.player_id == 'guest':
+	def __init__(self):
 			conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 			cur = conn.cursor()
-			cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username 
-				FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id 
+			cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+				FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
 				ORDER BY Leaderboard.score DESC LIMIT 5''')
-			leaders = cur.fetchall()
+			self.leaders = cur.fetchall()
 
-			return render.login(leaders)
+	def GET(self):
+		if session.player_id == 'guest':
+			return render.login(self.leaders)
 		else:
-			return web.seeother('/game')
+			return web.seeother('/setup')
 
 
 	def POST(self):
@@ -93,15 +96,15 @@ class Login():
 
 			if db_userPassword == form_userPassword:
 				session.player_id = player_id
-				return web.seeother('/game')
+				return web.seeother('/setup')
 			else:
-				return render.login(errors["password"])
+				return render.login(self.leaders, errors["password"])
 
 		else:
 			cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
 			conn.commit()
 			session.player_id = cur.lastrowid
-			return web.seeother('/game')
+			return web.seeother('/setup')
 
 
 class Profile():
@@ -124,7 +127,7 @@ class Profile():
 		print web.data()
 		return web.data()
 
-		
+
 
 class Setup(object):
 	def GET(self):
@@ -138,7 +141,7 @@ class Setup(object):
 			cur = conn.cursor()
 			cur.execute('''SELECT won FROM Game WHERE id = ?''', (session.game_id,))
 			gameRow = cur.fetchone()
-			
+
 			if gameRow[0] in [0, 1]:
 				return render.setup()
 			else:
@@ -154,13 +157,13 @@ class Setup(object):
 
 		if (error == None and warning == None) or (error == None and int(data["force"]) == 1):
 			cur.execute('''
-				INSERT INTO Game(digits, complexity, goldCoins, silverCoins, player_id) 
+				INSERT INTO Game(digits, complexity, goldCoins, silverCoins, player_id)
 				VALUES (?, ?, ?, ?, ?)
 				''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], session.player_id))
 			conn.commit()
 			session.game_id = cur.lastrowid
 			return web.seeother('/game')
-						
+
 		elif error == None and warning != None:
 			return render.setup(errors[warning], data)
 		else:
@@ -168,7 +171,7 @@ class Setup(object):
 
 	def hasWarning(self, data):
 		warning = None
-		
+
 		if int(data["goldCoins"]) > 100 or int(data["silverCoins"]) > 100:
 			warning = "max100"
 		elif int(data["goldCoins"]) < 20 or int(data["silverCoins"]) < 20:
@@ -207,7 +210,7 @@ class Setup(object):
 
 
 	def validate(self, data):
-		
+
 		err = None
 
 		if data["goldCoins"] == "" and data["silverCoins"] != "":
@@ -216,10 +219,10 @@ class Setup(object):
 			err = "silverAmount"
 		elif data["silverCoins"] == "" and data["goldCoins"] == "":
 			err = "goldSilverAmount"
-		
+
 		return err
 
-	
+
 class Game(object):
 	def __init__(self):
 		self.count = 0
@@ -236,7 +239,7 @@ class Game(object):
 		self.password = code.Password(self.game["digits"], self.game["complexity"], self.game["goldCoins"], self.game["silverCoins"])
 
 		self.password.drawBoxes()
-		
+
 		if self.game["password"] == None:
 			password = ''.join(self.password.create())
 			cur.execute("UPDATE Game SET password = ? WHERE id = ? ", (password, game_id))
@@ -264,7 +267,7 @@ class Game(object):
 
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
-		
+
 		cur.execute('''SELECT round, guess, goldReceived, silverReceived, goldInBag, silverInBag FROM History WHERE game_id = ?''', (session.game_id,))
 		history = cur.fetchall()
 
@@ -272,7 +275,7 @@ class Game(object):
 		for row in history:
 			past.append(row)
 
-		return render.game(self.game, past) 
+		return render.game(self.game, past)
 
 
 	def POST(self):
@@ -301,7 +304,7 @@ class Game(object):
 		past = []
 		for row in rows:
 			past.append((row[2], row[3], row[4], row[5], row[0], row[1]))
-		
+
 		if self.game["complexity"] == 0 and len(guess) > len(set(guess)):
 			return render.game(self.game, past, errors["uniqueNumbers"])
 		elif self.game["complexity"] == 1 and len(guess) > len(set(guess)):
@@ -336,16 +339,16 @@ class Game(object):
 			evaluation["_round"] = _round
 			evaluation["goldInBag"] = goldInBag
 			evaluation["silverInBag"] = silverInBag
-			
+
 			self.writeHistory(evaluation)
-			
+
 			#won or lost:
 			if ''.join(guess) == self.game["password"] or (goldInBag == 0 and silverInBag == 0):
 				self.gameEnded()
 				return web.seeother('/gameover')
 
 			return web.seeother('/game')
-	
+
 	def gameEnded(self):
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
@@ -360,9 +363,9 @@ class Game(object):
 		totalRounds = lastRow[3]
 		hasWon = guess == game["password"]
 
-		cur.execute("SELECT goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))			
+		cur.execute("SELECT goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))
 		prizeHistory = cur.fetchall()
-	
+
 		goldCoinsSpent = 0
 		silverCoinsSpent = 0
 
@@ -374,7 +377,7 @@ class Game(object):
 		score = scoreInstance.score()
 
 		print score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id
-		
+
 		if hasWon:
 			won = 1
 		else:
@@ -400,7 +403,7 @@ class Game(object):
 		else:
 			cur.execute("UPDATE Player SET losses = losses + 1, games = games + 1 WHERE id = ? ", (session.player_id,) )
 		conn.commit()
-		
+
 		#if maxScore of a player is btw xxx and yyy then badge = diamond vs ruby vs sapphire vs emerald
 		if score >= 10000000000:
 			badge = 'Diamond'
@@ -410,7 +413,7 @@ class Game(object):
 			badge = 'Sapphire'
 		else:
 			badge = 'Ruby'
-		
+
 		print "score", score
 		print "badge", badge
 
@@ -454,7 +457,7 @@ if __name__ == "__main__":
 
 
 
- 
+
 
 
 

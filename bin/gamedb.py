@@ -2,15 +2,16 @@ import sqlite3
 
 import web
 import app
+import os
 
 global appPath
-appPath = "/Users/selinerguncu/Desktop/PythonProjects/Fun Projects/TestGame"
+appPath = os.getcwd()
 
 conn = sqlite3.connect(appPath + '/data/gamedb.sqlite')
 cur = conn.cursor()
 
 cur.executescript('''
-	
+
 DROP TABLE IF EXISTS Leaderboard;
 DROP TABLE IF EXISTS Player;
 DROP TABLE IF EXISTS Game;
@@ -54,11 +55,11 @@ CREATE TABLE Game (
 
 CREATE TABLE History(
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	round INTEGER, 
-	guess TEXT, 
-	goldReceived INTEGER, 
-	silverReceived INTEGER, 
-	goldInBag INTEGER, 
+	round INTEGER,
+	guess TEXT,
+	goldReceived INTEGER,
+	silverReceived INTEGER,
+	goldInBag INTEGER,
 	silverInBag INTEGER,
 	game_id INTEGER,
 	FOREIGN KEY(game_id) REFERENCES Game(id)
