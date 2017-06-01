@@ -149,11 +149,15 @@ class Setup(object):
 
 	def POST(self):
 		data = parseFormData(web.data())
+		print data
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
 
 		error = self.validate(data)
-		warning = self.hasWarning(data)
+		warning = None
+		
+		if error == None:
+			warning = self.hasWarning(data)
 
 		if (error == None and warning == None) or (error == None and int(data["force"]) == 1):
 			cur.execute('''
@@ -164,62 +168,71 @@ class Setup(object):
 			session.game_id = cur.lastrowid
 			return web.seeother('/game')
 
+		elif error != None:
+			return render.setup(errors[error], data, True)
 		elif error == None and warning != None:
 			return render.setup(errors[warning], data)
-		else:
-			return render.setup(errors[error], data, True)
 
 	def hasWarning(self, data):
 		warning = None
+		goldCoins = int(data["goldCoins"])
+		silverCoins = int(data["silverCoins"])
+		complexity = int(data["complexity"])
+		digits = int(data["digits"])
 
-		if int(data["goldCoins"]) > 100 or int(data["silverCoins"]) > 100:
+		print goldCoins, silverCoins, complexity, digits
+
+		if goldCoins > 120 or silverCoins > 120:
 			warning = "max100"
-		elif int(data["goldCoins"]) < 20 or int(data["silverCoins"]) < 20:
+		elif (goldCoins < 10 and goldCoins > 0) or (silverCoins < 10 and silverCoins > 0):
 			warning = "min20"
 		else:
-			if int(data["goldCoins"]) < 50 and int(data["complexity"]) == 1:
+			if goldCoins < 50 and complexity == 1:
 				warning = "gold50complex"
-			elif int(data["goldCoins"]) < 70 and int(data["complexity"]) == 2:
+			elif goldCoins < 70 and complexity == 2:
 				warning = "gold70complex"
-			if int(data["goldCoins"]) < 30 and int(data["digits"]) == 4:
+			elif goldCoins < 100 and complexity == 3:
+				warning = "gold100complex"
+			if goldCoins < 30 and digits == 4:
 				warning = "gold30"
-			elif int(data["goldCoins"]) < 30 and int(data["digits"]) == 5:
+			elif goldCoins < 30 and digits == 5:
 				warning = "gold30"
-			elif int(data["goldCoins"]) < 40 and int(data["digits"]) == 6:
+			elif goldCoins < 40 and digits == 6:
 				warning = "gold40"
-			elif int(data["goldCoins"]) < 50 and int(data["digits"]) == 7:
+			elif goldCoins < 50 and digits == 7:
 				warning = "gold50"
-			elif int(data["goldCoins"]) < 60 and int(data["digits"]) == 8:
+			elif goldCoins < 60 and digits == 8:
 				warning = "gold60"
-			elif int(data["silverCoins"]) < 50 and int(data["complexity"]) == 1:
+			elif silverCoins < 50 and complexity == 1:
 				warning = "silver50complex"
-			elif int(data["silverCoins"]) < 70 and int(data["complexity"]) == 2:
+			elif silverCoins < 70 and complexity == 2:
 				warning = "silver70complex"
-			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 4:
+			elif silverCoins < 100 and complexity == 3:
+				warning = "silver100complex"
+			elif silverCoins < 30 and digits == 4:
 				warning = "silver30"
-			elif int(data["silverCoins"]) < 30 and int(data["digits"]) == 5:
+			elif silverCoins < 30 and digits == 5:
 				warning = "silver30"
-			elif int(data["silverCoins"]) < 40 and int(data["digits"]) == 6:
+			elif silverCoins < 40 and digits == 6:
 				warning = "silver40"
-			elif int(data["silverCoins"]) < 50 and int(data["digits"]) == 7:
+			elif silverCoins < 50 and digits == 7:
 				warning = "silver50"
-			elif int(data["silverCoins"]) < 60 and int(data["digits"]) == 8:
+			elif silverCoins < 60 and digits == 8:
 				warning = "silver60"
-
 		return warning
 
-
 	def validate(self, data):
-
 		err = None
+		goldCoins = data["goldCoins"]
+		silverCoins = data["silverCoins"]
 
-		if data["goldCoins"] == "" and data["silverCoins"] != "":
+		if goldCoins == "" and silverCoins != "" or goldCoins == '0' and silverCoins != '0':
 			err = "goldAmount"
-		elif data["silverCoins"] == "" and data["goldCoins"] != "":
+		elif silverCoins == "" and goldCoins != "" or silverCoins == '0' and goldCoins != '0':
 			err = "silverAmount"
-		elif data["silverCoins"] == "" and data["goldCoins"] == "":
+		elif silverCoins == "" and goldCoins == "" or silverCoins == '0' and goldCoins == '0':
 			err = "goldSilverAmount"
-
+		print silverCoins, goldCoins, err, silverCoins == "", goldCoins == "", silverCoins == 0, goldCoins == 0
 		return err
 
 
@@ -268,12 +281,14 @@ class Game(object):
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
 
-		cur.execute('''SELECT round, guess, goldReceived, silverReceived, goldInBag, silverInBag FROM History WHERE game_id = ?''', (session.game_id,))
+		cur.execute('''SELECT round, guess, goldReceived, silverReceived, goldInBag, silverInBag FROM History WHERE game_id = ? ORDER BY round DESC''', (session.game_id,))
 		history = cur.fetchall()
 
 		past = []
 		for row in history:
 			past.append(row)
+		
+		print 'self.game["complexity"]', self.game['complexity']
 
 		return render.game(self.game, past)
 
@@ -294,7 +309,9 @@ class Game(object):
 
 		onlyNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 		onlyLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
-		numbersLetters = onlyNumbers + onlyLetters
+		numbersLowercaseLetters = onlyNumbers + onlyLetters
+		uppercaseLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] 
+		numbersAllLetters = numbersLowercaseLetters + uppercaseLetters
 
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
@@ -311,12 +328,16 @@ class Game(object):
 			return render.game(self.game, past, errors["uniqueLetters"])
 		elif self.game["complexity"] == 2 and len(guess) > len(set(guess)):
 			return render.game(self.game, past, errors["uniqueNumbersLetters"])
+		elif self.game["complexity"] == 3 and len(guess) > len(set(guess)):
+			return render.game(self.game, past, errors["uniqueNumbersAllLetters"])
 		elif self.game["complexity"] == 0 and len([1 for i in guess if i in onlyNumbers]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["onlyNumbers"])
 		elif self.game["complexity"] == 1 and len([1 for i in guess if i in onlyLetters]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["onlyLetters"])
 		elif self.game["complexity"] == 2 and len([1 for i in guess if i in numbersLetters]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["numbersLetters"])
+		elif self.game["complexity"] == 3 and len([1 for i in guess if i in numbersLetters]) != int(self.game["digits"]):
+			return render.game(self.game, past, errors["numbersAllLetters"])
 		else:
 			evaluation = self.password.evaluate(self.game["password"], guess)
 

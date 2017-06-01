@@ -1,78 +1,73 @@
 $def with (msg = None, data = None, isError = False)
-$ complexity = ["Only Numbers", "Only Letters", "Both Numbers and Letters"]
+$ complexity = ["Only Numbers", "Only Letters", "Numbers and Lowercase Letters", "Numbers and All Lower and Uppercase Letters"]
 
-$if isError:
-	$ inputType = complexity[int(data["complexity"])]
-	<div class="ui yellow message">
-		<i class="remove sign icon"></i>
-		$msg
-	</div>
-	<h3> Number of Password Digits: $data["digits"]
-	<br>
-	Complexity of the Password: $inputType
-	<br>
-	Gold Coin Amount: $data["goldCoins"]
-	<br>
-	Silver Coin Amount: $data["silverCoins"]
-
-	</h3>
-	<br>
-	<br>
-	$if data["goldCoins"] == "" or data["silverCoins"] == "":
-		<p><a href="/setup">OK. Reset and start over.</a></p>
+$if msg:
+	$if isError:
+		<div class="ui red message">
+			<i class="remove sign icon"></i>
+			$msg
+		</div>
 	$else:
-		<p><a href="/setup">OK. Reset and start over.</a></p>
-		<p><a href="#" onclick="">I'm good. Let's start!</a></p>
-
-$elif msg and isError == False:
-	<h3 class="ui header">Set the password parameters</h3>
-	<div class="ui yellow message">
-		<i class="warning sign icon"></i>
-		$msg
-	</div>
-	<form name="main" method="POST">
-
-		<label>Number of Password Digits</label>
-		<select name="digits">
-			$for i in range(4,9):
-				$if i == int(data['digits']):
-					<option selected="selected">$i</option>
-				$else:
-					<option>$i</option>
-		</select>
-		<br>
-
-		<label>Complexity of the Password</label>
-		<select name="complexity">
-			$for i in range(0,3):
-				$if i == int(data['complexity']):
-					<option value="$i" selected="selected">$complexity[i]</option>
-				$else:
-					<option value="$i">$complexity[i]</option>
-		</select>
-		<br>
-
-		<label>Gold Coin Amount</label>
-		<input type="text" name="goldCoins" value="$data['goldCoins']">
-		<br>
-
-		<label>Silver Coin Amount</label>
-		<input type="text" name="silverCoins" value="$data['silverCoins']">
-		<br>
-		<input type="text" name="force" value="1" hidden="hidden">
-
-		<button type="submit">I'm good. Let's start!</button>
-
-	</form>
-
-
-$else:
-	<h3 class="ui header">Set the password parameters</h3>
+		<div class="ui yellow message">
+			<i class="warning sign icon"></i>
+			$msg
+		</div>
+	<h3 class="ui header">Password parameters</h3>
 
 	<form method="POST" class="ui form attached fluid">
 		<div class="two fields">
 			<div class="field">
-				<label>Number of Password Digits</label>
+				<label>Number of Digits</label>
+				<select class="ui compact selection dropdown" name="digits">
+				$for i in range(4,9):
+					$if i == int(data['digits']):
+						<option selected="selected">$i</option>
+					$else:
+						<option>$i</option>
+				</select>
+			</div>
+			<div class="field">
+				<label>Complexity</label>
+				<select class="ui compact selection dropdown" name="complexity">
+				$for i in range(0,4):
+					$if i == int(data['complexity']):
+						<option value="$i" selected="selected">$complexity[i]</option>
+					$else:
+						<option value="$i">$complexity[i]</option>
+				</select>
+			</div>
+		</div>
+		<div class="two fields">
+			<div class="field">
+				<label>Gold Coin Amount</label>
+				<input type="text" name="goldCoins" value="$data['goldCoins']">
+			</div>
+			<div class="field">
+				<label>Silver Coin Amount</label>
+				<input type="text" name="silverCoins" value="$data['silverCoins']">
+			</div>
+		</div>
+		<div class="field">
+			$if isError:
+				<input type="text" name="force" value="0" hidden="hidden">
+			$else:
+				<input type="text" name="force" value="1" hidden="hidden">
+		</div>
+		<div class="field">
+			$if isError:
+				<button class="ui blue submit button" type="submit">Done! Let's start!</button>
+			$else:
+				<button class="ui blue submit button" type="submit">I'm good. Let's start!</button>
+		</div>
+	</form>
+
+$else:
+	
+	
+	<form method="POST" class="ui form attached fluid">
+		<div class="two fields">
+			<div class="field">
+				<label>Number of Digits</label>
 				<select class="ui compact selection dropdown" name="digits">
 					<option selected="selected">4</option>
 					<option>5</option>
@@ -82,11 +77,12 @@ $else:
 				</select>
 			</div>
 			<div class="field">
-				<label>Complexity of the Password</label>
+				<label>Complexity</label>
 				<select class="ui compact selection dropdown" name="complexity">
 					<option value="0" selected="selected">Only Numbers</option>
 					<option value="1">Only Letters</option>
 					<option value="2">Both Numbers and Letters</option>
+					<option value="3">Numbers and All Lower and Uppercase Letters</option>
 				</select>
 			</div>
 		</div>
@@ -107,3 +103,5 @@ $else:
 			<button class="ui blue submit button" type="submit">Done! Let's Start!</button>
 		</div>
 	</form>
+
+ 

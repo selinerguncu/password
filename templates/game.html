@@ -3,7 +3,7 @@ $def with (game, past = [], error = None)
 $ goldCoins = game["goldCoins"]
 $ silverCoins = game["silverCoins"]
 $ length = int(game["digits"])
-$ complexity = game["complexity"]
+$ complexity = int(game["complexity"])
 $ _round = len(past) + 1
 $ password = game["password"]
 
@@ -12,10 +12,14 @@ $if complexity == 0:
 	$ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 $elif complexity == 1:
 	$ inputType = "only letters"
-	$ inputSet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
+	$ inputSet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
 $elif complexity == 2:
 	$ inputType = "both numbers and letters"
-	$ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
+	$ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
+$elif complexity == 3:
+	$ inputType = "both numbers and lower- and upper-case letters"
+	$ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
 
 $if len(past) == 0:
 	$ goldInBag = goldCoins
@@ -89,7 +93,7 @@ $else:
 	});
 </script>
 $if game["won"] == 1:
-	$ goldInBag = goldInBag + length
+	$ goldInBag = goldInBag + lastGoldReceived
 	<h2 class="ui header center aligned">You won this game already!</h2>
 $elif game["won"] == 0:
 	$ goldInBag = 0
@@ -127,7 +131,7 @@ $elif game["won"] == 0:
 	</div>
 	<div class="column">
 		$if game["won"] == 1:
-			$ goldInBag = goldInBag + length
+			$ goldInBag = goldInBag + past[-1][2]
 		$elif game["won"] == 0:
 			$ goldInBag = 0
 			$ silverInBag = 0
@@ -145,5 +149,15 @@ $elif game["won"] == 0:
 			<div class="column"><h4 class="ui header">Your Gold Coins</h4></div>
 			<div class="column"><h4 class="ui header">Your Silver Coins</h4></div>
 		</div>
+		<div class="ui circular labels">
+			<p>All possible Password characters</p><br>
+			$for input in inputSet:
+				<div class="ui gray circular label">$input</div>
+		</div>
 	</div>
 </div>
+
+
+
+
+

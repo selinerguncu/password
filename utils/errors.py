@@ -6,8 +6,8 @@ errors = {
 	"silverAmount": "You have to have some amount of Silver coins in your bag.",
 	"goldSilverAmount": "You have to have some amount of Gold and Silver coins in your bag.",
 	
-	"max100": "You may wanto to set the the maximum number of Gold and Silver coins to be 100 for each bag. Otherwise, the game will be really easy.",
-	"min20": "You may wanto to set the the minimum number of Gold and Silver coins to be 20 for each bag. Otherwise, the game will be really challenging.",
+	"max100": "You may wanto to set the the maximum number of Gold and Silver coins to be 120 for each bag. Otherwise, the game will be really easy.",
+	"min20": "You may wanto to set the the minimum number of Gold and Silver coins to be 10 for each bag. Otherwise, the game will be really challenging.",
 	
 	"gold30": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 30 Gold coins for a 4-digit Password.",
 	"gold30": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 30 Gold coins for a 5-digit Password.",
@@ -17,6 +17,7 @@ errors = {
 	"gold30complex": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 30 Gold coins for a Password created with only numbers.",
 	"gold50complex": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 50 Gold coins for a Password created with only letters.",
 	"gold70complex": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 70 Gold coins for a Password created with both numbers and letters.",
+	"gold100complex": "You may wanto to increase the number of Gold coins in your bag. Recommended minimum is 100 Gold coins for a Password created with both numbers and lower- and upper-case letters.",
 	
 	"silver30": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 30 Silver coins for a 4-digit Password.",
 	"silver30": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 30 Silver coins for a 5-digit Password.",
@@ -26,11 +27,14 @@ errors = {
 	"silver30complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 30 Silver coins for a Password created with only numbers.",
 	"silver50complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 50 Silver coins for a Password created with only letters.",
 	"silver70complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 70 Silver coins for a Password created with both numbers and letters.",
+	"silver100complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 100 Silver coins for a Password created with both numbers and lower- and upper-case letters.",
 
 	"uniqueNumbers": "All the inputs should be unique and digits should not be left blank. Please use only numbers.", 
 	"uniqueLetters": "All the inputs should be unique and digits should not be left blank. Please use only lower-case letters.", 
 	"uniqueNumbersLetters": "All the inputs should be unique and digits should not be left blank. Please use only numbers or lower-case letters.", 
+	"uniqueNumbersAllLetters": "All the inputs should be unique and digits should not be left blank. Please use only numbers or lower- and upper-case letters.", 
 	"onlyNumbers": "Please use only numbers. Digits should not be left blank.",
 	"onlyLetters": "Please use only lower-case letters. Digits should not be left blank.",
-	"numbersLetters": "Please use only numbers or lower-case letters. Digits should not be left blank."
+	"numbersLetters": "Please use only numbers or lower-case letters. Digits should not be left blank.",
+	"numbersAllLetters": "Please use only numbers or lower- and upper-case letters. Digits should not be left blank."
 }

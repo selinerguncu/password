@@ -136,11 +136,18 @@ class Score:
 		print "prob", prob
 		print "coins", self.goldCoinsSpent
 
-		if self.goldCoinsSpent == 0 and self.goldCoinsSpent == 0:
-			score = int(norm / ((prob * weightGold * self.goldCoinsSpent + prob * weightSilver * 1) ))
+		if self.round == 1:
+			self.goldCoinsSpent = 0
+			score = int(norm / (prob * weightGold * self.goldCoinsSpent + prob * weightSilver * 1))
 		else:
-			score = int(norm / ((prob * weightGold * self.goldCoinsSpent + prob * weightSilver * self.silverCoinsSpent) )) - (1 * self.round)
-
+			score = int(norm / ((prob * weightGold * self.goldCoinsSpent) + (prob * weightSilver * self.silverCoinsSpent) )) - (1 * self.round)
+		print "goldCoinsSpent", self.goldCoinsSpent
+		print "silverCoinsSpent", self.silverCoinsSpent
+		print "self.length", self.length
+		print "self.round", self.round
+		print "self.complexity", self.complexity
+		print "self.goldCoinsSpent", self.goldCoinsSpent
+		print "self.silverCoinsSpent", self.silverCoinsSpent
 
 		# return "{:,}".format(score) #will be a string
 		return score # will be a string
