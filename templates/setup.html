@@ -1,5 +1,6 @@
 $def with (msg = None, data = None, isError = False)
 $ complexity = ["Only Numbers", "Only Letters", "Numbers and Lowercase Letters", "Numbers and All Lower and Uppercase Letters"]
+$ level = 5
 
 $if msg:
 	$if isError:
@@ -13,7 +14,6 @@ $if msg:
 			$msg
 		</div>
 	<h3 class="ui header">Password parameters</h3>
-
 	<form method="POST" class="ui form attached fluid">
 		<div class="two fields">
 			<div class="field">
@@ -60,48 +60,88 @@ $if msg:
 				<button class="ui blue submit button" type="submit">I'm good. Let's start!</button>
 		</div>
 	</form>
-
 $else:
-	
-	
-	<form method="POST" class="ui form attached fluid">
-		<div class="two fields">
-			<div class="field">
-				<label>Number of Digits</label>
-				<select class="ui compact selection dropdown" name="digits">
-					<option selected="selected">4</option>
-					<option>5</option>
-					<option>6</option>
-					<option>7</option>
-					<option>8</option>
-				</select>
+	<div id="level-buttons" class="ui level-buttons">
+		$for i in range(1,21):
+			$ activeClass = 'ui button'
+			$ disabled = ''
+			$if level == i:
+				$ activeClass = 'olive ui button'
+				$ lock = 'unlock white'
+			$if i > level:
+				$ disabled = 'disabled="disabled"'
+				$ lock = 'lock red'
+			$if i < level:
+				$ activeClass = 'ui button'
+				$ lock = 'unlock green'
+			<button class="$activeClass" type="submit" $disabled>
+				<i class="$lock icon"></i>
+				Level $i
+			</button>
+		<div class="ui horizontal divider">OR</div>
+		<button class="ui basic button" id="custom-game-button">
+			Start a Custom Game
+		</button>
+	</div>
+	<div id="custom-game">
+		<button class="ui olive button" id="level-button">
+			Play level by level!
+		</button>
+		<form method="POST" id="custom-game-form" class="ui form attached fluid">
+			<div class="ui horizontal divider">OR</div>
+			<div class="two fields">
+				<div class="field">
+					<label>Number of Digits</label>
+					<select class="ui compact selection dropdown" name="digits">
+						<option selected="selected">4</option>
+						<option>5</option>
+						<option>6</option>
+						<option>7</option>
+						<option>8</option>
+					</select>
+				</div>
+				<div class="field">
+					<label>Complexity</label>
+					<select class="ui compact selection dropdown" name="complexity">
+						<option value="0" selected="selected">Only Numbers</option>
+						<option value="1">Only Letters</option>
+						<option value="2">Both Numbers and Letters</option>
+						<option value="3">Numbers and All Lower and Uppercase Letters</option>
+					</select>
+				</div>
+			</div>
+			<div class="two fields">
+				<div class="field">
+					<label>Gold Coin Amount</label>
+					<input type="text" name="goldCoins" value="30">
+				</div>
+				<div class="field">
+					<label>Silver Coin Amount</label>
+					<input type="text" name="silverCoins" value="30">
+				</div>
 			</div>
 			<div class="field">
-				<label>Complexity</label>
-				<select class="ui compact selection dropdown" name="complexity">
-					<option value="0" selected="selected">Only Numbers</option>
-					<option value="1">Only Letters</option>
-					<option value="2">Both Numbers and Letters</option>
-					<option value="3">Numbers and All Lower and Uppercase Letters</option>
-				</select>
-			</div>
-		</div>
-		<div class="two fields">
-			<div class="field">
-				<label>Gold Coin Amount</label>
-				<input type="text" name="goldCoins" value="30">
+				<input type="text" name="force" value="0" hidden="hidden">
 			</div>
 			<div class="field">
-				<label>Silver Coin Amount</label>
-				<input type="text" name="silverCoins" value="30">
+				<button class="ui blue submit button" type="submit">Done! Let's Start!</button>
 			</div>
-		</div>
-		<div class="field">
-			<input type="text" name="force" value="0" hidden="hidden">
-		</div>
-		<div class="field">
-			<button class="ui blue submit button" type="submit">Done! Let's Start!</button>
-		</div>
-	</form>
+		</form>
+	</div>
 
- 
+<script>
+	$$(document).ready(function () {
+		var custom = $$('#custom-game');
+		var levels = $$('#level-buttons');
+
+		$$('#custom-game-button').click(function(){
+				levels.hide();
+				custom.show();
+		});
+
+		$$('#level-button').click(function(){
+				levels.show();
+				custom.hide();
+		});
+	})
+</script>

@@ -176,3 +176,30 @@ form.guess .submit-field {
   max-width: 400px;
   margin: 2em auto;
 }
+
+.level-buttons {
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	margin: 0 -10px;
+}
+.level-buttons button.ui.button {
+	flex: 1 1 auto;
+	min-width: 200px;
+	margin: 10px 10px 0;
+}
+
+#custom-game {
+	display: none;
+}
+
+#level-button {
+	width: 100%;
+	margin: 0;
+}
+
+#custom-game-button {
+	margin: 0 10px;
+}
