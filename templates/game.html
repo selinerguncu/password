@@ -28,17 +28,28 @@ $if error:
 	<div class="ui red message"><i class="remove sign icon"></i> $error</div>
 
 
-<div class="boxes">
 $if game["won"] in [0, 1]:
+	<div class="boxes">
 	$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
 	$for i in range(length):
-		<pre data-pass="$password[i]">$m</pre>
+		<div class="box"><pre data-pass="$password[i]">$m</pre></div>
+	</div>
 $else:
-	$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
-	$for i in range(length):
-		<pre class="azicik-asagida-olsun" data-pass="*">$m</pre>
-</div>
-
+	<h2 class="ui header center aligned">Make your guess</h2>
+	<form class="guess" name="main" method="POST">
+		<div class="boxes">
+		$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
+		$ names = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth"]
+		$for i in range(length):
+			<div class="box">
+				<input type="text" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off"/>
+				<pre class="azicik-asagida-olsun" data-pass="">$m</pre>
+			</div>
+		</div>
+		<div class="submit-field">
+			<button type="submit" class="ui primary button"> Go! </button>
+		</div>
+	</form>
 $if game["won"] == 1:
 	$ goldInBag = goldInBag + length
 	<h2 class="ui header center aligned">You won this game already!</h2>
@@ -46,26 +57,6 @@ $elif game["won"] == 0:
 	$ goldInBag = 0
 	$ silverInBag = 0
 	<h2 class="ui header center aligned">You lost this game already!</h2>
-$else:
-	<div class="ui divider"></div>
-	<h2 class="ui header center aligned">Make your guess</h2>
-	<form class="guess ui form attached fluid" name="main" method="POST">
-		<div class="ui input"><input type="text" name="first" maxlength=1 size=1></div>
-		<div class="ui input"><input type="text" name="second" maxlength=1 size=1></div>
-		<div class="ui input"><input type="text" name="third" maxlength=1 size=1></div>
-		<div class="ui input"><input type="text" name="fourth" maxlength=1 size=1></div>
-		$if length > 4:
-			<div class="ui input"><input type="text" name="fifth" maxlength=1 size=1> </div>
-		$if length >5:
-			<div class="ui input"><input type="text" name="sixth" maxlength=1 size=1></div>
-		$if length >6:
-			<div class="ui input"><input type="text" name="seventh" maxlength=1 size=1></div>
-		$if length >7:
-			<div class="ui input"><input type="text" name="eighth" maxlength=1 size=1></div>
-		<div class="submit-field">
-			<button type="submit" class="ui primary button"> Go! </button>
-		</div>
-	</form>
 <div class="ui divider"></div>
 <div class="login-page ui two column very relaxed stackable grid">
 	<div class="column">
