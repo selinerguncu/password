@@ -15,6 +15,16 @@ header {
 	min-width: 400px;
 }
 
+footer {
+	padding: 0 30px;
+	margin: 20px auto;
+	max-width: 1000px;
+	min-width: 400px;
+	font-size: 12px;
+	color: rgba(0,0,0,.5);
+	text-align: center;
+}
+
 div.boxes {
 	display: flex;
 	justify-content: center;
