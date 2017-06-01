@@ -23,7 +23,7 @@ $ score = gameOver["score"]
 	$ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
 	<div class="boxes">
 	$for i in range(length):
-		<pre data-pass="$password[i]">$m</pre>
+		<div class="box"><pre data-pass="$password[i]">$m</pre></div>
 	</div>
 
 	$if hasWon:
