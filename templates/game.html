@@ -25,8 +25,8 @@ $if len(past) == 0:
 	$ goldInBag = goldCoins
 	$ silverInBag = silverCoins
 $else:
-	$ goldInBag = past[len(past)-1][4]
-	$ silverInBag = past[len(past)-1][5]
+	$ goldInBag = past[0][4]
+	$ silverInBag = past[0][5]
 
 $if error:
 	<div class="ui red message"><i class="remove sign icon"></i> $error</div>

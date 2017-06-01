@@ -1,6 +1,13 @@
-$def with (msg = None, data = None, isError = False)
+$def with (levelSet, msg = None, data = None, isError = False)
+
 $ complexity = ["Only Numbers", "Only Letters", "Numbers and Lowercase Letters", "Numbers and All Lower and Uppercase Letters"]
-$ level = 5
+
+$ level = levelSet["currentLevel"]
+$ levelLevels = levelSet["levels"]
+$ levelDigits = levelSet["digits"]
+$ levelComplexity = levelSet["complexity"]
+$ levelGoldCoins = levelSet["goldCoins"]
+$ levelSilverCoins = levelSet["silverCoins"]
 
 $if msg:
 	$if isError:
@@ -62,22 +69,36 @@ $if msg:
 	</form>
 $else:
 	<div id="level-buttons" class="ui level-buttons">
+		<form method="POST">
 		$for i in range(1,21):
 			$ activeClass = 'ui button'
 			$ disabled = ''
 			$if level == i:
 				$ activeClass = 'olive ui button'
 				$ lock = 'unlock white'
+				<input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
+				<input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
+				<input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
+				<input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
+				<input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
+				<input type="text" name="force" value="1" hidden="hidden">
 			$if i > level:
 				$ disabled = 'disabled="disabled"'
 				$ lock = 'lock red'
 			$if i < level:
 				$ activeClass = 'ui button'
 				$ lock = 'unlock green'
+				<input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
+				<input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
+				<input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
+				<input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
+				<input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
+				<input type="text" name="force" value="1" hidden="hidden">
 			<button class="$activeClass" type="submit" $disabled>
 				<i class="$lock icon"></i>
 				Level $i
 			</button>
+		</form>
 		<div class="ui horizontal divider">OR</div>
 		<button class="ui basic button" id="custom-game-button">
 			Start a Custom Game

@@ -130,12 +130,43 @@ class Profile():
 
 
 class Setup(object):
+	def __init__(self):
+		levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+		digits = [4, 5, 6, 4, 7, 4, 8, 5, 4, 5, 6, 5, 6, 7, 7, 6, 8, 8, 7, 8]
+		complexity = [0, 0, 0, 1, 0, 2, 0, 1, 3, 2, 1, 3, 2, 1, 2, 3, 1, 2, 3, 3]
+		goldCoins = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
+		silverCoins = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
+
+		self.currentLevel = 0
+
+		self.levelSet = {}
+		self.levelSet["levels"] = levels
+		self.levelSet["digits"] = digits
+		self.levelSet["complexity"] = complexity
+		self.levelSet["goldCoins"] = goldCoins
+		self.levelSet["silverCoins"] = silverCoins
+
+		#ayni id li adamin butun game lerine bak. en yuksek level i bul. yeni actigin oyuna max level i bir arttir ve ekle
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		cur.execute('''SELECT level, score FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
+		lastLevel = cur.fetchone()
+		print 'lastLevel', lastLevel
+
+		if lastLevel == None:
+			self.currentLevel = 1
+		else:
+			self.currentLevel = lastLevel[0] + 1
+
+		self.levelSet["currentLevel"] = self.currentLevel
+
+
 	def GET(self):
 		if session.player_id == 'guest':
 			return web.seeother('/')
 
 		if session.game_id == 0:
-			return render.setup()
+			return render.setup(self.levelSet)
 		else:
 			conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 			cur = conn.cursor()
@@ -143,7 +174,7 @@ class Setup(object):
 			gameRow = cur.fetchone()
 
 			if gameRow[0] in [0, 1]:
-				return render.setup()
+				return render.setup(self.levelSet)
 			else:
 				return web.seeother('/game')
 
@@ -161,17 +192,17 @@ class Setup(object):
 
 		if (error == None and warning == None) or (error == None and int(data["force"]) == 1):
 			cur.execute('''
-				INSERT INTO Game(digits, complexity, goldCoins, silverCoins, player_id)
-				VALUES (?, ?, ?, ?, ?)
-				''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], session.player_id))
+				INSERT INTO Game(digits, complexity, goldCoins, silverCoins, level, player_id)
+				VALUES (?, ?, ?, ?, ?, ?)
+				''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], self.currentLevel, session.player_id))
 			conn.commit()
 			session.game_id = cur.lastrowid
 			return web.seeother('/game')
 
 		elif error != None:
-			return render.setup(errors[error], data, True)
+			return render.setup(self.levelSet, errors[error], data, True)
 		elif error == None and warning != None:
-			return render.setup(errors[warning], data)
+			return render.setup(self.levelSet, errors[warning], data)
 
 	def hasWarning(self, data):
 		warning = None
@@ -247,6 +278,8 @@ class Game(object):
 
 		if gameRow == None:
 			return
+
+	#suan game icinde level da var. sonra icine level yazicaksin
 
 		self.game = rowToDict(cur, gameRow)
 		self.password = code.Password(self.game["digits"], self.game["complexity"], self.game["goldCoins"], self.game["silverCoins"])
@@ -334,9 +367,9 @@ class Game(object):
 			return render.game(self.game, past, errors["onlyNumbers"])
 		elif self.game["complexity"] == 1 and len([1 for i in guess if i in onlyLetters]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["onlyLetters"])
-		elif self.game["complexity"] == 2 and len([1 for i in guess if i in numbersLetters]) != int(self.game["digits"]):
+		elif self.game["complexity"] == 2 and len([1 for i in guess if i in numbersLowercaseLetters]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["numbersLetters"])
-		elif self.game["complexity"] == 3 and len([1 for i in guess if i in numbersLetters]) != int(self.game["digits"]):
+		elif self.game["complexity"] == 3 and len([1 for i in guess if i in numbersAllLetters]) != int(self.game["digits"]):
 			return render.game(self.game, past, errors["numbersAllLetters"])
 		else:
 			evaluation = self.password.evaluate(self.game["password"], guess)
@@ -443,6 +476,14 @@ class Game(object):
 
 
 class GameOver():
+	def __init__(self):
+		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+		cur = conn.cursor()
+		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
+			ORDER BY Leaderboard.score DESC LIMIT 5''')
+		self.leaders = cur.fetchall()
+
 	def GET(self):
 
 		if session.player_id == 'guest':
@@ -468,7 +509,7 @@ class GameOver():
 		gameOver["digits"] = game["digits"]
 		gameOver["score"] = game["score"]
 
-		return render.gameover(gameOver)
+		return render.gameover(gameOver, self.leaders)
 
 
 if __name__ == "__main__":
