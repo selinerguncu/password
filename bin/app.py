@@ -35,7 +35,8 @@ urls = (
 	'/setup', 'Setup',
 	'/game', 'Game',
 	'/guesses', 'Guesses',
-	'/gameover', 'GameOver'
+	'/gameover', 'GameOver',
+	'/logout', 'Logout'
 )
 
 app = web.application(urls, globals())
@@ -511,6 +512,10 @@ class GameOver():
 
 		return render.gameover(gameOver, self.leaders)
 
+class Logout():
+	def GET(self):
+		session.kill()
+		return web.seeother('/')
 
 if __name__ == "__main__":
 	app.run()
