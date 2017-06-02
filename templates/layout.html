@@ -11,12 +11,37 @@ $def with (content)
 </head>
 <body>
   <header>
-    <h1 class="ui header center aligned">P*a*5*S*w*0*r*D</h1>
+    <div class="ui menu">
+      <a href="/" class="active item">
+        <h2 class="ui header">P*a*5*S*w*0*r*D</h2>
+      </a>
+      <div class="right menu">
+        $if 'link1' in content:
+          $:content.link1
+        $if 'link2' in content:
+          $:content.link2
+        $if 'link3' in content:
+          $:content.link3
+        $if 'link4' in content:
+          $:content.link4
+        <a class="icon item" href="/howtoplay" alt="How to Play"><i class="help circle icon"></i></a>
+        $if 'logout' in content:
+          <a class="icon item" href="/logout" alt="Logout"><i class="sign out icon"></i></a>
+        <!-- <div class="ui simple dropdown item">
+          <i class="united states flag"></i>
+          <div class="menu">
+            <a class="item"><i class="united states flag"></i>English</a>
+            <a class="item"><i class="turkey flag"></i>Türkçe</a>
+          </div>
+        </div> -->
+      </div>
+    </div>
   </header>
-	<main>
-	$:content
-	</main>
+  <main>
+    $:content
+  </main>
   <footer>
+    <div class="ui horizontal divider"></div>
     <p>by <a href="https://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
   </footer>
 </body>
