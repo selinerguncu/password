@@ -45,6 +45,13 @@ db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same
 store = web.session.DBStore(db, 'sessions')
 session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
 
+def rowsToDict(cur, rows):
+	l = []
+	for row in rows:
+		l.append(rowToDict(cur, row))
+
+	return l
+
 def rowToDict(cur, row):
 	d = {}
 	for index, description in enumerate(cur.description):
