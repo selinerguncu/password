@@ -70,8 +70,8 @@ $if msg:
 	</form>
 $else:
 	<div id="level-buttons" class="ui level-buttons">
-		<form method="POST">
 		$for i in range(1,21):
+			<form method="POST">
 			$ activeClass = 'ui button'
 			$ disabled = ''
 			$if level == i:
@@ -99,7 +99,7 @@ $else:
 				<i class="$lock icon"></i>
 				Level $i
 			</button>
-		</form>
+			</form>
 		<div class="ui horizontal divider">OR</div>
 		<button class="ui basic button" id="custom-game-button">
 			Start a Custom Game
