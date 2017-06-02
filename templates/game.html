@@ -98,7 +98,7 @@ $else:
 	});
 </script>
 $if game["won"] == 1:
-	$ goldInBag = goldInBag + lastGoldReceived
+	$ goldInBag = goldInBag
 	<h2 class="ui header center aligned">You won this game already!</h2>
 $elif game["won"] == 0:
 	$ goldInBag = 0
