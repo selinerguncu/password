@@ -68,7 +68,7 @@ class Intro():
 
 class HowToPlay():
 	def GET(self):
-		return render.howtoplay()
+		return render.howtoplay(session.player_id != 'guest')
 
 
 class Login():
