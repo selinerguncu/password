@@ -480,10 +480,12 @@ class GameOver():
 	def __init__(self):
 		conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
 		cur = conn.cursor()
-		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username,  Leaderboard.game_id
 			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
 			ORDER BY Leaderboard.score DESC LIMIT 5''')
-		self.leaders = cur.fetchall()
+		leaderRows = cur.fetchall()
+		self.leaders = rowsToDict(cur, leaderRows)
+
 
 	def GET(self):
 
@@ -498,6 +500,16 @@ class GameOver():
 		cur.execute("SELECT * FROM Game WHERE id = ?", (session.game_id,))
 		game = rowToDict(cur, cur.fetchone())
 
+		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username, Leaderboard.game_id
+			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
+			WHERE Leaderboard.score = ? AND Player.id = ?''', (game["score"], session.player_id))
+		gameInLeaderboard = rowToDict(cur, cur.fetchone())
+
+		if gameInLeaderboard in self.leaders:
+			gameInLeaderboard['inHighScores'] = True
+		else:
+			gameInLeaderboard['inHighScores'] = False
+
 		gameOver = {}
 
 		gameOver["hasWon"] = game["won"] == 1
@@ -509,8 +521,7 @@ class GameOver():
 		gameOver["password"] = game["password"]
 		gameOver["digits"] = game["digits"]
 		gameOver["score"] = game["score"]
-
-		return render.gameover(gameOver, self.leaders)
+		return render.gameover(gameOver, self.leaders, session.game_id, gameInLeaderboard)
 
 class Logout():
 	def GET(self):
