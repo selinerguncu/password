@@ -154,10 +154,12 @@ $elif game["won"] == 0:
 			<div class="column"><h4 class="ui header">Your Gold Coins</h4></div>
 			<div class="column"><h4 class="ui header">Your Silver Coins</h4></div>
 		</div>
-		<div class="ui circular labels">
-			<p>All possible Password characters</p><br>
-			$for input in inputSet:
-				<div class="ui gray circular label">$input</div>
+		<div class="ui segment center aligned">
+			<h4 class="ui header">Possible characters:</h4>
+			<div class="ui circular labels">
+				$for input in inputSet:
+					<div class="ui gray circular label">$input</div>
+			</div>
 		</div>
 	</div>
 </div>
