@@ -9,14 +9,12 @@ main {
 }
 
 header {
-	padding: 0 30px;
 	margin: 20px auto;
 	max-width: 1000px;
 	min-width: 400px;
 }
 
 footer {
-	padding: 0 30px;
 	margin: 20px auto;
 	max-width: 1000px;
 	min-width: 400px;
@@ -83,6 +81,10 @@ div.boxes pre.azicik-asagida-olsun:before {
 	left: 50%;
 	z-index: 2;
 	transform: translateX(-50%);
+}
+.coin-bag svg {
+	width: 100%;
+	height: auto;
 }
 .coin-bag.gold svg path {
 	fill: #FBBD08;
@@ -185,10 +187,13 @@ form.guess .submit-field {
 	align-items: center;
 	margin: 0 -10px;
 }
-.level-buttons button.ui.button {
+.level-buttons form {
 	flex: 1 1 auto;
 	min-width: 200px;
 	margin: 10px 10px 0;
+}
+.level-buttons form button.ui.button {
+	width: 100%;
 }
 
 #custom-game {
@@ -202,4 +207,5 @@ form.guess .submit-field {
 
 #custom-game-button {
 	margin: 0 10px;
+	width: 100%;
 }
