@@ -44,6 +44,13 @@ db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same
 store = web.session.DBStore(db, 'sessions')
 session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
 
+def rowsToDict(cur, rows):
+	l = []
+	for row in rows:
+		l.append(rowToDict(cur, row))
+
+	return l
+
 def rowToDict(cur, row):
 	d = {}
 	for index, description in enumerate(cur.description):
@@ -481,8 +488,71 @@ class GameOver():
 		cur = conn.cursor()
 		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
 			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
-			ORDER BY Leaderboard.score DESC LIMIT 5''')
-		self.leaders = cur.fetchall()
+			ORDER BY Leaderboard.score DESC''')
+		self.top3Leaders = cur.fetchall()
+
+		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
+			ORDER BY Leaderboard.score LIMIT 3''')
+		self.bottom3Leaders = cur.fetchall()
+
+		print "self.bottom3Leaders", self.bottom3Leaders
+
+		cur.execute("SELECT score FROM Game WHERE id = ?", (session.game_id,))
+		gameScore1 = cur.fetchone()
+		gameScore = gameScore1[0]
+
+		print "gameScore", gameScore
+
+		cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+			FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id 
+			WHERE Leaderboard.score = ? AND Player.id = ?''', (gameScore, session.player_id))
+		gameInLeaderboard = cur.fetchone()
+		print "gameInLeaderboard", gameInLeaderboard
+
+		self.leaders = {}
+		self.leaders["score"] = []
+		self.leaders["score"].append(self.top3Leaders[0][0])
+		self.leaders["score"].append(self.top3Leaders[1][0])
+		self.leaders["score"].append(self.top3Leaders[2][0])
+		self.leaders["score"].append("...")
+		self.leaders["score"].append("...")
+		self.leaders["score"].append(gameInLeaderboard[0])
+		self.leaders["score"].append("...")
+		self.leaders["score"].append("...")
+		self.leaders["score"].append(self.bottom3Leaders[0][0])
+		self.leaders["score"].append(self.bottom3Leaders[1][0])
+		self.leaders["score"].append(self.bottom3Leaders[2][0])
+
+		self.leaders["badge"] = []
+		self.leaders["badge"].append(self.top3Leaders[0][1])
+		self.leaders["badge"].append(self.top3Leaders[1][1])
+		self.leaders["badge"].append(self.top3Leaders[2][1])
+		self.leaders["badge"].append("...")
+		self.leaders["badge"].append("...")
+		self.leaders["badge"].append(gameInLeaderboard[1])
+		self.leaders["badge"].append("...")
+		self.leaders["badge"].append("...")
+		self.leaders["badge"].append(self.bottom3Leaders[0][1])
+		self.leaders["badge"].append(self.bottom3Leaders[1][1])
+		self.leaders["badge"].append(self.bottom3Leaders[2][1])
+
+		self.leaders["username"] = []
+		self.leaders["username"].append(self.top3Leaders[0][2])
+		self.leaders["username"].append(self.top3Leaders[1][2])
+		self.leaders["username"].append(self.top3Leaders[2][2])
+		self.leaders["username"].append("...")
+		self.leaders["username"].append("...")
+		self.leaders["username"].append(gameInLeaderboard[2])
+		self.leaders["username"].append("...")
+		self.leaders["username"].append("...")
+		self.leaders["username"].append(self.bottom3Leaders[0][2])
+		self.leaders["username"].append(self.bottom3Leaders[1][2])
+		self.leaders["username"].append(self.bottom3Leaders[2][2])
+
+		print self.leaders
+
+		print "gameInLeaderboard", gameInLeaderboard
 
 	def GET(self):
 
