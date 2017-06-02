@@ -1,5 +1,10 @@
 $def with (game, past = [], error = None)
 
+$if game["won"] in [0,1]:
+	$var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
+$#var link2: <a class="item" href="/restart"><i class="refresh icon"></i> Restart Game</a>
+$var logout: True
+
 $ goldCoins = game["goldCoins"]
 $ silverCoins = game["silverCoins"]
 $ length = int(game["digits"])
