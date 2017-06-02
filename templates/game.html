@@ -118,19 +118,24 @@ $elif game["won"] == 0:
 				</tr>
 			</thead>
 			<tbody>
-				$for row in past:
-					$ gold = '-'
-					$ silver = '-'
-					$if row[2] != length:
-						$ gold = row[2]
-					$if row[2] != length:
-						$ silver = row[3]
-					<tr>
-						<td>$row[0]</td>
-						<td>$row[1]</td>
-						<td><div class="ui yellow circular label">$gold</div></td>
-						<td><div class="ui grey circular label">$silver</div></td>
-					</tr>
+				$if len(past) > 0:
+					$for row in past:
+						$ gold = '-'
+						$ silver = '-'
+						$if row[2] != length:
+							$ gold = row[2]
+						$if row[2] != length:
+							$ silver = row[3]
+						<tr>
+							<td>$row[0]</td>
+							<td><code>$row[1]</code></td>
+							<td><div class="ui yellow circular label">$gold</div></td>
+							<td><div class="ui grey circular label">$silver</div></td>
+						</tr>
+				$else:
+						<tr>
+							<td colspan="4">Your guesses with their results will appear here.</td>
+						</tr>
 			</tbody>
 		</table>
 	</div>
