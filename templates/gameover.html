@@ -68,20 +68,20 @@ $ score = gameOver["score"]
       </thead>
       <tbody>
         $ i = 0
-        $for leader in leaders:
-          $if leader[1] == "Ruby":
+        $for badge in leaders["badge"]:
+          $if badge == "Ruby":
             $ cls = "orange"
-          $elif leader[1] == "Sapphire":
+          $elif badge == "Sapphire":
             $ cls = "blue"
-          $elif leader[1] == "Emerald":
+          $elif badge == "Emerald":
             $ cls = "green"
-          $elif leader[1] == "Diamond":
+          $elif badge == "Diamond":
             $ cls = "grey"
           <tr>
             <td>$(i+1)</td>
-            <td>$leader[2]</td>
-            <td>$leader[0]</td>
-            <td><i class="diamond $cls icon"></i> $leader[1]</td>
+            <td>$leaders["username"][i]</td>
+            <td>$leaders["score"][i]</td>
+            <td><i class="diamond $cls icon"></i> $badge</td>
           </tr>
           $ i = i + 1
       </tbody>
