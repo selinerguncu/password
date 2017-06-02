@@ -22,8 +22,10 @@ CREATE TABLE Leaderboard (
 	id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	score	INTEGER,
 	badge	TEXT DEFAULT NONE,
-	player_id  INTEGER,
-	FOREIGN KEY(player_id) REFERENCES Player(id)
+	player_id INTEGER,
+	game_id INTEGER,
+	FOREIGN KEY(player_id) REFERENCES Player(id),
+	FOREIGN KEY(game_id) REFERENCES Game(id)
 );
 
 CREATE TABLE Player (
