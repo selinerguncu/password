@@ -46,23 +46,29 @@ $ maxLeaders = maxLeaders
             </tr>
           </thead>
           <tbody>
-          $ i = 1
-          $for leader in leaders:
-            $if leader["badge"] == "Ruby":
-              $ cls = "orange"
-            $elif leader["badge"] == "Sapphire":
-              $ cls = "blue"
-            $elif leader["badge"] == "Emerald":
-              $ cls = "green"
-            $elif leader["badge"] == "Diamond":
-              $ cls = "grey"
-            <tr>
-              <td>$(i)</td>
-              <td>$leader["username"]</td>
-              <td>$leader["score"]</td>
-              <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
-            </tr>
-            $ i = i + 1
+            $if len(leaders) > 0:
+              $ i = 1
+              $for leader in leaders:
+                $if leader["badge"] == "Ruby":
+                  $ cls = "orange"
+                $elif leader["badge"] == "Sapphire":
+                  $ cls = "blue"
+                $elif leader["badge"] == "Emerald":
+                  $ cls = "green"
+                $elif leader["badge"] == "Diamond":
+                  $ cls = "grey"
+                <tr>
+                  <td>$(i)</td>
+                  <td>$leader["username"]</td>
+                  <td>$leader["score"]</td>
+                  <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
+                </tr>
+                $ i = i + 1
+            $else:
+              <tr>
+                <td colspan="4">No player has won any game yet.</td>
+              </tr>
+            </tbody>
           </tbody>
           <tfoot>
             <tr>
@@ -85,23 +91,28 @@ $ maxLeaders = maxLeaders
             </tr>
           </thead>
           <tbody>
-          $ i = 1
-          $for maxLeader in maxLeaders:
-            $if maxLeader["wins"] >= 10:
-              $ cls = "orange"
-            $elif maxLeader["wins"] >= 6:
-              $ cls = "blue"
-            $elif maxLeader["wins"] >= 4:
-              $ cls = "green"
+            $if len(maxLeaders) > 0:
+              $ i = 1
+              $for maxLeader in maxLeaders:
+                $if maxLeader["wins"] >= 10:
+                  $ cls = "orange"
+                $elif maxLeader["wins"] >= 6:
+                  $ cls = "blue"
+                $elif maxLeader["wins"] >= 4:
+                  $ cls = "green"
+                $else:
+                  $ cls = "grey"
+                <tr>
+                  <td>$(i)</td>
+                  <td>$maxLeader["username"]</td>
+                  <td>$maxLeader["totalScore"]</td>
+                  <td><i class="star $cls icon"></i> $maxLeader["wins"]</td>
+                </tr>
+                $ i = i + 1
             $else:
-              $ cls = "grey"
-            <tr>
-              <td>$(i)</td>
-              <td>$maxLeader["username"]</td>
-              <td>$maxLeader["totalScore"]</td>
-              <td><i class="star $cls icon"></i> $maxLeader["wins"]</td>
-            </tr>
-            $ i = i + 1
+              <tr>
+                  <td colspan="4">No player has won any game yet.</td>
+              </tr>
           </tbody>
           <tfoot>
             <tr>
