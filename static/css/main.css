@@ -1,118 +1,174 @@
 main {
-	margin: 0 auto;
-	max-width: 1000px;
-	min-width: 400px;
-	border: 1px solid rgba(34,36,38,.15);
-	border-radius: 4px;
-	padding: 30px;
-	position: relative;
+    margin: 0 auto;
+    max-width: 1000px;
+    min-width: 400px;
+    border: 1px solid rgba(34,36,38,.15);
+    border-radius: 4px;
+    padding: 30px;
+    position: relative;
+}
+
+@media all and (max-width: 600px) {
+    main {
+        border: none;
+        padding: 1rem;
+        min-width: 100%;
+    }
 }
 
 header {
-	margin: 20px auto;
-	max-width: 1000px;
-	min-width: 400px;
+    margin: 20px auto;
+    max-width: 1000px;
+    min-width: 400px;
+}
+header .ui.simple.dropdown {
+    display: none !important;
+}
+
+@media all and (max-width: 600px) {
+    header {
+        margin: 1rem;
+        min-width: 0;
+        width: auto;
+    }
+    header .ui.simple.dropdown {
+        display: flex !important;
+    }
+    header .ui.menu  {
+        border-radius: 0;
+    }
+    header .ui.menu .right.menu > a {
+        display: none !important;
+    }
+    header .ui.menu > a h2 {
+        font-size: 12px;
+    }
 }
 
 footer {
-	margin: 20px auto;
-	max-width: 1000px;
-	min-width: 400px;
-	font-size: 12px;
-	color: rgba(0,0,0,.5);
-	text-align: center;
+    margin: 20px auto;
+    max-width: 1000px;
+    min-width: 400px;
+    font-size: 12px;
+    color: rgba(0,0,0,.5);
+    text-align: center;
+}
+
+@media all and (max-width: 600px) {
+    footer {
+        margin: 1rem;
+        max-width: 1000px;
+        min-width: 0;
+    }
 }
 
 div.boxes {
-	display: flex;
-	justify-content: center;
-	margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
 }
 div.boxes .box {
-	flex: 0 0 auto;
-	margin-right: 16px;
-	position: relative;
+    flex: 0 0 auto;
+    margin-right: 16px;
+    position: relative;
 }
 div.boxes pre {
-	margin: 0;
-	line-height: 16px;
-	font-size: 16px;
-	overflow: hidden;
-	position: relative;
-	z-index: 0;
-	transition: color .1s ease;
+    margin: 0;
+    line-height: 16px;
+    font-size: 16px;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    transition: color .1s ease;
+}
+
+@media all and (max-width: 600px) {
+    div.boxes .box {
+        flex: 0 0 auto;
+        margin-right: .3rem;
+        position: relative;
+    }
+    div.boxes pre {
+        margin: 0;
+        line-height: .6rem;
+        font-size: .6rem;
+        overflow: hidden;
+        position: relative;
+        z-index: 0;
+        transition: color .1s ease;
+    }
 }
 
 div.boxes pre:before {
-	content: attr(data-pass);
-	font-size: 70px;
-	position: absolute;
-	top: 48%;
-	left: 50%;
-	transform: translateX(-50%) translateY(-50%);
-	color: rgba(0,0,0,.2)
+    content: attr(data-pass);
+    font-size: 70px;
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    color: rgba(0,0,0,.2)
 }
 div.boxes pre.azicik-asagida-olsun:before {
-	top: 53%;
+    top: 53%;
 }
 
 /* because of https://github.com/Semantic-Org/Semantic-UI/issues/4342 */
 .divider-column {
-	position: relative;
-	padding: 0 !important;
+    position: relative;
+    padding: 0 !important;
 }
 .ui.vertical.divider:after, .ui.vertical.divider:before {
-	height: 100% !important;
+    height: 100% !important;
 }
 
 .coin-bags {
-	display: flex;
+    display: flex;
 }
 
 .coin-bag {
-	flex: 1 1 auto;
-	position: relative;
+    flex: 1 1 auto;
+    position: relative;
 }
 .coin-bag span {
-	position: absolute;
-	font-size: 48px;
-	color: white;
-	top: 62%;
-	left: 50%;
-	z-index: 2;
-	transform: translateX(-50%);
+    position: absolute;
+    font-size: 48px;
+    color: white;
+    top: 62%;
+    left: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
 }
 .coin-bag svg {
-	width: 100%;
-	height: auto;
+    width: 100%;
+    height: auto;
 }
 .coin-bag.gold svg path {
-	fill: #FBBD08;
+    fill: #FBBD08;
 }
 .coin-bag:before {
-	content: '';
-	position: absolute;
-	border-radius: 50%;
-	top: 42%;
-	left: 29%;
-	width: 37%;
-	height: 45%;
-	z-index: 1;
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    top: 42%;
+    left: 29%;
+    width: 37%;
+    height: 45%;
+    z-index: 1;
 }
 .coin-bag.gold:before {
-	background: #FBBD08;
+    background: #FBBD08;
 }
 
 .coin-bag.silver:before {
-	background: #767676;
+    background: #767676;
 }
 
 .coin-bag.silver svg path {
-	fill: #767676;
+    fill: #767676;
 }
 
 form.guess {
-	text-align: center;
+    text-align: center;
 }
 form.guess input {
   text-align: center;
@@ -127,15 +183,20 @@ form.guess input {
   z-index: 1;
   color: rgba(0,0,0,.87)
 }
+@media all and (max-width: 600px) {
+    form.guess input {
+      font-size: 2.5rem;
+    }
+}
 
 form.guess input:focus {
-	outline: none;
+    outline: none;
 }
 form.guess input:focus + pre {
-	color: #f26202;
+    color: #f26202;
 }
 form.guess button:focus {
-	background-color: #f26202;
+    background-color: #f26202;
 }
 form.guess input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: rgba(0,0,0,.2);
@@ -167,12 +228,12 @@ form.guess input:-moz-placeholder { /* Firefox 18- */
 }
 
 form.guess .submit-field {
-	margin-top: 1em;
-	margin-bottom: 30px;
+    margin-top: 1em;
+    margin-bottom: 30px;
 }
 
 .gameover {
-	text-align: center;
+    text-align: center;
 }
 .gameover .coin-bags {
   max-width: 400px;
@@ -180,32 +241,32 @@ form.guess .submit-field {
 }
 
 .level-buttons {
-	margin: 0;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: center;
-	margin: 0 -10px;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 -10px;
 }
 .level-buttons form {
-	flex: 1 1 auto;
-	min-width: 200px;
-	margin: 10px 10px 0;
+    flex: 1 1 auto;
+    min-width: 200px;
+    margin: 10px 10px 0;
 }
 .level-buttons form button.ui.button {
-	width: 100%;
+    width: 100%;
 }
 
 #custom-game {
-	display: none;
+    display: none;
 }
 
 #level-button {
-	width: 100%;
-	margin: 0;
+    width: 100%;
+    margin: 0;
 }
 
 #custom-game-button {
-	margin: 0 10px;
-	width: 100%;
+    margin: 0 10px;
+    width: 100%;
 }

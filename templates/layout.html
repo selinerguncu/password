@@ -3,6 +3,7 @@ $def with (content)
 <html>
 <head>
     <title>P*a*5*S*w*0*r*D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/icon.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
@@ -27,6 +28,22 @@ $def with (content)
         <a class="icon item" href="/howtoplay" alt="How to Play"><i class="help circle icon"></i></a>
         $if 'logout' in content:
           <a class="icon item" href="/logout" alt="Logout"><i class="sign out icon"></i></a>
+        <div class="ui simple dropdown icon item">
+          <i class="caret down icon"></i>
+          <div class="menu">
+            $if 'link1' in content:
+              $:content.link1
+            $if 'link2' in content:
+              $:content.link2
+            $if 'link3' in content:
+              $:content.link3
+            $if 'link4' in content:
+              $:content.link4
+            <a class="item" href="/howtoplay" alt="How to Play"><i class="help circle icon"></i>How to Play</a>
+            $if 'logout' in content:
+              <a class="item" href="/logout" alt="Logout"><i class="sign out icon"></i>Logout</a>
+          </div>
+        </div>
         <!-- <div class="ui simple dropdown item">
           <i class="united states flag"></i>
           <div class="menu">
@@ -41,7 +58,6 @@ $def with (content)
     $:content
   </main>
   <footer>
-    <div class="ui horizontal divider"></div>
     <p>by <a href="https://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
   </footer>
 </body>
