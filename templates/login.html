@@ -1,5 +1,6 @@
-$def with (leaders, error = None)
+$def with (leaders, maxLeaders, error = None)
 $ leaders = leaders
+$ maxLeaders = maxLeaders
 
 <div class="login-page ui two column very relaxed stackable grid">
   <div class="column">
@@ -28,41 +29,99 @@ $ leaders = leaders
   </div>
   <div class="column">
     <h3 class="ui header">Hall of Fame</h3>
-    <table class="ui celled table unstackable">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Player</th>
-          <th>Score</th>
-          <th>Badge</th>
-        </tr>
-      </thead>
-      <tbody>
-        $ i = 0
-        $for leader in leaders:
-          $if leader[1] == "Ruby":
-            $ cls = "orange"
-          $elif leader[1] == "Sapphire":
-            $ cls = "blue"
-          $elif leader[1] == "Emerald":
-            $ cls = "green"
-          $elif leader[1] == "Diamond":
-            $ cls = "grey"
-          <tr>
-            <td>$(i+1)</td>
-            <td>$leader[2]</td>
-            <td>$leader[0]</td>
-            <td><i class="diamond $cls icon"></i> $leader[1]</td>
-          </tr>
-          $ i = i + 1
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="4">
-            <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
-          </th>
-        </tr>
-      </tfoot>
-    </table>
+
+      <div class="ui top attached tabular menu">
+        <a class="item active" data-tab="Game-Based">Game Based</a>
+        <a class="item" data-tab="Player-Based">Player Based</a>
+      </div>
+
+      <div class="ui bottom attached tab segment active" data-tab="Game-Based">
+        <table class="ui celled table unstackable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th>Badge</th>
+            </tr>
+          </thead>
+          <tbody>
+          $ i = 1
+          $for leader in leaders:
+            $if leader["badge"] == "Ruby":
+              $ cls = "orange"
+            $elif leader["badge"] == "Sapphire":
+              $ cls = "blue"
+            $elif leader["badge"] == "Emerald":
+              $ cls = "green"
+            $elif leader["badge"] == "Diamond":
+              $ cls = "grey"
+            <tr>
+              <td>$(i)</td>
+              <td>$leader["username"]</td>
+              <td>$leader["score"]</td>
+              <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
+            </tr>
+            $ i = i + 1
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">
+                <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="ui bottom attached tab segment" data-tab="Player-Based">
+        <table class="ui celled table unstackable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Total Score</th>
+              <th>Total Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+          $ i = 1
+          $for maxLeader in maxLeaders:
+            $if maxLeader["wins"] >= 10:
+              $ cls = "orange"
+            $elif maxLeader["wins"] >= 6:
+              $ cls = "blue"
+            $elif maxLeader["wins"] >= 4:
+              $ cls = "green"
+            $else:
+              $ cls = "grey"
+            <tr>
+              <td>$(i)</td>
+              <td>$maxLeader["username"]</td>
+              <td>$maxLeader["totalScore"]</td>
+              <td><i class="star $cls icon"></i> $maxLeader["wins"]</td>
+            </tr>
+            $ i = i + 1
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">
+                <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
   </div>
 </div>
+
+<script>
+  $$(document).ready(function(){
+    $$('.menu .item').tab();
+  });
+</script>
+
+
+
+
