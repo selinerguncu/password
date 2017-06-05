@@ -23,8 +23,10 @@ from utils.rowToDict import rowToDict
 from utils.rowsToDict import rowsToDict
 from utils.parseFormData import parseFormData
 
-
-locale.setlocale(locale.LC_ALL, 'en_US')
+try:
+	locale.setlocale(locale.LC_ALL, 'en_US')
+except:
+	locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'session_id'

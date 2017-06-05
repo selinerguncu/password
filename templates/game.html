@@ -22,15 +22,19 @@ $ password = game["password"]
 $if complexity == 0:
     $ inputType = "only numbers"
     $ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    $ keyboardType = "tel"
 $elif complexity == 1:
     $ inputType = "only letters"
     $ inputSet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
+    $ keyboardType = "text"
 $elif complexity == 2:
     $ inputType = "both numbers and letters"
     $ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w']
+    $ keyboardType = "text"
 $elif complexity == 3:
     $ inputType = "both numbers and lower- and upper-case letters"
     $ inputSet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'y', 'z', 'x', 'q', 'w', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    $ keyboardType = "text"
 
 
 $if len(past) == 0:
@@ -58,7 +62,7 @@ $else:
         $ names = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth"]
         $for i in range(length):
             <div class="box">
-                <input type="text" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
+                <input type="$keyboardType" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
                 <pre class="azicik-asagida-olsun" data-pass="">$m</pre>
             </div>
         </div>
