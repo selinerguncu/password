@@ -377,12 +377,12 @@ class Game(object):
 
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
-        cur.execute("SELECT goldInBag, silverInBag, round, guess, goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))
+        cur.execute("SELECT round, guess, goldReceived, silverReceived, goldInBag, silverInBag FROM History WHERE game_id = ? ORDER BY round DESC", (session.game_id,))
         rows = cur.fetchall()
 
         past = []
         for row in rows:
-            past.append((row[2], row[3], row[4], row[5], row[0], row[1]))
+            past.append((row[0], row[1], row[2], row[3], row[4], row[5]))
 
         if self.game["complexity"] == 0 and len(guess) > len(set(guess)):
             return render.game(self.game, past, errors["uniqueNumbers"])
@@ -409,8 +409,8 @@ class Game(object):
                 silverInBag = self.game["silverCoins"] - evaluation["silverCoinsReceived"]
             else:
                 _round = len(rows) + 1
-                goldInBag = rows[_round - 2][0] - evaluation["goldCoinsReceived"]
-                silverInBag = rows[_round - 2][1] - evaluation["silverCoinsReceived"]
+                goldInBag = rows[0][4] - evaluation["goldCoinsReceived"]
+                silverInBag = rows[0][5] - evaluation["silverCoinsReceived"]
 
             if goldInBag <= 0:
                 goldInBag = 0
