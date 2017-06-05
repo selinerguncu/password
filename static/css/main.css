@@ -76,48 +76,6 @@ footer {
     display: flex;
 }
 
-.coin-bag {
-    flex: 1 1 auto;
-    position: relative;
-}
-.coin-bag span {
-    position: absolute;
-    font-size: 48px;
-    color: white;
-    top: 62%;
-    left: 50%;
-    z-index: 2;
-    transform: translateX(-50%);
-}
-.coin-bag svg {
-    width: 100%;
-    height: auto;
-}
-.coin-bag.gold svg path {
-    fill: #FBBD08;
-}
-.coin-bag:before {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    top: 42%;
-    left: 29%;
-    width: 37%;
-    height: 45%;
-    z-index: 1;
-}
-.coin-bag.gold:before {
-    background: #FBBD08;
-}
-
-.coin-bag.silver:before {
-    background: #767676;
-}
-
-.coin-bag.silver svg path {
-    fill: #767676;
-}
-
 .gameover {
     text-align: center;
 }
@@ -155,4 +113,107 @@ footer {
 #custom-game-button {
     margin: 0 10px;
     width: 100%;
+}
+
+
+.coins {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 30px;
+  min-height: 100px;
+  /* justify-content: center; */
+}
+.coin-stack {
+  display: flex;
+  flex: 0 0 auto;
+  width: 60px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-right: 10px;
+}
+
+svg.coin {
+  width: 60px;
+  display: block;
+  flex: 0 0 auto;
+  margin-bottom: -12.4px;
+  // fill: #FBBD08;
+}
+svg.coin:first-child {
+  margin-bottom: -7px;
+}
+svg.coin {
+  fill: #FBBD08;
+}
+.coins .coin-bag {
+  width: 100px;
+  display: block;
+  flex: 0 0 auto;
+  fill: #FBBD08;
+}
+.coins .coin-bag svg {
+  margin-bottom: -20px;
+}
+.coins .coin-bag svg path.cloth {
+  fill: #FBBD08;
+}
+.coins.silver .coin-bag svg path.cloth {
+  fill: #767676;
+}
+
+.coins.silver {
+  margin-top: -101px;
+  margin-left: 40px;
+}
+.coins.silver svg.coin {
+  fill: #767676;
+}
+
+.coins.silver .coin-bag svg {
+  fill: #767676;
+}
+
+/*  GAMEOVER PAGE OLD BAGS  */
+
+.gameover .coin-bag {
+    flex: 1 1 auto;
+    position: relative;
+}
+.gameover .coin-bag span {
+    position: absolute;
+    font-size: 48px;
+    color: white;
+    top: 62%;
+    left: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
+}
+.gameover .coin-bag svg {
+    width: 100%;
+    height: auto;
+}
+.gameover .coin-bag.gold svg path {
+    fill: #FBBD08;
+}
+.gameover .coin-bag:before {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    top: 42%;
+    left: 29%;
+    width: 37%;
+    height: 45%;
+    z-index: 1;
+}
+.gameover .coin-bag.gold:before {
+    background: #FBBD08;
+}
+
+.gameover .coin-bag.silver:before {
+    background: #767676;
+}
+
+.gameover .coin-bag.silver svg path {
+    fill: #767676;
 }
