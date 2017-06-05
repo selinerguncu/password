@@ -128,14 +128,16 @@ class Setup(object):
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
         cur.execute('''SELECT level, score, won FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
-        lastLevel = rowToDict(cur, cur.fetchone())
+        last = cur.fetchone()
 
-        if lastLevel["level"] == None:
+        if last == None:
             self.currentLevel = 1
-        elif lastLevel["level"] != None and lastLevel["won"] == 1:
-            self.currentLevel = lastLevel["level"] + 1
-        elif lastLevel["level"] != None and lastLevel["won"] == 0:
-            self.currentLevel = lastLevel["level"]
+        else:
+            lastLevel = rowToDict(cur, last)
+            if lastLevel["won"] == 1:
+                self.currentLevel = lastLevel["level"] + 1
+            elif lastLevel["won"] == 0:
+                self.currentLevel = lastLevel["level"]
 
         self.levelSet["currentLevel"] = self.currentLevel
 
