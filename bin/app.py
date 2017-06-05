@@ -123,14 +123,15 @@ class Setup(object):
         #ayni id li adamin butun game lerine bak. en yuksek level i bul. yeni actigin oyuna max level i bir arttir ve ekle
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
-        cur.execute('''SELECT level, score FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
-        lastLevel = cur.fetchone()
-        print 'lastLevel', lastLevel
+        cur.execute('''SELECT level, score, won FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
+        lastLevel = rowToDict(cur, cur.fetchone())
 
-        if lastLevel == None:
+        if lastLevel["level"] == None:
             self.currentLevel = 1
-        else:
-            self.currentLevel = lastLevel[0] + 1
+        elif lastLevel["level"] != None and lastLevel["won"] == 1:
+            self.currentLevel = lastLevel["level"] + 1
+        elif lastLevel["level"] != None and lastLevel["won"] == 0:
+            self.currentLevel = lastLevel["level"]
 
         self.levelSet["currentLevel"] = self.currentLevel
 
@@ -168,7 +169,7 @@ class Setup(object):
             cur.execute('''
                 INSERT INTO Game(digits, complexity, goldCoins, silverCoins, level, player_id)
                 VALUES (?, ?, ?, ?, ?, ?)
-                ''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], self.currentLevel, session.player_id))
+                ''', (data["digits"], data["complexity"], data["goldCoins"], data["silverCoins"], data["level"], session.player_id))
             conn.commit()
             session.game_id = cur.lastrowid
             return web.seeother('/game')
