@@ -78,10 +78,20 @@ class Score(object):
         return prob
 
 
+    def findReward(self):
+        norm = 1
+        prob = self.findProb()
+        rewardMultiplier = 1
+
+        reward = norm / (rewardMultiplier * prob)
+
+        return reward
+
+
     def coinsSpentCost(self):
         prob = self.findProb()
-        weight_gold = 1000000
-        weight_silver = 600000
+        weight_gold = 600
+        weight_silver = 400
 
         cost_goldSpent = weight_gold * self.scoreVariables["goldSpent"] * prob
 
@@ -144,16 +154,20 @@ class Score(object):
 
         base_goldInBag = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
         base_silverInBag = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
-        multiplier_additionalCoins_forLevels = self.multipliers
+        multiplier_CoinsInBag_forLevels = self.multipliers
+        cost_baseGoldInBag = 0.06
+        cost_baseSilverInBag = 0.04
+        cost_additionalGold = 1.6
+        cost_additionalSilver = 1.4
 
-        baseCost_goldInBag = base_goldInBag[level - 1] * 1
-        baseCost_silverInBag = base_silverInBag[level - 1] * 1
+        baseCost_goldInBag = base_goldInBag[level - 1] * cost_baseGoldInBag
+        baseCost_silverInBag = base_silverInBag[level - 1] * cost_baseSilverInBag
 
-        cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - base_goldInBag[level - 1]) * multiplier_additionalCoins_forLevels[level - 1]
-        cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - base_silverInBag[level - 1]) * multiplier_additionalCoins_forLevels[level - 1]
+        cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - base_goldInBag[level - 1]) * cost_additionalGold
+        cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - base_silverInBag[level - 1]) * cost_additionalSilver
 
-        cost_goldCoinInBag = baseCost_goldInBag + cost_additionalGoldCoins
-        cost_silverCoinInBag = baseCost_silverInBag + cost_additionalSilverCoins
+        cost_goldCoinInBag = (baseCost_goldInBag + cost_additionalGoldCoins) * multiplier_CoinsInBag_forLevels[level - 1]
+        cost_silverCoinInBag = (baseCost_silverInBag + cost_additionalSilverCoins) * multiplier_CoinsInBag_forLevels[level - 1]
 
         cost_totalCoinsInBag = cost_goldCoinInBag + cost_silverCoinInBag
         return cost_totalCoinsInBag
@@ -167,24 +181,32 @@ class Score(object):
         multiplier_additionalRound = multiplier_additionalRounds_forLevels[level-1]
         cost_totalRounds = 0
 
-        for rounds in range(self.scoreVariables["totalRounds"]):
-            cost_eachRound = 10**(0.175 * rounds * multiplier_additionalRound)
+        for rounds in range((self.scoreVariables["totalRounds"] + 1)):
+            cost_eachRound = (10**(0.0175 * (rounds + 1) * multiplier_additionalRound)) - 1
             cost_totalRounds += cost_eachRound
 
         return cost_totalRounds
 
 
     def calculateScore(self):
-        norm = 100
-        reward = 500000
 
+        # norm = 100
+        norm = 1
+        rewardMultiplier = 1
+
+        prob = self.findProb()
+        reward = self.findReward()
         cost_totalCoinsSpent = self.coinsSpentCost()
         cost_totalCoinsInBag = self.coinsInBagCost()
         cost_totalRounds = self.roundCost()
 
-        totalCost = norm * (cost_totalCoinsSpent + cost_totalCoinsInBag + cost_totalRounds)
+        totalCost = cost_totalCoinsSpent + cost_totalCoinsInBag + cost_totalRounds
 
-        score = reward - totalCost
+        costMultiplier = totalCost
+
+        scoreMultiplier = rewardMultiplier + costMultiplier
+
+        score = norm / (prob * scoreMultiplier)
 
         return score
 

@@ -7,7 +7,7 @@ import sys
 import os
 import web
 import sqlite3 as sqlite
-import base64
+import locale
 
 appPath = os.getcwd()
 print appPath
@@ -23,6 +23,8 @@ from utils.rowToDict import rowToDict
 from utils.rowsToDict import rowsToDict
 from utils.parseFormData import parseFormData
 
+
+locale.setlocale(locale.LC_ALL, 'en_US')
 
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'session_id'
@@ -547,7 +549,9 @@ class GameOver():
 
         gameOver["password"] = game["password"]
         gameOver["digits"] = game["digits"]
-        gameOver["score"] = game["score"]
+
+        gameOver["score"] = locale.format("%d", game["score"], grouping=True)
+
         return render.gameover(gameOver, self.leaders, session.game_id, gameInLeaderboard)
 
 class Logout():
