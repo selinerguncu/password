@@ -526,6 +526,16 @@ class GameOver():
         leaderRows = cur.fetchall()
         self.leaders = rowsToDict(cur, leaderRows)
 
+        for i in range(len(self.leaders)):
+            self.leaders[i]["score"] = locale.format("%d", self.leaders[i]["score"], grouping=True)
+
+        cur.execute('''SELECT totalScore, wins, username, id FROM Player ORDER BY totalScore DESC LIMIT 5''')
+        maxLeaderRows = cur.fetchall()
+        self.maxLeaders = rowsToDict(cur, maxLeaderRows)
+
+        for i in range(len(self.maxLeaders)):
+            self.maxLeaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
+
 
     def GET(self):
 
@@ -540,15 +550,35 @@ class GameOver():
         cur.execute("SELECT * FROM Game WHERE id = ?", (session.game_id,))
         game = rowToDict(cur, cur.fetchone())
 
+        cur.execute("SELECT * FROM Player WHERE id = ?", (session.player_id,))
+        player = rowToDict(cur, cur.fetchone())
+
         cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username, Leaderboard.game_id
             FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
             WHERE Leaderboard.score = ? AND Player.id = ?''', (game["score"], session.player_id))
-        gameInLeaderboard = rowToDict(cur, cur.fetchone())
+        inLeaderboard = cur.fetchone()
+        gameInLeaderboard = rowToDict(cur, inLeaderboard)
+
+        gameInLeaderboard["score"] = locale.format("%d", game["score"], grouping=True)
 
         if gameInLeaderboard in self.leaders:
             gameInLeaderboard['inHighScores'] = True
         else:
             gameInLeaderboard['inHighScores'] = False
+
+        cur.execute('''SELECT totalScore, wins, username, id FROM Player WHERE id = ?
+            ORDER BY totalScore DESC LIMIT 5''', (session.player_id,))
+        inMaxLeaders = cur.fetchone()
+        gameInMaxLeaders = rowToDict(cur, inMaxLeaders)
+
+        gameInMaxLeaders["totalScore"] = locale.format("%d", player["totalScore"], grouping=True)
+
+        print "gameInMaxLeaders", gameInMaxLeaders
+        print "self.maxLeaders", self.maxLeaders
+        if gameInMaxLeaders in self.maxLeaders:
+            gameInMaxLeaders['inMaxScores'] = True
+        else:
+            gameInMaxLeaders['inMaxScores'] = False
 
         gameOver = {}
 
@@ -563,7 +593,7 @@ class GameOver():
 
         gameOver["score"] = locale.format("%d", game["score"], grouping=True)
 
-        return render.gameover(gameOver, self.leaders, session.game_id, gameInLeaderboard)
+        return render.gameover(gameOver, self.leaders, self.maxLeaders, session.game_id, session.player_id, gameInLeaderboard, gameInMaxLeaders)
 
 class Logout():
     def GET(self):
