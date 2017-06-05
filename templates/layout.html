@@ -7,6 +7,8 @@ $def with (content)
     <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/icon.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    $if 'css' in content:
+      $:content.css
     <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/static/js/semantic.js"></script>
 </head>
@@ -28,9 +30,9 @@ $def with (content)
         <a class="icon item" href="/howtoplay" alt="How to Play"><i class="help circle icon"></i></a>
         $if 'logout' in content:
           <a class="icon item" href="/logout" alt="Logout"><i class="sign out icon"></i></a>
-        <div class="ui simple dropdown icon item">
+        <div class="ui simple dropdown transition icon item">
           <i class="caret down icon"></i>
-          <div class="menu">
+          <div class="menu transition">
             $if 'link1' in content:
               $:content.link1
             $if 'link2' in content:
@@ -60,5 +62,11 @@ $def with (content)
   <footer>
     <p>by <a href="https://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
   </footer>
+  <script>
+    $$(document).ready(function() {
+      var $$dropdown = $$('header .right.menu .ui.dropdown')
+      $$('.dropdown').dropdown()
+    })
+  </script>
 </body>
 </html>
