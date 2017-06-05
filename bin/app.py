@@ -172,6 +172,8 @@ class Setup(object):
             warning = self.hasWarning(data)
 
         if (error == None and warning == None) or (error == None and int(data["force"]) == 1):
+            if "level" not in data.keys():
+                data["level"] = "0"
             cur.execute('''
                 INSERT INTO Game(digits, complexity, goldCoins, silverCoins, level, player_id)
                 VALUES (?, ?, ?, ?, ?, ?)
