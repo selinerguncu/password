@@ -63,14 +63,14 @@ class Login():
             ORDER BY Leaderboard.score DESC LIMIT 5''')
         self.leaders = rowsToDict(cur, cur.fetchall())
 
-        for i in range(len(self.leaders)):
-            self.leaders[i]["score"] = locale.format("%d", self.leaders[i]["score"], grouping=True)
+        for k in range(len(self.leaders)):
+            self.leaders[k]["score"] = locale.format("%d", self.leaders[k]["score"], grouping=True)
 
         cur.execute('''SELECT totalScore, wins, username FROM Player ORDER BY totalScore DESC LIMIT 5''')
         self.maxLeaders = rowsToDict(cur, cur.fetchall())
 
         for i in range(len(self.maxLeaders)):
-            self.leaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
+            self.maxLeaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
 
 
     def GET(self):
