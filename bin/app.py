@@ -458,25 +458,22 @@ class Game(object):
             goldCoinsSpent += row[0]
             silverCoinsSpent += row[1]
 
-        scoreVariables = {
+        if hasWon:
+            won = 1
+            scoreVariables = {
             "digits" : game["digits"],
             "complexity" : game["complexity"],
             "goldCoins" : game["goldCoins"],
             "silverCoins" : game["silverCoins"],
-            "totalRounds" : game["totalRounds"],
-            "goldSpent" : game["goldSpent"],
-            "silverSpent" : game["silverSpent"]
-        }
-
-        scoreInstance = Score(scoreVariables)
-        score = scoreInstance.calculateScore()
-
-        print score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id
-
-        if hasWon:
-            won = 1
+            "totalRounds" : totalRounds,
+            "goldSpent" : goldCoinsSpent - game["digits"], #cunku bilince digit kadar gold eksiliyor
+            "silverSpent" : silverCoinsSpent
+            }
+            scoreInstance = Score(scoreVariables)
+            score = scoreInstance.calculateScore()
         else:
             won = 0
+            score = 0
 
         cur.execute("UPDATE Game SET won = ?, score = ?, totalRounds = ?, goldSpent = ?, silverSpent = ? WHERE id = ? ", (won, score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id))
         conn.commit()
@@ -500,11 +497,11 @@ class Game(object):
         conn.commit()
 
         #if maxScore of a player is btw xxx and yyy then badge = diamond vs ruby vs sapphire vs emerald
-        if score >= 10000000000:
+        if score >= 1000000000000:
             badge = 'Diamond'
-        elif score >= 1000000:
+        elif score >= 100000000:
             badge = 'Emerald'
-        elif score >= 100000:
+        elif score >= 1000000:
             badge = 'Sapphire'
         else:
             badge = 'Ruby'

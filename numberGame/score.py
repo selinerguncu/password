@@ -200,7 +200,7 @@ class Score(object):
         cost_totalCoinsInBag = self.coinsInBagCost()
         cost_totalRounds = self.roundCost()
 
-        totalCost = cost_totalCoinsSpent + cost_totalCoinsInBag + cost_totalRounds
+        totalCost = float(cost_totalCoinsSpent) + float(cost_totalCoinsInBag) + float(cost_totalRounds)
 
         costMultiplier = totalCost
 
