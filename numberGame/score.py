@@ -162,9 +162,16 @@ class Score(object):
 
         baseCost_goldInBag = base_goldInBag[level - 1] * cost_baseGoldInBag
         baseCost_silverInBag = base_silverInBag[level - 1] * cost_baseSilverInBag
+        # for custom games only:
+        if self.scoreVariables["goldCoins"] >= base_goldInBag[level - 1]:
+            cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - float(base_goldInBag[level - 1])) * cost_additionalGold
+            cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - float(base_silverInBag[level - 1])) * cost_additionalSilver
+        else: # eger defaulttan kucuk gold/silver tanimladiysa score u arttirmak icin multiplier i kucult:
+            cost_additionalGoldCoins = ( 1 - (self.scoreVariables["goldCoins"] / float(base_goldInBag[level - 1]))) * -1
+            cost_additionalSilverCoins = ( 1 - (self.scoreVariables["silverCoins"] / float(base_silverInBag[level - 1]))) * -1
 
-        cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - base_goldInBag[level - 1]) * cost_additionalGold
-        cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - base_silverInBag[level - 1]) * cost_additionalSilver
+        print "cost_additionalGoldCoins", cost_additionalGoldCoins
+
 
         cost_goldCoinInBag = (baseCost_goldInBag + cost_additionalGoldCoins) * multiplier_CoinsInBag_forLevels[level - 1]
         cost_silverCoinInBag = (baseCost_silverInBag + cost_additionalSilverCoins) * multiplier_CoinsInBag_forLevels[level - 1]
