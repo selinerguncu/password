@@ -121,7 +121,7 @@ footer {
   align-items: flex-end;
   margin-bottom: 30px;
   min-height: 100px;
-  /* justify-content: center; */
+  justify-content: center;
 }
 .coin-stack {
   display: flex;
@@ -134,7 +134,7 @@ footer {
 }
 
 svg.coin {
-  width: 60px;
+  width: 100%;
   display: block;
   flex: 0 0 auto;
   margin-bottom: -12.4px;
@@ -152,8 +152,11 @@ svg.coin {
   flex: 0 0 auto;
   fill: #FBBD08;
 }
+.coins .coin-bag + .coin-bag {
+  margin-left: -20px;
+}
 .coins .coin-bag svg {
-  margin-bottom: -20px;
+  margin-bottom: -30px;
 }
 .coins .coin-bag svg path.cloth {
   fill: #FBBD08;
@@ -216,4 +219,19 @@ svg.coin {
 
 .gameover .coin-bag.silver svg path {
     fill: #767676;
+}
+
+.ui.login-page.grid .column:first-child {
+  flex: 1 1 auto;
+  max-width: 50%;
+  width: auto;
+}
+.ui.login-page.grid .column:last-child {
+  flex: 1 1 auto;
+  width: auto;
+}
+@media all and (max-width: 953px) {
+  .ui.login-page.grid .column:first-child {
+    max-width: none;
+  }
 }
