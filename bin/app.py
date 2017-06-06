@@ -134,8 +134,10 @@ class Setup(object):
             self.currentLevel = 1
         else:
             lastLevel = rowToDict(cur, last)
-            if lastLevel["won"] == 1:
+            if lastLevel["won"] == 1 and lastLevel["level"] != 0:
                 self.currentLevel = lastLevel["level"] + 1
+            elif lastLevel["level"] == 0:
+                self.currentLevel = 1
             elif lastLevel["won"] == 0:
                 self.currentLevel = lastLevel["level"]
 
