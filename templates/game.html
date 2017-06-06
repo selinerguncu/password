@@ -158,14 +158,16 @@ $elif game["won"] == 0:
                                 $for i in range(remainingCoins):
                                     $if i == 0:
                                         <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin"></use></svg>
-                                    <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
+                                    $else:
+                                        <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
                                 </div>
                             $for i in range(fullStacks):
                                 <div class="coin-stack">
                                 $for i in range(10):
                                     $if i == 0:
                                         <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin"></use></svg>
-                                    <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
+                                    $else:
+                                        <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
                                 </div>
                             $for i in range(bags):
                                 <div class="coin-bag">
@@ -184,14 +186,16 @@ $elif game["won"] == 0:
                                 $for i in range(remainingCoins):
                                     $if i == 0:
                                         <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin"></use></svg>
-                                    <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
+                                    $else:
+                                        <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
                                 </div>
                             $for i in range(fullStacks):
                                 <div class="coin-stack">
                                 $for i in range(10):
                                     $if i == 0:
                                         <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin"></use></svg>
-                                    <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
+                                    $else:
+                                        <svg class='coin' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 192"><use xlink:href="#coin-side"></use></svg>
                                 </div>
                             $for i in range(bags):
                                 <div class="coin-bag">
