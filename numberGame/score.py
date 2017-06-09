@@ -83,7 +83,7 @@ class Score(object):
         prob = self.findProb()
         rewardMultiplier = 1
 
-        reward = norm / (rewardMultiplier * prob)
+        reward = norm / (rewardMultiplier * float(prob))
 
         return reward
 
@@ -93,11 +93,11 @@ class Score(object):
         weight_gold = 600
         weight_silver = 400
 
-        cost_goldSpent = weight_gold * self.scoreVariables["goldSpent"] * prob
+        cost_goldSpent = weight_gold * self.scoreVariables["goldSpent"] * float(prob)
 
-        cost_silverSpent = weight_silver * self.scoreVariables["silverSpent"] * prob
+        cost_silverSpent = weight_silver * self.scoreVariables["silverSpent"] * float(prob)
 
-        cost_totalCoinsSpent = cost_goldSpent + cost_silverSpent
+        cost_totalCoinsSpent = float(cost_goldSpent) + float(cost_silverSpent)
 
         return cost_totalCoinsSpent
 
@@ -160,23 +160,20 @@ class Score(object):
         cost_additionalGold = 1.6
         cost_additionalSilver = 1.4
 
-        baseCost_goldInBag = base_goldInBag[level - 1] * cost_baseGoldInBag
-        baseCost_silverInBag = base_silverInBag[level - 1] * cost_baseSilverInBag
+        baseCost_goldInBag = base_goldInBag[level - 1] * float(cost_baseGoldInBag)
+        baseCost_silverInBag = base_silverInBag[level - 1] * float(cost_baseSilverInBag)
         # for custom games only:
         if self.scoreVariables["goldCoins"] >= base_goldInBag[level - 1]:
-            cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - float(base_goldInBag[level - 1])) * cost_additionalGold
-            cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - float(base_silverInBag[level - 1])) * cost_additionalSilver
+            cost_additionalGoldCoins = (self.scoreVariables["goldCoins"] - base_goldInBag[level - 1]) * float(cost_additionalGold)
+            cost_additionalSilverCoins = (self.scoreVariables["silverCoins"] - base_silverInBag[level - 1]) * float(cost_additionalSilver)
         else: # eger defaulttan kucuk gold/silver tanimladiysa score u arttirmak icin multiplier i kucult:
-            cost_additionalGoldCoins = ( 1 - (self.scoreVariables["goldCoins"] / float(base_goldInBag[level - 1]))) * -1
-            cost_additionalSilverCoins = ( 1 - (self.scoreVariables["silverCoins"] / float(base_silverInBag[level - 1]))) * -1
+            cost_additionalGoldCoins = ( 1 - (self.scoreVariables["goldCoins"] / base_goldInBag[level - 1])) * -1
+            cost_additionalSilverCoins = ( 1 - (self.scoreVariables["silverCoins"] / base_silverInBag[level - 1])) * -1
 
-        print "cost_additionalGoldCoins", cost_additionalGoldCoins
+        cost_goldCoinInBag = (baseCost_goldInBag + float(cost_additionalGoldCoins)) * multiplier_CoinsInBag_forLevels[level - 1]
+        cost_silverCoinInBag = (baseCost_silverInBag + float(cost_additionalSilverCoins)) * multiplier_CoinsInBag_forLevels[level - 1]
 
-
-        cost_goldCoinInBag = (baseCost_goldInBag + cost_additionalGoldCoins) * multiplier_CoinsInBag_forLevels[level - 1]
-        cost_silverCoinInBag = (baseCost_silverInBag + cost_additionalSilverCoins) * multiplier_CoinsInBag_forLevels[level - 1]
-
-        cost_totalCoinsInBag = cost_goldCoinInBag + cost_silverCoinInBag
+        cost_totalCoinsInBag = float(cost_goldCoinInBag) + float(cost_silverCoinInBag)
         return cost_totalCoinsInBag
 
 
@@ -190,7 +187,7 @@ class Score(object):
 
         for rounds in range((self.scoreVariables["totalRounds"] + 1)):
             cost_eachRound = (10**(0.0175 * (rounds + 1) * multiplier_additionalRound)) - 1
-            cost_totalRounds += cost_eachRound
+            cost_totalRounds += float(cost_eachRound)
 
         return cost_totalRounds
 
@@ -211,9 +208,9 @@ class Score(object):
 
         costMultiplier = totalCost
 
-        scoreMultiplier = rewardMultiplier + costMultiplier
+        scoreMultiplier = rewardMultiplier + float(costMultiplier)
 
-        score = norm / (prob * scoreMultiplier)
+        score = norm / (float(prob) * float(scoreMultiplier))
 
         return score
 
