@@ -101,7 +101,10 @@ $else:
     </div>
   </form>
 $if game["won"] == 1:
-  $ goldInBag = goldInBag + length
+  $if goldInBag > 0:
+    $ goldInBag = goldInBag + length
+  $else:
+    $ goldInBag = past[1][4]
   <h2 class="ui header center aligned">You won this game!</h2>
 $elif game["won"] == 0:
   $ goldInBag = 0

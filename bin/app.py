@@ -521,7 +521,7 @@ class Game(object):
             "goldCoins" : game["goldCoins"],
             "silverCoins" : game["silverCoins"],
             "totalRounds" : totalRounds,
-            "goldSpent" : goldCoinsSpent - game["digits"], #cunku bilince digit kadar gold eksiliyor
+            "goldSpent" : goldCoinsSpent,
             "silverSpent" : silverCoinsSpent
             }
             scoreInstance = Score(scoreVariables)
@@ -637,7 +637,12 @@ class GameOver():
         gameOver["hasWon"] = game["won"] == 1
         gameOver["round"] = game["totalRounds"]
 
-        gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"] + game["digits"]
+        if (game["goldCoins"] - game["goldSpent"]) <= game["digits"]:
+            gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"]
+        else:
+            gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"] + game["digits"]
+
+
         gameOver["silverInBag"] = game["silverCoins"] - game["silverSpent"]
 
         gameOver["password"] = game["password"]
