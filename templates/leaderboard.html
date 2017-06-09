@@ -1,0 +1,157 @@
+$def with (games, players, gamePage, playerPage, gamePages, playerPages, tab, isLoggedIn)
+
+$if isLoggedIn:
+  $var logout: True
+  $var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
+$else:
+  $var link1: <a class="item" href="/login"><i class="home icon"></i> Login</a>
+
+$if tab == 'game':
+  $ gameActiveClass = ' active'
+$else:
+  $ gameActiveClass = ''
+
+$if tab == 'player':
+  $ playerActiveClass = ' active'
+$else:
+  $ playerActiveClass = ''
+
+<div class="column">
+<h3 class="ui header">Leaderboard</h3>
+
+  <div class="ui top attached tabular menu">
+    <a class="item$gameActiveClass" data-tab="Game-Based">Game Based</a>
+    <a class="item$playerActiveClass" data-tab="Player-Based">Player Based</a>
+  </div>
+
+  <div class="ui bottom attached tab segment$gameActiveClass" data-tab="Game-Based">
+    <table class="ui celled table unstackable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Score</th>
+          <th>Badge</th>
+        </tr>
+      </thead>
+      <tbody>
+        $if len(games) > 0:
+          $ i = 1
+          $for leader in games:
+            $if leader["badge"] == "Ruby":
+              $ cls = "orange"
+            $elif leader["badge"] == "Sapphire":
+              $ cls = "blue"
+            $elif leader["badge"] == "Emerald":
+              $ cls = "green"
+            $elif leader["badge"] == "Diamond":
+              $ cls = "grey"
+            <tr>
+              <td>$((gamePage-1)*20+i)</td>
+              <td>$leader["username"]</td>
+              <td>$leader["score"]</td>
+              <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
+            </tr>
+            $ i = i + 1
+        $else:
+          <tr>
+            <td colspan="4">No player has won any game yet.</td>
+          </tr>
+        </tbody>
+      <tfoot>
+        <tr><th colspan="4">
+          <div class="ui right floated pagination menu">
+            $if gamePage >= 3:
+              <a href="/leaderboard?gamePage=$(gamePage-1)&playerPage=$playerPage" class="icon item">
+                <i class="left chevron icon"></i>
+              </a>
+
+            $if gamePage - 1 > 0:
+              <a href="/leaderboard?gamePage=$(gamePage-1)&playerPage=$playerPage" class="item">$(gamePage-1)</a>
+
+            <a href="/leaderboard?gamePage=$gamePage&playerPage=$playerPage" class="item active">$(gamePage)</a>
+
+            $if gamePages - gamePage > 1:
+              <a href="/leaderboard?gamePage=$(gamePage+1)&playerPage=$playerPage" class="item">$(gamePage+1)</a>
+
+            $if gamePages - gamePage > 2:
+              <a href="/leaderboard?gamePage=$(gamePage+1)&playerPage=$playerPage" class="icon item">
+                <i class="right chevron icon"></i>
+              </a>
+          </div>
+        </th></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="ui bottom attached tab segment$playerActiveClass" data-tab="Player-Based">
+    <table class="ui celled table unstackable">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Total Score</th>
+          <th>Total Wins</th>
+        </tr>
+      </thead>
+      <tbody>
+        $if len(players) > 0:
+          $ i = 1
+          $for maxLeader in players:
+            $if maxLeader["wins"] >= 10:
+              $ cls = "orange"
+            $elif maxLeader["wins"] >= 6:
+              $ cls = "blue"
+            $elif maxLeader["wins"] >= 4:
+              $ cls = "green"
+            $else:
+              $ cls = "grey"
+            <tr>
+              <td>$((playerPage-1)*20+i)</td>
+              <td>$maxLeader["username"]</td>
+              <td>$maxLeader["totalScore"]</td>
+              <td><i class="star $cls icon"></i> $maxLeader["wins"]</td>
+            </tr>
+            $ i = i + 1
+        $else:
+          <tr>
+              <td colspan="4">No player has won any game yet.</td>
+          </tr>
+      </tbody>
+      <tfoot>
+        <tr><th colspan="4">
+          <div class="ui right floated pagination menu">
+            $if playerPage >= 3:
+              <a href="/leaderboard?playerPage=$(playerPage-1)&tab=player&gamePage=$gamePage" class="icon item">
+                <i class="left chevron icon"></i>
+              </a>
+
+            $if playerPage - 1 > 0:
+              <a href="/leaderboard?playerPage=$(playerPage-1)&tab=player&gamePage=$gamePage" class="item">$(playerPage-1)</a>
+
+            <a href="/leaderboard?playerPage=$playerPage&tab=player&gamePage=$gamePage" class="item active">$(playerPage)</a>
+
+            $if playerPages - playerPage >= 1:
+              <a href="/leaderboard?playerPage=$(playerPage+1)&tab=player&gamePage=$gamePage" class="item">$(playerPage+1)</a>
+
+            $if playerPages - playerPage >= 2:
+              <a href="/leaderboard?playerPage=$(playerPage+1)&tab=player&gamePage=$gamePage" class="icon item">
+                <i class="right chevron icon"></i>
+              </a>
+          </div>
+        </th></tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  $$(document).ready(function(){
+    $$('.menu .item').tab();
+  });
+</script>
+
+
+
+

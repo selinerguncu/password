@@ -1,6 +1,4 @@
 $def with (leaders, maxLeaders, error = None)
-$ leaders = leaders
-$ maxLeaders = maxLeaders
 
 <div class="login-page ui two column very relaxed stackable grid">
   <div class="column">
@@ -73,7 +71,11 @@ $ maxLeaders = maxLeaders
           <tfoot>
             <tr>
               <th colspan="4">
-                <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
+                <form method="GET" action="/leaderboard">
+                    <div class="field">
+                      <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
+                    </div>
+                </form>
               </th>
             </tr>
           </tfoot>

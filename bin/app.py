@@ -33,6 +33,7 @@ web.config.session_parameters['cookie_name'] = 'session_id'
 
 urls = (
     '/', 'Login',
+    '/leaderboard', "Leaderboard",
     '/login', 'Login',
     '/howtoplay', 'HowToPlay',
     '/setup', 'Setup',
@@ -72,7 +73,6 @@ class Login():
         for i in range(len(self.maxLeaders)):
             self.maxLeaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
 
-
     def GET(self):
         if session.player_id == 'guest':
             return render.login(self.leaders, self.maxLeaders)
@@ -106,6 +106,59 @@ class Login():
             conn.commit()
             session.player_id = cur.lastrowid
             return web.seeother('/setup')
+
+
+class Leaderboard():
+
+    def GET(self):
+        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+        cur = conn.cursor()
+        isLoggedIn = session.player_id != 'guest'
+        # tab=game&gamePage=5&playerPage=3
+        params = web.input()
+        tab = 'game'
+        gamePage = 1
+        playerPage = 1
+        limit = 20
+
+        if "tab" in params.keys():
+            tab = params.tab
+        if "gamePage" in params.keys():
+            gamePage = int(params.gamePage)
+        if "playerPage" in params.keys():
+            playerPage = int(params.playerPage)
+
+        gameSkip = (gamePage-1) * limit
+        playerSkip = (playerPage-1) * limit
+
+        cur.execute('''SELECT COUNT(*) FROM Leaderboard''')
+        gameCount = cur.fetchone()[0]
+        gamePages = (gameCount / limit) + 1
+
+        cur.execute('''SELECT COUNT(*) FROM Player WHERE totalScore > 0''')
+        playerCount = cur.fetchone()[0]
+        playerPages = (playerCount / limit) + 1
+
+        print "game", gameCount, gamePage, gameSkip
+        print "player", playerCount, playerPage, playerSkip
+
+        cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
+            FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
+            WHERE Leaderboard.score > 0 ORDER BY Leaderboard.score DESC LIMIT ? OFFSET ?''', (limit, gameSkip))
+
+        games = rowsToDict(cur, cur.fetchall())
+        for k in range(len(games)):
+            games[k]["score"] = locale.format("%d", games[k]["score"], grouping=True)
+
+        cur.execute('''SELECT totalScore, wins, username FROM Player WHERE totalScore > 0
+            ORDER BY totalScore DESC LIMIT ? OFFSET ?''', (limit, playerSkip))
+        players = rowsToDict(cur, cur.fetchall())
+
+        for i in range(len(players)):
+            players[i]["totalScore"] = locale.format("%d", players[i]["totalScore"], grouping=True)
+
+        return render.leaderboard(games, players, gamePage, playerPage, gamePages, playerPages, tab, isLoggedIn)
+
 
 class Setup(object):
     def __init__(self):
