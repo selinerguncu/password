@@ -10,7 +10,6 @@ import sqlite3 as sqlite
 import locale
 
 appPath = os.getcwd()
-print appPath
 templatePath = appPath + '/templates'
 # to be able to import local modules
 sys.path.append(appPath)
@@ -138,9 +137,6 @@ class Leaderboard():
         cur.execute('''SELECT COUNT(*) FROM Player WHERE totalScore > 0''')
         playerCount = cur.fetchone()[0]
         playerPages = (playerCount / limit) + 1
-
-        print "game", gameCount, gamePage, gameSkip
-        print "player", playerCount, playerPage, playerSkip
 
         cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username
             FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
@@ -301,7 +297,6 @@ class Setup(object):
             err = "silverAmount"
         elif silverCoins == "" and goldCoins == "" or silverCoins == '0' and goldCoins == '0':
             err = "goldSilverAmount"
-        print silverCoins, goldCoins, err, silverCoins == "", goldCoins == "", silverCoins == 0, goldCoins == 0
         return err
 
 class Restart():
@@ -378,7 +373,6 @@ class Game(object):
             self.game["password"] = password
 
     def writeHistory(self, evaluation):
-        print evaluation
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
         cur.execute('''
@@ -405,8 +399,6 @@ class Game(object):
         past = []
         for row in history:
             past.append(row)
-
-        print 'self.game["complexity"]', self.game['complexity']
 
         return render.game(self.game, past)
 
@@ -510,13 +502,13 @@ class Game(object):
             won = 1
             goldCoinsSpent -= game["digits"]
             scoreVariables = {
-            "digits" : game["digits"],
-            "complexity" : game["complexity"],
-            "goldCoins" : game["goldCoins"],
-            "silverCoins" : game["silverCoins"],
-            "totalRounds" : totalRounds,
-            "goldSpent" : goldCoinsSpent,
-            "silverSpent" : silverCoinsSpent
+                "digits" : game["digits"],
+                "complexity" : game["complexity"],
+                "goldCoins" : game["goldCoins"],
+                "silverCoins" : game["silverCoins"],
+                "totalRounds" : totalRounds,
+                "goldSpent" : goldCoinsSpent,
+                "silverSpent" : silverCoinsSpent
             }
             scoreInstance = Score(scoreVariables)
             score = scoreInstance.calculateScore()
@@ -554,9 +546,6 @@ class Game(object):
             badge = 'Sapphire'
         else:
             badge = 'Ruby'
-
-        print "score", score
-        print "badge", badge
 
         cur.execute('''INSERT INTO Leaderboard(score, badge, player_id, game_id) VALUES (?, ?, ?, ?)''', (score, badge, session.player_id, session.game_id) )
         conn.commit()
