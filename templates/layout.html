@@ -57,6 +57,8 @@ $def with (content)
     </div>
   </header>
   <main>
+    $if 'username' in content:
+      <a id="username" class="ui teal ribbon label">$content.username</a>
     $:content
   </main>
   <footer>

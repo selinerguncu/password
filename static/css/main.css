@@ -8,6 +8,12 @@ main {
     position: relative;
 }
 
+#username {
+    position: absolute;
+    top: 7px;
+    left: -14px;
+}
+
 @media all and (max-width: 600px) {
     main {
         border: none;

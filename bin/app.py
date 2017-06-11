@@ -194,6 +194,9 @@ class Setup(object):
             elif lastLevel["won"] == 0:
                 self.currentLevel = lastLevel["level"]
 
+        cur.execute('''SELECT username FROM Player WHERE id = ?''', (session.player_id,))
+        self.player = rowToDict(cur, cur.fetchone())
+
         self.levelSet["currentLevel"] = self.currentLevel
 
 
@@ -202,7 +205,7 @@ class Setup(object):
             return web.seeother('/')
 
         if session.game_id == 0:
-            return render.setup(self.levelSet)
+            return render.setup(self.player, self.levelSet)
         else:
             conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
             cur = conn.cursor()
@@ -210,13 +213,12 @@ class Setup(object):
             gameRow = cur.fetchone()
 
             if gameRow[0] in [0, 1]:
-                return render.setup(self.levelSet)
+                return render.setup(self.player, self.levelSet)
             else:
                 return web.seeother('/game')
 
     def POST(self):
         data = parseFormData(web.data())
-        print data
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
 
@@ -238,9 +240,9 @@ class Setup(object):
             return web.seeother('/game')
 
         elif error != None:
-            return render.setup(self.levelSet, errors[error], data, True)
+            return render.setup(self.player, self.levelSet, errors[error], data, True)
         elif error == None and warning != None:
-            return render.setup(self.levelSet, errors[warning], data)
+            return render.setup(self.player, self.levelSet, errors[warning], data)
 
     def hasWarning(self, data):
         warning = None
@@ -248,8 +250,6 @@ class Setup(object):
         silverCoins = int(data["silverCoins"])
         complexity = int(data["complexity"])
         digits = int(data["digits"])
-
-        print goldCoins, silverCoins, complexity, digits
 
         if goldCoins > 120 or silverCoins > 120:
             warning = "max100"
