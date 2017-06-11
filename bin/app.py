@@ -469,13 +469,6 @@ class Game(object):
                 goldInBag = rows[0][4] - evaluation["goldCoinsReceived"]
                 silverInBag = rows[0][5] - evaluation["silverCoinsReceived"]
 
-            if goldInBag <= 0:
-                goldInBag = 0
-                evaluation["goldCoinsReceived"] = 0
-            if silverInBag <= 0:
-                silverInBag = 0
-                evaluation["silverCoinsReceived"] = 0
-
             evaluation["_round"] = _round
             evaluation["goldInBag"] = goldInBag
             evaluation["silverInBag"] = silverInBag
@@ -483,7 +476,7 @@ class Game(object):
             self.writeHistory(evaluation)
 
             #won or lost:
-            if ''.join(guess) == self.game["password"] or (goldInBag == 0 and silverInBag == 0):
+            if ''.join(guess) == self.game["password"] or (goldInBag <= 0 and silverInBag <= 0):
                 self.gameEnded()
                 return web.seeother('/gameover')
 
@@ -515,6 +508,7 @@ class Game(object):
 
         if hasWon:
             won = 1
+            goldCoinsSpent -= game["digits"]
             scoreVariables = {
             "digits" : game["digits"],
             "complexity" : game["complexity"],
@@ -625,8 +619,6 @@ class GameOver():
 
         gameInMaxLeaders["totalScore"] = locale.format("%d", player["totalScore"], grouping=True)
 
-        print "gameInMaxLeaders", gameInMaxLeaders
-        print "self.maxLeaders", self.maxLeaders
         if gameInMaxLeaders in self.maxLeaders:
             gameInMaxLeaders['inMaxScores'] = True
         else:
@@ -636,15 +628,8 @@ class GameOver():
 
         gameOver["hasWon"] = game["won"] == 1
         gameOver["round"] = game["totalRounds"]
-
-        if (game["goldCoins"] - game["goldSpent"]) <= game["digits"]:
-            gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"]
-        else:
-            gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"] + game["digits"]
-
-
+        gameOver["goldInBag"] = game["goldCoins"] - game["goldSpent"]
         gameOver["silverInBag"] = game["silverCoins"] - game["silverSpent"]
-
         gameOver["password"] = game["password"]
         gameOver["digits"] = game["digits"]
 

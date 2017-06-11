@@ -77,7 +77,6 @@ $else:
 $if error:
   <div class="ui red message"><i class="remove sign icon"></i> $error</div>
 
-
 $if game["won"] in [0, 1]:
   <div class="boxes">
   $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
@@ -126,17 +125,50 @@ $elif game["won"] == 0:
       <tbody>
         $if len(past) > 0:
           $for row in past:
-            $ gold = '-'
-            $ silver = '-'
-            $if row[2] != length:
-              $ gold = row[2]
-            $if row[2] != length:
-              $ silver = row[3]
+            $ goldPlus = ''
+            $ silverPlus = ''
+
+            $ goldSpentThisRound = row[2]
+            $ silverSpentThisRound = row[3]
+            $ goldInBagThisRound = row[4]
+            $ silverInBagThisRound = row[5]
+
+            $ goldDesc = ''
+            $ silverDesc = ''
+
+            $if goldSpentThisRound != length:
+              $ gold = goldSpentThisRound
+              $ silver = silverSpentThisRound
+
+            $if goldInBagThisRound < 0 and -goldInBagThisRound < goldSpentThisRound:
+              $ goldPlus = '+'
+              $ gold = goldSpentThisRound + goldInBagThisRound
+              $ goldDesc = 'data-tooltip="Amount of characters you spotted were more than your remaining gold coins in this round."'
+            $elif goldInBagThisRound < 0:
+              $ gold = "-"
+              $ goldDesc = 'data-tooltip="You were out of gold coins!"'
+
+            $if silverInBagThisRound < 0 and -silverInBagThisRound < silverSpentThisRound:
+              $ silverPlus = '+'
+              $ silver = silverSpentThisRound + silverInBagThisRound
+              $ silverDesc = 'data-tooltip="Amount of characters you spotted were more than your remaining silver coins in this round."'
+            $elif silverInBagThisRound < 0:
+              $ silver = "-"
+              $ silverDesc = 'data-tooltip="You were out of silver coins!"'
+
+            $if goldSpentThisRound == length:
+              $ goldPlus = ''
+              $ silverPlus = ''
+              $ goldDesc = ''
+              $ silverDesc = ''
+              $ gold = 'WON'
+              $ silver = 'WON'
+
             <tr>
               <td>$row[0]</td>
               <td><code>$row[1]</code></td>
-              <td><div class="ui yellow circular label">$gold</div></td>
-              <td><div class="ui grey circular label">$silver</div></td>
+              <td><div class="ui yellow circular label" $:goldDesc >$gold$goldPlus</div></td>
+              <td><div class="ui grey circular label" $:silverDesc >$silver$silverPlus</div></td>
             </tr>
         $else:
             <tr>
@@ -150,8 +182,15 @@ $elif game["won"] == 0:
     <table class="ui celled table center aligned unstackable">
       <thead>
         <tr>
-          <th>$goldInBag Gold</th>
-          <th>$silverInBag Silver</th>
+          $if goldInBag > 0:
+            <th>$goldInBag Gold</th>
+          $else:
+            <th>0 Gold</th>
+
+          $if silverInBag > 0:
+            <th>$silverInBag Silver</th>
+          $else:
+            <th>0 Silver</th>
         </tr>
         <tr>
           <td colspan="2">
@@ -172,7 +211,10 @@ $elif game["won"] == 0:
               </div>
             $else:
               <div class="coins">
-                $ coins = goldInBag
+                $if goldInBag > 0:
+                  $ coins = goldInBag
+                $else:
+                  $ coins = 0
 
                 $ bags100 = coins / 100
                 $ bags30 = coins % 100 / 30
@@ -205,7 +247,10 @@ $elif game["won"] == 0:
                   </div>
               </div>
               <div class="coins silver">
-                $ coins = silverInBag
+                $if silverInBag > 0:
+                  $ coins = silverInBag
+                $else:
+                  $ coins = 0
 
                 $ bags100 = coins / 100
                 $ bags30 = coins % 100 / 30
@@ -242,7 +287,7 @@ $elif game["won"] == 0:
         <tr>
           <td colspan="2">
             <h4 class="ui header">Possible characters:</h4>
-            <div class="ui circular labels">
+            <div id="charset" class="ui circular labels">
               $for input in inputSet:
                 <div class="ui gray circular label">$input</div>
             </div>
