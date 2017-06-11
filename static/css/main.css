@@ -183,6 +183,10 @@ svg.coin {
   fill: #767676;
 }
 
+/*  GAMEOVER PAGE  */
+.gameover .illu {
+  max-width: 100px;
+}
 /*  GAMEOVER PAGE OLD BAGS  */
 
 .gameover .coin-bag {
@@ -240,4 +244,9 @@ svg.coin {
   .ui.login-page.grid .column:first-child {
     max-width: none;
   }
+}
+
+#charset {
+  max-width: 330px;
+  margin: 0 auto;
 }
