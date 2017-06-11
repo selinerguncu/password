@@ -20,9 +20,11 @@ $ score = gameOver["score"]
 
 <div class="ui gameover">
     $if hasWon:
+        <img class="illu" src="/static/img/fireworks.svg" />
         <h1 class="ui header">You WON!</h1>
         <h3 class="ui header">Congrats! You discovered the Password in $round rounds.</h3>
     $else:
+        <img class="illu" src="/static/img/ghost.svg" />
         <h1 class="ui header">You LOST!</h1>
         <h3 class="ui header">You spent all of your Gold and Silver coins, yet couldn't discover the Password.</h3>
 
