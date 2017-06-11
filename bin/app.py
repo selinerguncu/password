@@ -176,8 +176,10 @@ class Setup(object):
         #ayni id li adamin butun game lerine bak. en yuksek level i bul. yeni actigin oyuna max level i bir arttir ve ekle
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
-        cur.execute('''SELECT level, score, won FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
+        cur.execute('''SELECT level, score, won FROM Game WHERE player_id = ? AND won = 1 ORDER BY level DESC''', (session.player_id,))
         last = cur.fetchone()
+
+        print last
 
         if last == None:
             self.currentLevel = 1
