@@ -1,89 +1,88 @@
 main {
-    margin: 0 auto;
-    max-width: 1000px;
-    min-width: 400px;
-    border: 1px solid rgba(34,36,38,.15);
-    border-radius: 4px;
-    padding: 30px;
-    position: relative;
-}
 
 #username {
     position: absolute;
     top: 7px;
     left: -14px;
+  margin: 0 auto;
+  max-width: 1000px;
+  min-width: 400px;
+  border: 1px solid rgba(34, 36, 38, .15);
+  border-radius: 4px;
+  padding: 30px;
+  position: relative;
 }
 
 @media all and (max-width: 600px) {
-    main {
-        border: none;
-        padding: 1rem;
-        min-width: 100%;
-    }
+  main {
+    border: none;
+    padding: 1rem;
+    min-width: 100%;
+  }
 }
 
 header {
-    margin: 20px auto;
-    max-width: 1000px;
-    min-width: 400px;
+  margin: 20px auto;
+  max-width: 1000px;
+  min-width: 400px;
 }
 
 header .ui.simple.dropdown {
-    display: none !important;
+  display: none !important;
 }
 
 @media all and (max-width: 600px) {
-    header {
-        margin: 1rem;
-        min-width: 0;
-        width: auto;
-    }
-    header .ui.simple.dropdown {
-        display: flex !important;
-    }
-    header .ui.menu  {
-        border-radius: 0;
-    }
-    header .ui.menu .right.menu > a {
-        display: none !important;
-    }
-    header .ui.menu > a h2 {
-        font-size: 12px;
-    }
+  header {
+    margin: 1rem;
+    min-width: 0;
+    width: auto;
+  }
+  header .ui.simple.dropdown {
+    display: flex !important;
+  }
+  header .ui.menu {
+    border-radius: 0;
+  }
+  header .ui.menu .right.menu > a {
+    display: none !important;
+  }
+  header .ui.menu > a h2 {
+    font-size: 12px;
+  }
 }
 
 footer {
-    margin: 20px auto;
-    max-width: 1000px;
-    min-width: 400px;
-    font-size: 12px;
-    color: rgba(0,0,0,.5);
-    text-align: center;
+  margin: 20px auto;
+  max-width: 1000px;
+  min-width: 400px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, .5);
+  text-align: center;
 }
 
 @media all and (max-width: 600px) {
-    footer {
-        margin: 1rem;
-        max-width: 1000px;
-        min-width: 0;
-    }
+  footer {
+    margin: 1rem;
+    max-width: 1000px;
+    min-width: 0;
+  }
 }
 
 /* because of https://github.com/Semantic-Org/Semantic-UI/issues/4342 */
 .divider-column {
-    position: relative;
-    padding: 0 !important;
+  position: relative;
+  padding: 0 !important;
 }
 .ui.vertical.divider:after, .ui.vertical.divider:before {
-    height: 100% !important;
+  height: 100% !important;
 }
 
 .coin-bags {
-    display: flex;
+  display: flex;
 }
 
 .gameover {
-    text-align: center;
+  text-align: center;
 }
 .gameover .coin-bags {
   max-width: 400px;
@@ -91,36 +90,36 @@ footer {
 }
 
 .level-buttons {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 -10px;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 -10px;
 }
 .level-buttons form {
-    flex: 1 1 auto;
-    min-width: 200px;
-    margin: 10px 10px 0;
+  flex: 1 1 auto;
+  min-width: 200px;
+  margin: 10px 10px 0;
 }
 .level-buttons form button.ui.button {
-    width: 100%;
+  width: 100%;
+}
 }
 
 #custom-game {
-    display: none;
+  display: none;
 }
 
 #level-button {
-    width: 100%;
-    margin: 0;
+  width: 100%;
+  margin: 0;
 }
 
 #custom-game-button {
-    margin: 0 10px;
-    width: 100%;
+  margin: 0 10px;
+  width: 100%;
 }
-
 
 .coins {
   display: flex;
@@ -190,45 +189,45 @@ svg.coin {
 /*  GAMEOVER PAGE OLD BAGS  */
 
 .gameover .coin-bag {
-    flex: 1 1 auto;
-    position: relative;
+  flex: 1 1 auto;
+  position: relative;
 }
 .gameover .coin-bag span {
-    position: absolute;
-    font-size: 48px;
-    color: white;
-    top: 62%;
-    left: 50%;
-    z-index: 2;
-    transform: translateX(-50%);
+  position: absolute;
+  font-size: 48px;
+  color: white;
+  top: 62%;
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
 }
 .gameover .coin-bag svg {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 .gameover .coin-bag.gold svg path {
-    fill: #FBBD08;
+  fill: #FBBD08;
 }
 .gameover .coin-bag:before {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    top: 42%;
-    left: 29%;
-    width: 37%;
-    height: 45%;
-    z-index: 1;
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  top: 42%;
+  left: 29%;
+  width: 37%;
+  height: 45%;
+  z-index: 1;
 }
 .gameover .coin-bag.gold:before {
-    background: #FBBD08;
+  background: #FBBD08;
 }
 
 .gameover .coin-bag.silver:before {
-    background: #767676;
+  background: #767676;
 }
 
 .gameover .coin-bag.silver svg path {
-    fill: #767676;
+  fill: #767676;
 }
 
 .ui.login-page.grid .column:first-child {
