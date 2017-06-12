@@ -1,4 +1,4 @@
-$def with (player, levelSet, msg = None, data = None, isError = False)
+$def with (player, levelSet, msg = None, data = None, isError = False, unfinishedGames = None)
 $var logout: True
 $var username: $player["username"]
 
@@ -72,101 +72,129 @@ $if msg:
     </div>
   </form>
 $else:
-  <div id="level-buttons" class="ui level-buttons">
-    $for i in range(1,21):
-      <form method="POST">
-      $ activeClass = 'ui button'
-      $ disabled = ''
-      $if level == i:
-        $ activeClass = 'olive ui button'
-        $ lock = 'unlock white'
-        <input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
-        <input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
-        <input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
-        <input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
-        <input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
-        <input type="text" name="force" value="1" hidden="hidden">
-      $if i > level:
-        $ disabled = 'disabled="disabled"'
-        $ lock = 'lock red'
-      $if i < level:
-        $ activeClass = 'ui button'
-        $ lock = 'unlock green'
-        <input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
-        <input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
-        <input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
-        <input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
-        <input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
-        <input type="text" name="force" value="1" hidden="hidden">
-      <button class="$activeClass" type="submit" $disabled>
-        <i class="$lock icon"></i>
-        Level $i
-      </button>
-      </form>
-    <div class="ui horizontal divider">OR</div>
-    <button class="ui basic button" id="custom-game-button">
+  <div class="ui styled fluid accordion">
+    $if unfinishedGames:
+      <div class="title active">
+        <i class="dropdown icon"></i>
+        Continue Your Active Games
+      </div>
+      <div class="content active">
+        <div class="transition visible" style="display: block !important;">
+          <div class="level-buttons unfinishedGames">
+          $for game in unfinishedGames:
+            $if game["level"] == 0:
+              $ levelName = 'Custom Game'
+              $ levelNumber = ''
+            $else:
+              $ levelName = 'Level '
+              $ levelNumber = game["level"]
+            <form method="POST">
+              <input type="text" name="gameid" value='$game["id"]' hidden="hidden">
+              <button class="olive ui button" type="submit">
+                <i class="unlock white icon"></i>
+                $levelName$levelNumber
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    $if not unfinishedGames:
+      $ activeClass = ' active'
+      $ contentAttributes = 'class="transition visible" style="display: block !important;"'
+    $else:
+      $ activeClass = ''
+      $ contentAttributes = 'class="transition hidden"'
+    <div class="title$activeClass">
+      <i class="dropdown icon"></i>
+      Play a New Game by Level
+    </div>
+    <div class="content$activeClass">
+      <div $:contentAttributes>
+        <div class="level-buttons">
+        $for i in range(1,21):
+          <form method="POST">
+          $ activeClass = 'ui button'
+          $ disabled = ''
+          $if level == i:
+            $ activeClass = 'olive ui button'
+            $ lock = 'unlock white'
+            <input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
+            <input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
+            <input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
+            <input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
+            <input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
+            <input type="text" name="force" value="1" hidden="hidden">
+          $if i > level:
+            $ disabled = 'disabled="disabled"'
+            $ lock = 'lock red'
+          $if i < level:
+            $ activeClass = 'ui button'
+            $ lock = 'unlock green'
+            <input type="text" name="digits" value=$levelDigits[i-1] hidden="hidden">
+            <input type="text" name="complexity" value=$levelComplexity[i-1] hidden="hidden">
+            <input type="text" name="goldCoins" value=$levelGoldCoins[i-1] hidden="hidden">
+            <input type="text" name="silverCoins" value=$levelSilverCoins[i-1] hidden="hidden">
+            <input type="text" name="level" value=$levelLevels[i-1] hidden="hidden">
+            <input type="text" name="force" value="1" hidden="hidden">
+          <button class="$activeClass" type="submit" $disabled>
+            <i class="$lock icon"></i>
+            Level $i
+          </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="title">
+      <i class="dropdown icon"></i>
       Start a Custom Game
-    </button>
-  </div>
-  <div id="custom-game">
-    <button class="ui olive button" id="level-button">
-      Play level by level!
-    </button>
-    <form method="POST" id="custom-game-form" class="ui form attached fluid">
-      <div class="ui horizontal divider">OR</div>
-      <div class="two fields">
-        <div class="field">
-          <label>Number of Digits</label>
-          <select class="ui compact selection dropdown" name="digits">
-            <option selected="selected">4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Complexity</label>
-          <select class="ui compact selection dropdown" name="complexity">
-            <option value="0" selected="selected">Only Numbers</option>
-            <option value="1">Only Letters</option>
-            <option value="2">Both Numbers and Letters</option>
-            <option value="3">Numbers and All Lower and Uppercase Letters</option>
-          </select>
-        </div>
+    </div>
+    <div class="content">
+      <div class="transition hidden">
+        <form method="POST" id="custom-game-form" class="ui form attached fluid">
+          <div class="two fields">
+            <div class="field">
+              <label>Number of Digits</label>
+              <select class="ui compact selection dropdown" name="digits">
+                <option selected="selected">4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Complexity</label>
+              <select class="ui compact selection dropdown" name="complexity">
+                <option value="0" selected="selected">Only Numbers</option>
+                <option value="1">Only Letters</option>
+                <option value="2">Both Numbers and Letters</option>
+                <option value="3">Numbers and All Lower and Uppercase Letters</option>
+              </select>
+            </div>
+          </div>
+          <div class="two fields">
+            <div class="field">
+              <label>Gold Coin Amount</label>
+              <input type="text" name="goldCoins" value="30">
+            </div>
+            <div class="field">
+              <label>Silver Coin Amount</label>
+              <input type="text" name="silverCoins" value="30">
+            </div>
+          </div>
+          <div class="field">
+            <input type="text" name="force" value="0" hidden="hidden">
+          </div>
+          <div class="field">
+            <button class="ui blue submit button" type="submit">Done! Let's Start!</button>
+          </div>
+        </form>
       </div>
-      <div class="two fields">
-        <div class="field">
-          <label>Gold Coin Amount</label>
-          <input type="text" name="goldCoins" value="30">
-        </div>
-        <div class="field">
-          <label>Silver Coin Amount</label>
-          <input type="text" name="silverCoins" value="30">
-        </div>
-      </div>
-      <div class="field">
-        <input type="text" name="force" value="0" hidden="hidden">
-      </div>
-      <div class="field">
-        <button class="ui blue submit button" type="submit">Done! Let's Start!</button>
-      </div>
-    </form>
+    </div>
   </div>
 
 <script>
   $$(document).ready(function () {
-    var custom = $$('#custom-game');
-    var levels = $$('#level-buttons');
-
-    $$('#custom-game-button').click(function(){
-        levels.hide();
-        custom.show();
-    });
-
-    $$('#level-button').click(function(){
-        levels.show();
-        custom.hide();
-    });
+    $$('.ui.accordion').accordion()
   })
 </script>

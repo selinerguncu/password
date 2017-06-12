@@ -197,26 +197,23 @@ class Setup(object):
 
         self.levelSet["currentLevel"] = self.currentLevel
 
-
     def GET(self):
+        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+        cur = conn.cursor()
         if session.player_id == 'guest':
             return web.seeother('/')
 
-        if session.game_id == 0:
-            return render.setup(self.player, self.levelSet)
-        else:
-            conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-            cur = conn.cursor()
-            cur.execute('''SELECT won FROM Game WHERE id = ?''', (session.game_id,))
-            gameRow = cur.fetchone()
-
-            if gameRow[0] in [0, 1]:
-                return render.setup(self.player, self.levelSet)
-            else:
-                return web.seeother('/game')
+        cur.execute('''SELECT won, id, level FROM Game WHERE player_id = ? AND won IS NULL''', (session.player_id,))
+        unfinishedGames = rowsToDict(cur, cur.fetchall())
+        return render.setup(self.player, self.levelSet, None, None, False, unfinishedGames)
 
     def POST(self):
         data = parseFormData(web.data())
+
+        if "gameid" in data.keys():
+          session.game_id = data["gameid"]
+          return web.seeother('/game')
+
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
 
@@ -348,6 +345,7 @@ class Quit(Restart):
         cur = conn.cursor()
 
         self.lose()
+        session.game_id = 0
 
         return web.seeother("/setup")
 
