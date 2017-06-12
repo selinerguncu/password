@@ -33,7 +33,7 @@ $def with (content)
       </a>
       <div class="right menu">
         $if 'username' in content:
-          <div class="item"><i class="child icon"></i>$content.username</div>
+          <a class="item" href="/setup"><i class="child icon"></i>$content.username</a>
         $if 'link1' in content:
           $:content.link1
         $if 'link2' in content:
