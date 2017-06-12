@@ -4,13 +4,25 @@ $def with (content)
 <head>
     <title>P*a*5*S*w*0*r*D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/icon.min.css">
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/components/icon.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     $if 'css' in content:
       $:content.css
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+    <!-- FAVICO stuff -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favico/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favico/favicon-16x16.png">
+    <link rel="manifest" href="/static/img/favico/manifest.json">
+    <link rel="mask-icon" href="/static/img/favico/safari-pinned-tab.svg" color="#b5cc18">
+    <link rel="shortcut icon" href="/static/img/favico/favicon.ico">
+    <meta name="msapplication-config" content="/static/img/favico/browserconfig.xml">
+    <meta name="theme-color" content="#fafafa">
+    <meta name="apple-mobile-web-app-title" content="Pa5Sw0rD">
+    <!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
+    <!-- <link rel="apple-touch-startup-image" href="/static/img/welcome.png"> -->
 </head>
 <body>
   <header>
@@ -19,6 +31,8 @@ $def with (content)
         <h2 class="ui header">P*a*5*S*w*0*r*D</h2>
       </a>
       <div class="right menu">
+        $if 'username' in content:
+          <div class="item"><i class="child icon"></i>$content.username</div>
         $if 'link1' in content:
           $:content.link1
         $if 'link2' in content:
@@ -57,12 +71,10 @@ $def with (content)
     </div>
   </header>
   <main>
-    $if 'username' in content:
-      <a id="username" class="ui teal ribbon label">$content.username</a>
     $:content
   </main>
   <footer>
-    <p>by <a href="https://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
+    <p>by <a href="http://github.com/selinerguncu">Selin Erguncu</a> <i class="heart icon red"></i>2017</p>
   </footer>
   <script>
     $$(document).ready(function() {
