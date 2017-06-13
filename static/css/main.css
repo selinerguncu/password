@@ -188,6 +188,11 @@ svg.coin {
 .gameover .illu {
   max-width: 100px;
 }
+
+.gameover .illu.lost {
+  width: 200px;
+  max-width: 200px;
+}
 /*  GAMEOVER PAGE OLD BAGS  */
 
 .gameover .coin-bag {
