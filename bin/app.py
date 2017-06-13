@@ -13,6 +13,8 @@ appPath = os.getcwd()
 templatePath = appPath + '/templates'
 # to be able to import local modules
 sys.path.append(appPath)
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 from numberGame import code
 from numberGame.score import Score

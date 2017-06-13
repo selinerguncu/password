@@ -1,20 +1,10 @@
+import urlparse
+
 def parseFormData(rawData):
-	formData = rawData.split('&')
 	data = {}
-	
-	for i in formData:
-		param = i.split('=')
-		data[param[0]] = param[1]
+	formData = urlparse.parse_qsl(rawData)
 
-	return data
-
-
-def parseFormData1(rawData):
-	formData = rawData.split('&')
-	data = {}
-	
-	for i in formData:
-		param = i.split('=')
-		data[param[0]] = param[1]
+	for dataset in formData:
+		data[dataset[0]] = dataset[1].decode('utf-8')
 
 	return data
