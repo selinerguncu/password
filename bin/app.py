@@ -356,6 +356,7 @@ class Quit(Restart):
 class Game(object):
     def __init__(self):
         self.count = 0
+        self.game = None
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
         game_id = session.game_id
@@ -390,6 +391,9 @@ class Game(object):
             return web.seeother('/')
 
         if session.game_id == '0':
+            return web.seeother('/setup')
+
+        if not self.game:
             return web.seeother('/setup')
 
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
@@ -623,6 +627,7 @@ class GameOver():
         gameOver["silverInBag"] = game["silverCoins"] - game["silverSpent"]
         gameOver["password"] = game["password"]
         gameOver["digits"] = game["digits"]
+        gameOver["level"] = game["level"]
 
         gameOver["score"] = locale.format("%d", game["score"], grouping=True)
 
