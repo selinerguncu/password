@@ -17,18 +17,28 @@ $ silverCoinsInBag = gameOver["silverInBag"]
 $ password = gameOver["password"]
 $ length = gameOver["digits"]
 $ score = gameOver["score"]
+$ level = gameOver["level"]
+$if level == 0:
+    $ wonTitle = 'You WON!'
+    $ buttonTitle = 'Play a New Game'
+    $ levelNr = ''
+$else:
+    $ wonTitle = 'You WON and unlocked LEVEL'
+    $ buttonTitle = 'Continue to Level'
+    $ levelNr = level + 1
+    $if level == 20:
+        $ wonTitle = 'You completed all the levels!'
+        $ levelNr = ''
 
 <div class="ui gameover">
     $if hasWon:
         <img class="illu" src="/static/img/fireworks.svg" />
-        <h1 class="ui header">You WON!</h1>
-        <h3 class="ui header">Congrats! You discovered the Password in $round rounds.</h3>
+        <h1 class="ui header">$wonTitle $levelNr</h1>
     $else:
         <img class="illu" src="/static/img/ghost.svg" />
         <h1 class="ui header">You LOST!</h1>
-        <h3 class="ui header">You spent all of your Gold and Silver coins, yet couldn't discover the Password.</h3>
 
-    <h1 class="ui header">Your score is: $score</h1>
+    <h1 class="ui header">Score: $score</h1>
     <br>
     $ m = '*' * 6
     $ t = '*'
@@ -38,6 +48,11 @@ $ score = gameOver["score"]
     $for i in range(length):
         <div class="box"><pre data-pass="$password[i]">$m</pre></div>
     </div>
+
+    $if hasWon:
+        <h3 class="ui header">Congrats! You discovered the Password in $round rounds.</h3>
+    $else:
+        <h3 class="ui header">You spent all of your Gold and Silver coins, yet couldn't discover the Password.</h3>
 
     <div class="coin-bags">
         <div class="coin-bag gold">
@@ -67,7 +82,7 @@ $ score = gameOver["score"]
             <button type="submit" class="ui basic button">See Game Summary</button>
         </form>
         <form action="/setup">
-            <button type="submit" class="ui primary button">Continue</button>
+            <button type="submit" class="ui primary button">$buttonTitle $levelNr</button>
         </form>
     </div>
 
