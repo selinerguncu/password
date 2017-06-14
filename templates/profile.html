@@ -1,34 +1,233 @@
-$def with (player)
+$def with (player, allGames)
+
+
+$var logout: True
+$var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
+
+
+$var link2: <a class="item" href="/leaderboard"><i class="trophy icon"></i> Leaderboard</a>
 
 $ username = player["username"]
 $ games = player["games"]
-$ difficulty = player["difficulty"]
-$ totalBadges = player["totalBadges"]
-$ badgeType = player["badgeType"]
-$ totalScore = player["totalScore"]
+$ wins = player["wins"]
+$ losses = player["losses"]
 $ maxScore = player["maxScore"]
-$ stages = player["stages"]
-$ level = player["level"]
+$ totalScore = player["totalScore"]
 
+$ activeGameNr = 0
+$ gameWonNr = 0
+$ gameLostNr = 0
 
+$for game in allGames:
+  $if game["won"] not in [0, 1]:
+    $ activeGameNr += 1
+  $elif game["won"] == 1:
+    $ gameWonNr += 1
+  $elif game["won"] == 0:
+    $ gameLostNr += 1
 
+<h2>Hi, $username!</h2>
 
-You have $games Password games in play:
+$if activeGameNr == 0 and finishedGameNr == 0:
+  <h4>You haven't started playing yet!</h4>
 
-<br><br><br>
+$if activeGameNr > 0:
+  <h3>You have $activeGameNr Active Games:</h3>
+  <table class="ui celled table">
+    <thead>
+      <tr>
+        <th>Level</th>
+        <th>Password</th>
+        <th>Gold Coins</th>
+        <th>Silver Coins</th>
+        <th>Total Rounds</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    $for game in allGames:
+      $if game["won"] not in [0, 1]:
+        $if game["level"] == 0:
+          $ game["level"] = "Custom Game"
 
-$for i in range(games):
-	($(i+1)) Password: $difficulty[i]  &nbsp; &nbsp; &nbsp; &nbsp; <button type="submit">Continue</button>  &nbsp; &nbsp; &nbsp; &nbsp; <button type="submit">End</button> <br><br>
+        $if game["level"] == 0:
+          $ status = "Custom Game"
 
+        $ game["goldRemaining"] = game["goldCoins"] - game["goldSpent"]
+        $ game["silverRemaining"] = game["silverCoins"] - game["silverSpent"]
 
- <br><br><br>
- Active Game &nbsp; &nbsp; &nbsp; &nbsp; Password &nbsp; &nbsp; &nbsp; &nbsp; Total Badges &nbsp; &nbsp; &nbsp; &nbsp; Total Scores &nbsp; &nbsp; &nbsp; &nbsp; Max Score &nbsp; &nbsp; &nbsp; &nbsp; Passed Stages &nbsp; &nbsp; &nbsp; &nbsp; Current Level <br><br>
+        $if game["complexity"] == 0:
+          $ complexity = "Numbers"
+        $elif game["complexity"] == 1:
+          $ complexity = "Lowercase Letters"
+        $if game["complexity"] == 2:
+          $ complexity = "Numbers and Lowercase Letters"
+        $if game["complexity"] == 3:
+          $ complexity = "Numbers, Lowercase and Uppercase Letters"
+        <tr>
+          <td>$game["level"]</td>
+          <td>
+            <div class="content">
+              $game["digits"] digits
+              <div class="sub header">$complexity</div>
+            </div>
+          </td>
+          <td>
+            <div class="content">
+              $game["goldCoins"] received
+              <div class="sub header">$game["goldRemaining"] remaining</div>
+            </div>
+          </td>
+          <td>
+            <div class="content">
+              $game["silverCoins"] received
+              <div class="sub header">$game["silverRemaining"] remaining</div>
+            </div>
+          </td>
+          <td>$game["totalRounds"]</td>
+          <td>
+            <form method="POST" action="/setup">
+                <input type="text" name="gameid" value='$game["id"]' hidden="hidden">
+                <button class="olive basic ui button" type="submit">
+                  Continue This Game
+                </button>
+              </form>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
-$for i in range(games):
-	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $(i+1) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $difficulty[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  $totalBadges[i] $badgeType[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  $totalScore[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $maxScore[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;  $stages[i] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Level $level[i] 
-	
-	
+$if gameWonNr > 0:
+  <h3>You won $gameWonNr games:</h3>
+  <table class="ui celled table">
+    <thead>
+    <tr>
+      <th>Level</th>
+      <th>Badge</th>
+      <th>Score</th>
+      <th>Password</th>
+      <th>Gold Coins</th>
+      <th>Silver Coins</th>
+      <th>Total Rounds</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    $for game in allGames:
+      $if game["won"] == 1:
+        $if game["level"] == 0:
+          $ game["level"] = "Custom Game"
 
+        $ game["goldRemaining"] = game["goldCoins"] - game["goldSpent"] + game["digits"]
+        $ game["silverRemaining"] = game["silverCoins"] - game["silverSpent"]
 
-	<br>
-	<br>
+        $if game["complexity"] == 0:
+          $ complexity = "Numbers"
+        $elif game["complexity"] == 1:
+          $ complexity = "Lowercase Letters"
+        $if game["complexity"] == 2:
+          $ complexity = "Numbers and Lowercase Letters"
+        $if game["complexity"] == 3:
+          $ complexity = "Numbers, Lowercase and Uppercase Letters"
+
+        $if game["badge"] == "Ruby":
+          $ cls = "orange"
+        $elif game["badge"] == "Sapphire":
+          $ cls = "blue"
+        $elif game["badge"] == "Emerald":
+          $ cls = "green"
+        $elif game["badge"] == "Diamond":
+          $ cls = "grey"
+
+        <tr>
+          <td>$game["level"]</td>
+          <td>
+            <i class="diamond $cls icon"></i>
+            <div class="sub header"> $game["badge"]</div>
+          </td>
+          <td>$game["score"]</td>
+          <td>
+            <div class="content">
+              $game["digits"] digits
+              <div class="sub header">$complexity</div>
+            </div>
+          </td>
+          <td>
+            <div class="content">
+              $game["goldCoins"] received
+              <div class="sub header">$game["goldRemaining"] remaining</div>
+            </div>
+          </td>
+          <td>
+            <div class="content">
+              $game["silverCoins"] received
+              <div class="sub header">$game["silverRemaining"] remaining</div>
+            </div>
+          </td>
+          <td>$game["totalRounds"]</td>
+          <td>
+            <form method="POST" action="/setup">
+              <input type="text" name="gameid" value='$game["id"]' hidden="hidden">
+              <button class="olive basic ui button" type="submit">
+                See Summary
+              </button>
+            </form>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+$if gameLostNr > 0:
+  <h3>You lost $gameLostNr games:</h3>
+  <table class="ui celled table">
+    <thead>
+    <tr>
+      <th>Level</th>
+      <th>Password</th>
+      <th>Gold Coins</th>
+      <th>Silver Coins</th>
+      <th>Total Rounds</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    $for game in allGames:
+      $if game["won"] == 0:
+        $if game["level"] == 0:
+          $ game["level"] = "Custom Game"
+
+        $ game["goldRemaining"] = game["goldCoins"] - game["goldSpent"]
+        $ game["silverRemaining"] = game["silverCoins"] - game["silverSpent"]
+
+        $if game["complexity"] == 0:
+          $ complexity = "Numbers"
+        $elif game["complexity"] == 1:
+          $ complexity = "Lowercase Letters"
+        $if game["complexity"] == 2:
+          $ complexity = "Numbers and Lowercase Letters"
+        $if game["complexity"] == 3:
+          $ complexity = "Numbers, Lowercase and Uppercase Letters"
+
+        <tr>
+          <td>$game["level"]</td>
+          <td>
+            <div class="content">
+              $game["digits"] digits
+              <div class="sub header">$complexity</div>
+            </div>
+          </td>
+          <td>$game["goldCoins"] received</td>
+          <td>$game["silverCoins"] received</td>
+          <td>$game["totalRounds"]</td>
+          <td>
+            <form method="POST" action="/setup">
+              <input type="text" name="gameid" value='$game["id"]' hidden="hidden">
+              <button class="olive basic ui button" type="submit">
+                See Summary
+              </button>
+            </form>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+

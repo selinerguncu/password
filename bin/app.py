@@ -39,6 +39,7 @@ urls = (
     '/', 'Login',
     '/leaderboard', "Leaderboard",
     '/login', 'Login',
+    '/profile', 'Profile',
     '/howtoplay', 'HowToPlay',
     '/setup', 'Setup',
     '/game', 'Game',
@@ -111,6 +112,63 @@ class Login():
             session.player_id = cur.lastrowid
             return web.seeother('/setup')
 
+class Profile():
+
+    def GET(self):
+        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+        cur = conn.cursor()
+        cur.execute('''SELECT * FROM Player WHERE id = ?''', (session.player_id,))
+        playerRow = cur.fetchone()
+        player = rowToDict(cur, playerRow)
+
+        cur.execute('''SELECT * FROM Game WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
+        gameRows = cur.fetchall()
+        allGames = rowsToDict(cur, gameRows)
+
+        cur.execute('''SELECT History.game_id, History.goldReceived, History.silverReceived, History.round
+            FROM History JOIN Game JOIN Player
+            ON History.game_id = Game.id AND Game.player_id = Player.id
+            WHERE player_id = ? ORDER BY level DESC''', (session.player_id,))
+        historyRows = cur.fetchall()
+        allHistory = rowsToDict(cur, historyRows)
+
+        allGamesHistory = {}
+        for game in allGames:
+            gameId = game["id"]
+            allGamesHistory[gameId] = {}
+            allGamesHistory[gameId]["round"] = 0
+            allGamesHistory[gameId]["goldReceived"] = 0
+            allGamesHistory[gameId]["silverReceived"] = 0
+            for history in allHistory:
+                if history["game_id"] == gameId:
+                    allGamesHistory[gameId]["goldReceived"] += history["goldReceived"]
+                    allGamesHistory[gameId]["silverReceived"] += history["silverReceived"]
+                    if history["round"] > allGamesHistory[gameId]["round"]:
+                        allGamesHistory[gameId]["round"] = history["round"]
+
+        print "allGames", allGames
+        for game in allGames:
+            game["goldSpent"] = allGamesHistory[game["id"]]["goldReceived"]
+            game["silverSpent"] = allGamesHistory[game["id"]]["silverReceived"]
+            game["totalRounds"] = allGamesHistory[game["id"]]["round"]
+            if game["score"] == 0:
+                game["badge"] = ""
+            elif game["score"] >= 1000000000000:
+                game["badge"] = "Diamond"
+            elif game["score"] >= 100000000:
+                game["badge"] = "Emerald"
+            elif game["score"] >= 1000000:
+                game["badge"] = "Sapphire"
+            else:
+                game["badge"] = "Ruby"
+
+        player["maxScore"] = locale.format("%d", player["maxScore"], grouping=True)
+        player["totalScore"] = locale.format("%d", player["totalScore"], grouping=True)
+
+        for i in range(len(allGames)):
+            allGames[i]["score"] = locale.format("%d", allGames[i]["score"], grouping=True)
+
+        return render.profile(player, allGames)
 
 class Leaderboard():
 
