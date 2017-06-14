@@ -2,3 +2,5 @@
 venvdir
 sessions
 data/gamedb.sqlite
+static/version.txt
+.DS_Store

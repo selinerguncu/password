@@ -1,13 +1,14 @@
 #!/bin/bash
 
-EXEC="python bin/app.py 9090 >>/dev/null"
+EXEC="python bin/app.py 9090"
 FOLDERS="bin templates static numberGame"
-WATCH_SECONDS=1
+WATCH_SECONDS=2s
 
 start() {
   echo starting $EXEC
   $EXEC & export PID=$!
   echo process pid is $PID
+  echo $PID >./static/version.txt
 }
 
 restart() {
@@ -25,10 +26,10 @@ quit() {
 
 watch() {
   start
-  echo watching folders $1/ every 1 seconds.
+  echo watching folders $FOLDERS every $WATCH_SECONDS seconds.
   while [[ true ]]
     do
-        files=`find $1 -type f -mtime -1s`
+        files=`find $FOLDERS -type f -mtime -$WATCH_SECONDS`
         if [[ $files == "" ]] ; then
             echo "nothing changed" >>/dev/null
         else
@@ -45,4 +46,4 @@ function ctrl_c() {
   quit
 }
 
-watch "$FOLDERS"
+watch
