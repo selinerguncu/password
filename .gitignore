@@ -1,3 +1,4 @@
 *.pyc
+venvdir
 sessions
 data/gamedb.sqlite
