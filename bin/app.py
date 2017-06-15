@@ -480,6 +480,12 @@ class Game(object):
             guess.append(data["sixth"])
             guess.append(data["seventh"])
             guess.append(data["eighth"])
+            guess.append(data["ninth"])
+            guess.append(data["tenth"])
+            guess.append(data["eleventh"])
+            guess.append(data["twelfth"])
+            guess.append(data["thirteenth"])
+            guess.append(data["fourteenth"])
         except:
             pass
 

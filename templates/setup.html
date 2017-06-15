@@ -30,7 +30,7 @@ $if msg:
       <div class="field">
         <label>Number of Digits</label>
         <select class="ui compact selection dropdown" name="digits">
-        $for i in range(4,9):
+        $for i in range(4,15):
           $if i == int(data['digits']):
             <option selected="selected">$i</option>
           $else:
@@ -160,6 +160,12 @@ $else:
                 <option>6</option>
                 <option>7</option>
                 <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
               </select>
             </div>
             <div class="field">
