@@ -72,6 +72,18 @@ footer {
   height: 100% !important;
 }
 
+.ui.ribbon.label {
+  left: calc(-1rem - 2.5em);
+  margin-right: 0.8em;
+  padding-left: calc(1rem + 1.2em);
+  padding-right: 1.2em;
+  top: -7em;
+}
+
+.ui.olive.ribbon.label {
+  border-color: #87a08d!important;
+}
+
 .coin-bags {
   display: flex;
 }

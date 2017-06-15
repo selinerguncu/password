@@ -84,6 +84,10 @@ $if game["won"] in [0, 1]:
   </div>
 $else:
   <h2 class="ui header center aligned">Make your guess:</h2>
+    $if game["level"] == 0:
+      <div class="ui olive ribbon label">Custom Game</div>
+    $else:
+      <div class="ui olive ribbon label">Level $game["level"]</div>
   <form class="guess" name="main" method="POST">
     <div class="boxes">
     $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
