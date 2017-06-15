@@ -2,6 +2,7 @@ div.boxes {
   display: flex;
   justify-content: center;
   margin: 0 auto;
+  flex-wrap: wrap;
 }
 div.boxes .box {
   flex: 0 0 auto;
