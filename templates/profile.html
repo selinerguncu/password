@@ -19,16 +19,16 @@ $ gameWonNr = 0
 $ gameLostNr = 0
 
 $for game in allGames:
-  $if game["won"] not in [0, 1]:
-    $ activeGameNr += 1
-  $elif game["won"] == 1:
+  $if game["won"] == 1:
     $ gameWonNr += 1
   $elif game["won"] == 0:
     $ gameLostNr += 1
+  $else:
+    $ activeGameNr += 1
 
 <h2>Hi, $username!</h2>
 
-$if activeGameNr == 0 and finishedGameNr == 0:
+$if activeGameNr == gameLostNr == gameWonNr == 0:
   <h4>You haven't started playing yet!</h4>
 
 $if activeGameNr > 0:
@@ -138,18 +138,21 @@ $if gameWonNr > 0:
           $ complexity = "Numbers, Lowercase and Uppercase Letters"
 
         $if game["badge"] == "Ruby":
-          $ cls = "orange"
+          $ cls = "diamond icon orange"
         $elif game["badge"] == "Sapphire":
-          $ cls = "blue"
+          $ cls = "diamond icon blue"
         $elif game["badge"] == "Emerald":
-          $ cls = "green"
+          $ cls = "diamond icon green"
         $elif game["badge"] == "Diamond":
-          $ cls = "grey"
+          $ cls = "diamond icon grey"
+        $else:
+          $ cls = ""
+
 
         <tr>
           <td>$game["level"]</td>
           <td>
-            <i class="diamond $cls icon"></i>
+            <i class="$cls"></i>
             <div class="sub header"> $game["badge"]</div>
           </td>
           <td>$game["score"]</td>
