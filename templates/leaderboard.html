@@ -39,18 +39,20 @@ $else:
           $ i = 1
           $for leader in games:
             $if leader["badge"] == "Ruby":
-              $ cls = "orange"
+              $ cls = "diamond icon orange"
             $elif leader["badge"] == "Sapphire":
-              $ cls = "blue"
+              $ cls = "diamond icon blue"
             $elif leader["badge"] == "Emerald":
-              $ cls = "green"
+              $ cls = "diamond icon green"
             $elif leader["badge"] == "Diamond":
-              $ cls = "grey"
+              $ cls = "diamond icon grey"
+            $elif leader["badge"] == "-":
+              $ cls = ""
             <tr>
               <td>$((gamePage-1)*20+i)</td>
               <td>$leader["username"]</td>
               <td>$leader["score"]</td>
-              <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
+              <td><i class="$cls"></i> $leader["badge"]</td>
             </tr>
             $ i = i + 1
         $else:
