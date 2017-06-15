@@ -32,12 +32,12 @@ $if activeGameNr == 0 and finishedGameNr == 0:
   <h4>You haven't started playing yet!</h4>
 
 $if activeGameNr > 0:
-  <table class="ui celled table">
   $if activeGameNr == 1:
     <h3>You have $activeGameNr Active Game:</h3>
   $else:
     <h3>You have $activeGameNr Active Games:</h3>
 
+  <table class="ui celled unstackable table">
     <thead>
       <tr>
         <th>Level</th>
@@ -102,11 +102,11 @@ $if activeGameNr > 0:
   </table>
 
 $if gameWonNr > 0:
-  <table class="ui celled table">
   $if gameWonNr == 1:
     <h3>You won $gameWonNr game:</h3>
   $else:
     <h3>You won $gameWonNr games:</h3>
+  <table class="ui celled unstackable table">
     <thead>
     <tr>
       <th>Level</th>
@@ -185,11 +185,11 @@ $if gameWonNr > 0:
   </table>
 
 $if gameLostNr > 0:
-  <table class="ui celled table">
   $if gameLostNr == 1:
     <h3>You lost $gameLostNr game:</h3>
   $else:
     <h3>You lost $gameLostNr games:</h3>
+  <table class="ui celled unstackable table">
     <thead>
     <tr>
       <th>Level</th>
