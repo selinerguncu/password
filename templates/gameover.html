@@ -110,13 +110,15 @@ $else:
                     $ i = 1
                     $for leader in leaders:
                         $if leader['badge'] == "Ruby":
-                            $ cls = "orange"
+                            $ cls = "diamond orange icon"
                         $elif leader['badge'] == "Sapphire":
-                            $ cls = "blue"
+                            $ cls = "diamond blue icon"
                         $elif leader['badge'] == "Emerald":
-                            $ cls = "green"
+                            $ cls = "diamond green icon"
                         $elif leader['badge'] == "Diamond":
-                            $ cls = "grey"
+                            $ cls = "diamond grey icon"
+                        $elif leader['badge'] == "-":
+                            $ cls = ""
 
                         $if leader['game_id'] == gameId:
                             <tr class="warning">
@@ -127,7 +129,7 @@ $else:
 
                         <td>$leader['username']</td>
                         <td>$leader['score']</td>
-                        <td><i class="diamond $cls icon"></i> $leader['badge']</td>
+                        <td><i class="$cls"></i> $leader['badge']</td>
                         </tr>
                         $ i = i + 1
 
