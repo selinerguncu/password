@@ -1,0 +1,49 @@
+#!/bin/bash
+
+EXEC="python bin/app.py 9090"
+FOLDERS="bin templates static numberGame"
+WATCH_SECONDS=2s
+
+start() {
+  echo starting $EXEC
+  $EXEC & export PID=$!
+  echo process pid is $PID
+  echo $PID >./static/version.txt
+}
+
+restart() {
+  echo files changed, killing the process
+  kill -9 $PID
+  wait $PID 2>/dev/null
+  start
+}
+
+quit() {
+  echo "cleaning up before exit, bye minik!"
+  kill -9 $PID
+  exit
+}
+
+watch() {
+  start
+  echo watching folders $FOLDERS every $WATCH_SECONDS seconds.
+  while [[ true ]]
+    do
+        files=`find $FOLDERS -type f -mtime -$WATCH_SECONDS`
+        if [[ $files == "" ]] ; then
+            echo "nothing changed" >>/dev/null
+        else
+            echo changed, $files
+            restart
+        fi
+        sleep $WATCH_SECONDS
+    done
+}
+
+trap ctrl_c INT
+
+function ctrl_c() {
+  quit
+}
+
+watch

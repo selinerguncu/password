@@ -8,6 +8,8 @@ import os
 import web
 import sqlite3 as sqlite
 import locale
+import logging
+logging.getLogger("requests").setLevel(logging.ERROR)
 
 appPath = os.getcwd()
 templatePath = appPath + '/templates'
@@ -28,6 +30,7 @@ try:
 	locale.setlocale(locale.LC_ALL, 'en_US')
 except:
 	locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+
 
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'session_id'
@@ -640,12 +643,3 @@ class Logout():
 
 if __name__ == "__main__":
     app.run()
-
-
-
-
-
-
-
-
-
