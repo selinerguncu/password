@@ -29,12 +29,12 @@ errors = {
 	"silver70complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 70 Silver coins for a Password created with both numbers and letters.",
 	"silver100complex": "You may wanto to increase the number of Silver coins in your bag. Recommended minimum is 100 Silver coins for a Password created with both numbers and lower- and upper-case letters.",
 
-	"uniqueNumbers": "All the inputs should be unique and digits should not be left blank. Please use only numbers.", 
-	"uniqueLetters": "All the inputs should be unique and digits should not be left blank. Please use only lower-case letters.", 
-	"uniqueNumbersLetters": "All the inputs should be unique and digits should not be left blank. Please use only numbers or lower-case letters.", 
-	"uniqueNumbersAllLetters": "All the inputs should be unique and digits should not be left blank. Please use only numbers or lower- and upper-case letters.", 
-	"onlyNumbers": "Please use only numbers. Digits should not be left blank.",
-	"onlyLetters": "Please use only lower-case letters. Digits should not be left blank.",
-	"numbersLetters": "Please use only numbers or lower-case letters. Digits should not be left blank.",
-	"numbersAllLetters": "Please use only numbers or lower- and upper-case letters. Digits should not be left blank."
+	"uniqueNumbers": "Digits cannot be blank.",
+	"uniqueLetters": "Digits cannot be blank.",
+	"uniqueNumbersLetters": "Digits cannot be blank.",
+	"uniqueNumbersAllLetters": "Digits cannot be blank.",
+	"onlyNumbers": "Digits cannot be blank.",
+	"onlyLetters": "Digits cannot be blank.",
+	"numbersLetters": "Digits cannot be blank.",
+	"numbersAllLetters": "Digits cannot be blank."
 }

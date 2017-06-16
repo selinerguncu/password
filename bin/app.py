@@ -473,9 +473,13 @@ class Game(object):
     def POST(self):
         print self.game["password"]
         data = parseFormData(web.data())
-        guess = [data["first"], data["second"], data["third"], data["fourth"]]
+        guess = []
 
         try:
+            guess.append(data["first"])
+            guess.append(data["second"])
+            guess.append(data["third"])
+            guess.append(data["fourth"])
             guess.append(data["fifth"])
             guess.append(data["sixth"])
             guess.append(data["seventh"])
