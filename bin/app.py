@@ -575,6 +575,7 @@ class Game(object):
             goldCoinsSpent += row[0]
             silverCoinsSpent += row[1]
 
+
         if hasWon:
             won = 1
             goldCoinsSpent -= game["digits"]
@@ -589,9 +590,63 @@ class Game(object):
             }
             scoreInstance = Score(scoreVariables)
             score = scoreInstance.calculateScore()
+
         else:
             won = 0
             score = 0
+
+        if hasWon:
+            highScoresByLevel = scoreInstance.getMaxScores()
+
+            print "RAW SCORE", score
+
+            scoreElements = []
+            baseScore = [0, 0, 0, 0, 0, 120000, 140000, 160000, 180000, 200000, 220000, 260000, 300000, 370000, 440000, 510000, 550000, 650000, 750000, 850000]
+            jumpBtwLevels = [0, 0, 0, 0, 120000, 20000, 20000, 20000, 20000, 20000, 40000, 40000, 70000, 70000, 70000, 40000, 100000, 100000, 100000, 150000]
+            badgeForLevels = ["-", "-", "Ruby", "Ruby", "Ruby",
+            "Sapphire", "Sapphire", "Sapphire", "Sapphire", "Sapphire",
+            "Emerald", "Emerald", "Emerald", "Emerald", "Emerald",
+            "Diamond", "Diamond", "Diamond", "Diamond", "Diamond"]
+            for i in range(len(highScoresByLevel)):
+            #     j = i
+            #     if i < 3:
+            #         j = 0
+            #         baseMultiplier = 0
+            #         badge = '-'
+            #     elif i < 6:
+            #         badge = 'Ruby'
+            #     elif i < 11:
+            #         badge = 'Sapphire'
+            #     elif i < 16:
+            #         badge = 'Emerald'
+            #     elif badge < 20:
+            #         badge = 'Diamond'
+                if i < 1:
+                    minScore = 0
+                else:
+                    minScore = highScoresByLevel[i-1]
+
+                badge = badgeForLevels[i]
+                base = baseScore[i]
+                jump = jumpBtwLevels[i]
+                maxScore = highScoresByLevel[i]
+                scoreElements.append((i+1, badge, base, minScore, maxScore, jump))
+
+            for i in scoreElements:
+                scoreLevel = i[0]
+                badge = i[1]
+                baseScore = i[2]
+                minScore = i[3]
+                maxScore = i[4]
+                jump = i[5]
+                print "jump", jump
+                if minScore < score <= maxScore:
+                    print "HERE!!!", maxScore
+                    if score < 113577:
+                        score = score
+                    else:
+                        print scoreLevel, baseScore, minScore, maxScore
+                        score = baseScore + ((score - baseScore) * jump / (maxScore - baseScore))
 
         cur.execute("UPDATE Game SET won = ?, score = ?, totalRounds = ?, goldSpent = ?, silverSpent = ? WHERE id = ? ", (won, score, totalRounds, goldCoinsSpent, silverCoinsSpent, session.game_id))
         conn.commit()

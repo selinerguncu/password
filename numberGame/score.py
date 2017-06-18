@@ -1,86 +1,54 @@
 from utils.rowToDict import rowToDict
+from numberGame.constants import Constants
 
 
 class Score(object):
 
-    multipliers = [
-        1.0000000000000000000000000,
-        0.1666666666666670000000000,
-        0.0333333333333333000000000,
-        0.0140468227424749000000000,
-        0.0083333333333333300000000,
-        0.0035650623885918000000000,
-        0.0027777777777777800000000,
-        0.0006384919428397690000000,
-        0.0003764486550923640000000,
-        0.0001114081996434940000000,
-        0.0000304043782304652000000,
-        0.0000064904940533166300000,
-        0.0000035938128917256000000,
-        0.0000015202189115232600000,
-        0.0000001197937630575200000,
-        0.0000001138683167248530000,
-        0.0000000800115216591189000,
-        0.0000000041308194157765600,
-        0.0000000020333627986580900,
-        0.0000000000369702327028744
-    ]
+    # multipliers = [
+    #     1.0000000000000000000000000,
+    #     0.1666666666666670000000000,
+    #     0.0333333333333333000000000,
+    #     0.0140468227424749000000000,
+    #     0.0083333333333333300000000,
+    #     0.0035650623885918000000000,
+    #     0.0027777777777777800000000,
+    #     0.0006384919428397690000000,
+    #     0.0003764486550923640000000,
+    #     0.0001114081996434940000000,
+    #     0.0000304043782304652000000,
+    #     0.0000064904940533166300000,
+    #     0.0000035938128917256000000,
+    #     0.0000015202189115232600000,
+    #     0.0000001197937630575200000,
+    #     0.0000001138683167248530000,
+    #     0.0000000800115216591189000,
+    #     0.0000000041308194157765600,
+    #     0.0000000020333627986580900,
+    #     0.0000000000369702327028744
+    # ]
 
+    multipliers = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     def __init__(self, scoreVariables):
 
         self.scoreVariables = scoreVariables
+        self.prob = self.findProb()
 
 
     def findProb(self):
         digits = self.scoreVariables["digits"]
         complexity = self.scoreVariables["complexity"]
+        complexityRange = Constants["complexityRange"]
 
-        if digits == 4 and complexity == 0:
-            prob = float(((float(1))/10) * ((float(1))/9) * ((float(1))/8) * ((float(1))/7))
-        elif digits == 5 and complexity == 0:
-            prob = float(((float(1))/10) * ((float(1))/9) * ((float(1))/8) * ((float(1))/7) * ((float(1))/6))
-        elif digits == 6 and complexity == 0:
-            prob = float(((float(1))/10) * ((float(1))/9) * ((float(1))/8) * ((float(1))/7) * ((float(1))/6) * ((float(1))/5))
-        elif digits == 7 and complexity == 0:
-            prob = float(((float(1))/10) * ((float(1))/9) * ((float(1))/8) * ((float(1))/7) * ((float(1))/6) * ((float(1))/5) * ((float(1))/4))
-        elif digits == 8 and complexity == 0:
-            prob = float(((float(1))/10) * ((float(1))/9) * ((float(1))/8) * ((float(1))/7) * ((float(1))/6) * ((float(1))/5) * ((float(1))/4) * ((float(1))/3))
-        elif digits == 4 and complexity == 1:
-            prob = float(((float(1))/26) * ((float(1))/25) * ((float(1))/24) * ((float(1))/23))
-        elif digits == 5 and complexity == 1:
-            prob = float(((float(1))/26) * ((float(1))/25) * ((float(1))/24) * ((float(1))/23) * ((float(1))/22))
-        elif digits == 6 and complexity == 1:
-            prob = float(((float(1))/26) * ((float(1))/25) * ((float(1))/24) * ((float(1))/23) * ((float(1))/22) * ((float(1))/21))
-        elif digits == 7 and complexity == 1:
-            prob = float(((float(1))/26) * ((float(1))/25) * ((float(1))/24) * ((float(1))/23) * ((float(1))/22) * ((float(1))/21) * ((float(1))/20))
-        elif digits == 8 and complexity == 1:
-            prob = float(((float(1))/26) * ((float(1))/25) * ((float(1))/24) * ((float(1))/23) * ((float(1))/22) * ((float(1))/21) * ((float(1))/20) * ((float(1))/19))
-        elif digits == 4 and complexity == 2:
-            prob = float(((float(1))/36) * ((float(1))/35) * ((float(1))/34) * ((float(1))/33))
-        elif digits == 5 and complexity == 2:
-            prob = float(((float(1))/36) * ((float(1))/35) * ((float(1))/34) * ((float(1))/33) * ((float(1))/32))
-        elif digits == 6 and complexity == 2:
-            prob = float(((float(1))/36) * ((float(1))/35) * ((float(1))/34) * ((float(1))/33) * ((float(1))/32) * ((float(1))/31))
-        elif digits == 7 and complexity == 2:
-            prob = float(((float(1))/36) * ((float(1))/35) * ((float(1))/34) * ((float(1))/33) * ((float(1))/32) * ((float(1))/31) * ((float(1))/30))
-        elif digits == 8 and complexity == 2:
-            prob = float(((float(1))/36) * ((float(1))/35) * ((float(1))/34) * ((float(1))/33) * ((float(1))/32) * ((float(1))/31) * ((float(1))/30) * ((float(1))/29))
-        elif digits == 4 and complexity ==3:
-            prob = float(((float(1))/62) * ((float(1))/61) * ((float(1))/60) * ((float(1))/59))
-        elif digits == 5 and complexity ==3:
-            prob = float(((float(1))/62) * ((float(1))/61) * ((float(1))/60) * ((float(1))/59) * ((float(1))/58))
-        elif digits == 6 and complexity ==3:
-            prob = float(((float(1))/62) * ((float(1))/61) * ((float(1))/60) * ((float(1))/59) * ((float(1))/58) * ((float(1))/57))
-        elif digits == 7 and complexity ==3:
-            prob = float(((float(1))/62) * ((float(1))/61) * ((float(1))/60) * ((float(1))/59) * ((float(1))/58) * ((float(1))/57) * ((float(1))/56))
-        elif digits == 8 and complexity ==3:
-            prob = float(((float(1))/62) * ((float(1))/61) * ((float(1))/60) * ((float(1))/59) * ((float(1))/58) * ((float(1))/57) * ((float(1))/56) * ((float(1))/55))
+        prob = 1
+        for i in range(digits):
+            prob *= float(1)/(complexityRange[complexity]-i)
+
         return prob
 
 
     def findReward(self):
         norm = 1
-        prob = self.findProb()
+        prob = self.prob
         rewardMultiplier = 1
 
         reward = norm / (rewardMultiplier * float(prob))
@@ -89,7 +57,7 @@ class Score(object):
 
 
     def coinsSpentCost(self):
-        prob = self.findProb()
+        prob = self.prob
         weight_gold = 600
         weight_silver = 400
 
@@ -112,39 +80,39 @@ class Score(object):
             level = 2
         elif digits == 6 and complexity == 0:
             level = 3
-        elif digits == 4 and complexity == 1:
+        elif digits == 6 and complexity == 1:
             level = 4
         elif digits == 7 and complexity == 0:
             level = 5
-        elif digits == 4 and complexity == 2:
+        elif digits == 8 and complexity == 2:
             level = 6
         elif digits == 8 and complexity == 0:
             level = 7
-        elif digits == 5 and complexity == 1:
-            level = 8
-        elif digits == 4 and complexity == 3:
-            level = 9
-        elif digits == 5 and complexity == 2:
-            level = 10
-        elif digits == 6 and complexity == 1:
-            level = 11
-        elif digits == 5 and complexity == 3:
-            level = 12
-        elif digits == 6 and complexity == 2:
-            level = 13
         elif digits == 7 and complexity == 1:
-            level = 14
-        elif digits == 7 and complexity == 2:
-            level = 15
-        elif digits == 6 and complexity == 3:
-            level = 16
+            level = 8
+        elif digits == 10 and complexity == 3:
+            level = 9
+        elif digits == 9 and complexity == 2:
+            level = 10
         elif digits == 8 and complexity == 1:
+            level = 11
+        elif digits == 11 and complexity == 3:
+            level = 12
+        elif digits == 10 and complexity == 2:
+            level = 13
+        elif digits == 9 and complexity == 1:
+            level = 14
+        elif digits == 11 and complexity == 2:
+            level = 15
+        elif digits == 12 and complexity == 3:
+            level = 16
+        elif digits == 10 and complexity == 1:
             level = 17
-        elif digits == 8 and complexity == 2:
+        elif digits == 12 and complexity == 2:
             level = 18
-        elif digits == 7 and complexity == 3:
+        elif digits == 13 and complexity == 3:
             level = 19
-        elif digits == 8 and complexity == 3:
+        elif digits == 14 and complexity == 3:
             level = 20
         return level
 
@@ -198,7 +166,7 @@ class Score(object):
         norm = 1
         rewardMultiplier = 1
 
-        prob = self.findProb()
+        prob = self.prob
         reward = self.findReward()
         cost_totalCoinsSpent = self.coinsSpentCost()
         cost_totalCoinsInBag = self.coinsInBagCost()
@@ -215,6 +183,24 @@ class Score(object):
         return score
 
 
+    def getMaxScores(self):
+
+        maxScores = []
+        scoreVariables = {}
+
+        scoreVariables["totalRounds"] = 1
+        scoreVariables["goldSpent"] = 0
+        scoreVariables["silverSpent"] = 0
+
+        for level in Constants["levels"]:
+            scoreVariables["digits"] = Constants["digits"][level-1]
+            scoreVariables["complexity"] = Constants["complexity"][level-1]
+            scoreVariables["goldCoins"] = Constants["goldCoins"][level-1]
+            scoreVariables["silverCoins"] = Constants["silverCoins"][level-1]
+            score = Score(scoreVariables)
+            maxScores.append(score.calculateScore())
+
+        return maxScores
 
 
 
