@@ -55,6 +55,7 @@ db = web.database(dbn='sqlite', db = appPath + '/data/gamedb.sqlite', check_same
 store = web.session.DBStore(db, 'sessions')
 session = web.session.Session(app, store, initializer={'player_id':'guest', 'game_id': 0})
 
+
 class HowToPlay():
     def GET(self):
         return render.howtoplay(session.player_id != 'guest')
@@ -221,11 +222,11 @@ class Leaderboard():
 
 class Setup(object):
     def __init__(self):
-        levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        digits = [4, 5, 6, 4, 7, 4, 8, 5, 4, 5, 6, 5, 6, 7, 7, 6, 8, 8, 7, 8]
-        complexity = [0, 0, 0, 1, 0, 2, 0, 1, 3, 2, 1, 3, 2, 1, 2, 3, 1, 2, 3, 3]
-        goldCoins = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
-        silverCoins = [20, 30, 37, 40, 42, 45, 47, 53, 55, 59, 64, 71, 73, 76, 93, 94, 96, 122, 125, 198]
+        levels = Constants["levels"]
+        digits = Constants["digits"]
+        complexity = Constants["complexity"]
+        goldCoins = Constants["goldCoins"]
+        silverCoins = Constants["silverCoins"]
 
         self.currentLevel = 0
 
@@ -669,15 +670,9 @@ class Game(object):
             cur.execute("UPDATE Player SET losses = losses + 1, games = games + 1 WHERE id = ? ", (session.player_id,) )
         conn.commit()
 
-        #if maxScore of a player is btw xxx and yyy then badge = diamond vs ruby vs sapphire vs emerald
-        if score >= 1000000000000:
-            badge = 'Diamond'
-        elif score >= 100000000:
-            badge = 'Emerald'
-        elif score >= 1000000:
-            badge = 'Sapphire'
-        else:
-            badge = 'Ruby'
+        print 'gameEnded'
+        print score
+        print 'gameEnded'
 
         cur.execute('''INSERT INTO Leaderboard(score, badge, player_id, game_id) VALUES (?, ?, ?, ?)''', (score, badge, session.player_id, session.game_id) )
         conn.commit()
@@ -723,8 +718,8 @@ class GameOver():
         cur.execute('''SELECT Leaderboard.score, Leaderboard.badge, Player.username, Leaderboard.game_id
             FROM Leaderboard JOIN Player ON Leaderboard.player_id = Player.id
             WHERE Leaderboard.score = ? AND Player.id = ?''', (game["score"], session.player_id))
-        inLeaderboard = cur.fetchone()
-        gameInLeaderboard = rowToDict(cur, inLeaderboard)
+        aa = cur.fetchone()
+        gameInLeaderboard = rowToDict(cur, aa)
 
         gameInLeaderboard["score"] = locale.format("%d", game["score"], grouping=True)
 
