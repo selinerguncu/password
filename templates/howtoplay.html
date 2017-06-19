@@ -1,80 +1,357 @@
-$def with (isLoggedIn)
+$def with (isLoggedIn, howToPlayLevels, howToPlayRecommended)
+
+$var css: <link rel="stylesheet" href="/static/css/guess-form.css">
 
 $if isLoggedIn:
-	$var logout: True
-	$var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
-
+  $var logout: True
+  $var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
 
 $var link2: <a class="item" href="/leaderboard"><i class="trophy icon"></i> Leaderboard</a>
 
 
-<h1>How To Play</h1>
+<div class="ui top attached six item tabular menu">
+  <a class="item active" data-tab="gameflow">Game Flow</a>
+  <a class="item" data-tab="howtoplay">How To Play</a>
+  <a class="item" data-tab="samplegame">Sample Game</a>
+  <a class="item" data-tab="calculating">Game Score</a>
+  <a class="item" data-tab="levels">Levels</a>
+  <a class="item" data-tab="coinamounts">Coin Amounts</a>
+</div>
 
-<p>Here is a brief explanation of the game.</p>
+<div class="ui bottom attached tab segment active" data-tab="gameflow">
 
-<h2>Sample Game with only Numbers:</h2>
+  <br>
+  <p>There is a hidden Password in each game and your purpose is to reveal it by making sequential guesses.</p>
+  <p>When you first login to the Password game, it will display a setup page. You can start playing level by level or create a custom game.</p>
 
-<br>
-$ m = '*' * 6
-$ t = '*'
+  <h3>Play Level by Level:</h3>
+  <p>If you choose to play level by level, Level 1 will appear unlocked to start off. If you win the game in Level 1, you will unlock Level 2. You can start a new game in any of the unlocked levels. Winning a game in one level unlocks the next level. If you lose a game, no new level will be unlocked.</p>
 
-$for i in range(4):
-	 $m &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	$t &nbsp; &nbsp; &nbsp; &nbsp;$t &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	 $m &nbsp; &nbsp; &nbsp;
+  <h3>Create a Custom Game:</h3>
+  <p>If you choose to create a Custom Game, you will need to specify several Password and Game criteria.</p>
 
-<br>
-<h3>Password Parameters:</h3>
+  <p>First, you need to decide how long the Password will be (digits) and which characters will be used to create the Password (complexity). Number of digits can be any number from 4 to 8. Password can be composed of four different sets of possible characters: (1) only numbers (2) only lowercase letters, (3) both numbers and lowercase letters and (4) numbers, lowercase letters and uppercase letters. </p>
 
-<h4>Length: 4</h4>
+  <p>Next, you need to indicate the number of Gold and Silver coins in your bag. You will get feedback on your guesses by spending those coins. You have to spend 1 Gold coin to find out ‘1 character in your guess is in the right spot’ and 1 Silver coin to find out ‘1 character in your guess matched with one of the Password characters, however it is in the wrong spot’. If you ran out of either one of the Gold and Silver coins, evaluation for your guess wont be reported. If both Gold and Silver coins are used up, game ends and you lose. You can see the ‘Recommended Coin Amounts’ section for reference.</p>
 
-<h4>Complexity: Only Numbers</h4>
+  <h3>Quit Game:</h3>
+  <p>If you click on the “Quit Game” button on the menu, you will automatically lose.</p>
 
-<h4>Gold Coins in the bag: 30</h4>
+  <h3>Freeze Game:</h3>
+  <p>You can leave a game at any point by clicking on the “Freeze Game” button on menu. Games that have not been won or lost will be saved as your “Active Games”. You can come back later and continue playing from where you left off.</p>
+</div>
+<div class="ui bottom attached tab segment" data-tab="howtoplay">
+  <h3>Rules</h3>
+  <ul>
+    <li>You spend the coins in your bag to receive evaluation for your guesses.</li>
+    <li>If you ran out of coins in your bag, this means you don’t have any more coins to spend, you wont be able to get the evaluation for your guesses from that point on in that game.</li>
+    <li>If you discover the Password when you still have some coins left in either of your bags, the game ends and you win.</li>
+    <li>Game continues until both Gold and Silver coins in your bag have been spent.</li>
+    <li>When there are no coins left in either of your bags, the game ends and you lose.</li>
+    <li>You can make as many guesses as you like, so long as you have coins in at least one of your bags. There is no round limitation to finish the game.</li>
+    <li>Number of gold/Silver coins reported will be limited to the number of Gold/Silver coins in your bag.</li>
+    <li>You cannot leave any digit blank.</li>
+    <li>You cannot use one character more than once in the same guess.</li>
+    <li>You cannot use characters other than the ones given in the set of ‘Possible characters’.</li>
+  </ul>
 
-<h4>Silver Coins in the bag: 30</h4>
+  <h3>Remarks</h3>
+  <ul>
+    <li>Zero Gold/Silver evaluation is the luckiest guess, after the Full Silver evaluation. Full Gold evaluation means you have guessed the Password.</li>
+    <li>Increasing the Password complexity makes the Password harder to guess than increasing the Password digit.</li>
+    <li>For Custom Games, your score decreases (increases) significantly if you specify a greater (smaller) number of Gold and Silver coins than the recommended amounts.</li>
+    <li>Each round you fail to guess the Password correctly reduces your score. Importantly, each round reduces score more than does the previous round.</li>
+  </ul>
+</div>
 
-<br>
-<h3>Guess 1:</h3>
-<p>Let's say you submitted '1-2-3-4' and received 1 Gold and 2 Silver coins. Then, you should keep one of the numbers you submitted (i.e. 1-2-3-4) in place; and change the places of the two of your numbers. total number of coins received is 3, which means 1 number you submitted does not even exists in the Password.</p>
-<br>
-<p>Let's now try with a new guess:</p>
-<br>
-<h3>Guess 2:</h3>
-<p>Let's say now you submitted '1-2-4-5' and received 2 Gold and no Silver coins. This should be a good guess, as throwing out number '3' in the second guess, you now know that is actually existed in the Password - although you cannot be sure if it was in the right spot.</p>
-<br>
-<h3>Guess 3:</h3>
-<p>Say now you submit '1-2-6-3' based on the number of Gold and Silver coins you received in the previous guesses</p>
-<br>
-<p>And Voila!! You guesses the Password correctly.</p>
+<div class="ui bottom attached tab segment" data-tab="samplegame">
+  <div class="ui secondary menu stackable">
+    <a class="item active" data-tab="onlyNumbers">4-Digit Password with Only Numbers</a>
+    <a class="item" data-tab="onlyLetters">6-Digit Password with Only Letters</a>
+  </div>
 
-$ m = '*' * 6
-$ t = [1, 2, 6, 3]
+  <div class="ui bottom attached tab segment active" data-tab="onlyNumbers">
+    <br>
+    $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
+    $ star = ['*', '*', '*', '*']
+    <div class="boxes">
+    $for i in range(4):
+        <div class="box"><pre data-pass="$star[i]">$m</pre></div>
+    </div>
 
-$for i in range(4):
-	 $m &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	* &nbsp; &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	* &nbsp; $t[i] &nbsp; * &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	* &nbsp; &nbsp; &nbsp; &nbsp;* &nbsp; &nbsp; &nbsp;
-<br>
-$for i in range(4):
-	 $m &nbsp; &nbsp; &nbsp;
+    <br>
+    <h4>Password Parameters:</h4>
+    <p>Length: 4</p>
+    <p>Complexity: Only Numbers</p>
+    <p>Gold Coins in the bag: 30</p>
+    <p>Silver Coins in the bag: 30</p>
 
-<p><a href="/setup">Got it. Let's start!</a></p>
-<p><a href="/sample2">Give me another example.</a></p>
+    <br>
+    <h4>Guess 1:</h4>
+    <p>Let's say you submitted '1-2-3-4' and received 1 Gold and 2 Silver coins. Then, you should keep one of the numbers you submitted (i.e. 1-2-3-4) in place; and change the places of the two of your numbers. total number of coins received is 3, which means 1 number you submitted does not even exists in the Password.</p>
+    <p>Let's now try with a new guess:</p>
+    <h4>Guess 2:</h4>
+    <p>Let's say now you submitted '1-2-4-5' and received 2 Gold and no Silver coins. This should be a good guess, as throwing out number '3' in the second guess, you now know that is actually existed in the Password - although you cannot be sure if it was in the right spot.</p>
+    <h4>Guess 3:</h4>
+    <p>Say now you submit '1-2-6-3' based on the number of Gold and Silver coins you received in the previous guesses</p>
+    <p>And Voila!! You guesses the Password correctly.</p>
+
+    $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
+    $ star = [1, 2, 6, 3]
+    <div class="boxes">
+    $for i in range(4):
+        <div class="box"><pre data-pass="$star[i]">$m</pre></div>
+    </div>
+  </div>
+
+  <div class="ui bottom tab segment" data-tab="onlyLetters">
+    <br>
+    $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
+    $ star = ['*', '*', '*', '*', '*', '*']
+    <div class="boxes">
+    $for i in range(6):
+        <div class="box"><pre data-pass="$star[i]">$m</pre></div>
+    </div>
+
+    <br>
+    <h4>Password Parameters:</h4>
+    <p>Length: 4</p>
+    <p>Complexity: Only Numbers</p>
+    <p>Gold Coins in the bag: 30</p>
+    <p>Silver Coins in the bag: 30</p>
+
+    <br>
+    <h4>Guess 1:</h4>
+    <p>Let's say you submitted '1-2-3-4' and received 1 Gold and 2 Silver coins. Then, you should keep one of the numbers you submitted (i.e. 1-2-3-4) in place; and change the places of the two of your numbers. total number of coins received is 3, which means 1 number you submitted does not even exists in the Password.</p>
+    <p>Let's now try with a new guess:</p>
+    <h4>Guess 2:</h4>
+    <p>Let's say now you submitted '1-2-4-5' and received 2 Gold and no Silver coins. This should be a good guess, as throwing out number '3' in the second guess, you now know that is actually existed in the Password - although you cannot be sure if it was in the right spot.</p>
+    <h4>Guess 3:</h4>
+    <p>Say now you submit '1-2-6-3' based on the number of Gold and Silver coins you received in the previous guesses</p>
+    <p>And Voila!! You guesses the Password correctly.</p>
+
+    $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
+    $ star = ['e', 'g', 'r', 's', 'h', 'w']
+    <div class="boxes">
+    $for i in range(6):
+        <div class="box"><pre data-pass="$star[i]">$m</pre></div>
+    </div>
+  </div>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="calculating">
+  <p>There are four variables determining the game score.</p>
+  <h3>Amount of coins in bag</h3>
+  <ul>
+    <li>changes only for Custom Games becase amounts greater than the recommended
+amounts cost</li>
+    <li>cost is more for lower levels (easier games)</li>
+  </ul>
+
+  <h3>Password Difficulty</h3>
+  <ul>
+    <li>depends on the probability and prob depends on</li>
+    <ul>
+      <li>password digits</li>
+    </ul>
+    <ul>
+      <li>password complexity</li>
+    </ul>
+    <li>these determine multiplier which is used for coins spent and total rounds</li>
+  </ul>
+
+
+  <h3>Amount of Coins Spent</h3>
+  <ul>
+    <li>for all games</li>
+    <li>cost is more for easier games</li>
+    <li>the cost ratio: weight of gold >> weight of silver</li>
+  </ul>
+
+  <h3>Total Rounds</h3>
+  <ul>
+    <li>for all games</li>
+    <li>more for easier games</li>
+    <li>also increasing exponentially</li>
+  </ul>
+
+  <h3>Calculating Score</h3>
+  <ul>
+    <li>reward multiplier</li>
+    <li>cost multiplier</li>
+    <li>norm</li>
+    <li>probability</li>
+  </ul>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="levels">
+  <p>Max Score given in the table are the greatest score you can make in a given level.</p>
+  <p>Hence, score cannot be greater than the Max Score, yet can be smaller than the Max Score of the previous level, if not played well enough (i.e., having spent too many coins, making too many rounds).</p>
+  <h3>Level Specifications</h3>
+  <div>
+
+    <style type="text/css">
+    .ui.table thead th {
+      text-align: center;
+    }
+    </style>
+
+    <table class="ui celled table unstackable">
+      <thead>
+        <tr>
+          <th rowspan="3">Level</th>
+          <th colspan="2" rowspan="1">Password Combinations</th>
+          <th colspan="2" rowspan="1">Coins in Bag</th>
+          <th rowspan="3">Relative Difficulty</th>
+          <th rowspan="3">Maximum Score</th>
+          <th rowspan="3">Badge</th>
+        </tr>
+        <tr>
+          <th>Digits</th>
+          <th>Complexity</th>
+          <th>Gold</th>
+          <th>Silver</th>
+        </tr>
+      </thead>
+      <tbody>
+        $for i in range(20):
+          <tr>
+            $if howToPlayLevels["badge"][i] == "Ruby":
+                $ cls = "diamond icon orange"
+              $elif howToPlayLevels["badge"][i] == "Sapphire":
+                $ cls = "diamond icon blue"
+              $elif howToPlayLevels["badge"][i] == "Emerald":
+                $ cls = "diamond icon green"
+              $elif howToPlayLevels["badge"][i] == "Diamond":
+                $ cls = "diamond icon grey"
+              $elif howToPlayLevels["badge"][i] == "-":
+                $ cls = ""
+            <td>$howToPlayLevels["level"][i]</td>
+            <td>$howToPlayLevels["digit"][i]</td>
+            <td>$howToPlayLevels["complexity"][i]</td>
+            <td>$howToPlayLevels["gold"][i]</td>
+            <td>$howToPlayLevels["silver"][i]</td>
+            <td>$howToPlayLevels["difficulty"][i]</td>
+            <td>$howToPlayLevels["maxScore"][i]</td>
+            <td><i class="$cls"></i>$howToPlayLevels["badge"][i]</td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="ui bottom attached tab segment" data-tab="coinamounts">
+  <p>There will be a cost of getting a greater amount of coins than the recommended amount. Score will be smaller in case of winning, as losing will be less likely compared to a game with the recommended amounts.</p>
+  <p>There will be a reward of getting a smaller amount of coins than the recommended amount. Score will be greater in case of winning, yet winning will be less likely compared to a game with the recommended amounts.</p>
+  <h3>Recommended Coin Amounts for Custom Games for:</h3>
+
+  <div class="ui styled accordion fluid">
+    <div class="title">
+      <i class="dropdown icon"></i>
+      Only Numbers
+    </div>
+    <div class="content">
+      <div class="transition hidden"></div>
+        <table class="ui very basic collapsing unstackable celled table">
+          <thead>
+            <tr>
+              <th>Digits</th>
+              <th>Gold &amp; Silver Amounts</th>
+            </tr>
+          </thead>
+          <tbody>
+            $for i in range(7):
+              <tr>
+                <td>$howToPlayRecommended["onlyNumbers"][i][0]</td>
+                <td>$howToPlayRecommended["onlyNumbers"][i][1]</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <div class="title">
+      <i class="dropdown icon"></i>
+      Only Small Letters
+    </div>
+    <div class="content">
+      <div class="transition hidden"></div>
+        <table class="ui very basic collapsing unstackable celled table">
+          <thead>
+            <tr>
+              <th>Digits</th>
+              <th>Gold &amp; Silver Amounts</th>
+            </tr>
+          </thead>
+          <tbody>
+            $for i in range(11):
+              <tr>
+                <td>$howToPlayRecommended["onlyLetters"][i][0]</td>
+                <td>$howToPlayRecommended["onlyLetters"][i][1]</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+
+  <div class="title">
+      <i class="dropdown icon"></i>
+      Small and Capital Letters
+    </div>
+    <div class="content">
+      <div class="transition hidden"></div>
+        <table class="ui very basic collapsing unstackable celled table">
+          <thead>
+            <tr>
+              <th>Digits</th>
+              <th>Gold &amp; Silver Amounts</th>
+            </tr>
+          </thead>
+          <tbody>
+            $for i in range(11):
+              <tr>
+                <td>$howToPlayRecommended["smallCapitalLetters"][i][0]</td>
+                <td>$howToPlayRecommended["smallCapitalLetters"][i][1]</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <div class="title">
+      <i class="dropdown icon"></i>
+      Numbers, Small and Capital Letters
+    </div>
+    <div class="content">
+      <div class="transition hidden"></div>
+        <table class="ui very basic collapsing unstackable celled table">
+          <thead>
+            <tr>
+              <th>Digits</th>
+              <th>Gold &amp; Silver Amounts</th>
+            </tr>
+          </thead>
+          <tbody>
+            $for i in range(11):
+              <tr>
+                <td>$howToPlayRecommended["numbersSmallCapitalLetters"][i][0]</td>
+                <td>$howToPlayRecommended["numbersSmallCapitalLetters"][i][1]</td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+
+<script>
+  $$(document).ready(function(){
+    $$('.menu .item').tab();
+  });
+</script>
+
+<script>
+  $$(document).ready(function () {
+    $$('.ui.accordion').accordion()
+  })
+</script>
+
+<script>
+  $$(document).ready(function () {
+    $$('.secondary.menu').tab();
+  });
+</script>

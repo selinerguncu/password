@@ -58,7 +58,10 @@ session = web.session.Session(app, store, initializer={'player_id':'guest', 'gam
 
 class HowToPlay():
     def GET(self):
-        return render.howtoplay(session.player_id != 'guest')
+        howToPlayLevels = Constants["howToPlayLevels"]
+        howToPlayRecommended = Constants["howToPlayRecommended"]
+
+        return render.howtoplay(session.player_id != 'guest', howToPlayLevels, howToPlayRecommended)
 
 
 class Login():
