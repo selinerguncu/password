@@ -162,7 +162,19 @@ $else:
                             <td><i class="thumbs outline up icon"></i> You</td>
                             <td>$gameInLeaderboard['username']</td>
                             <td>$gameInLeaderboard['score']</td>
-                            <td><i class="diamond $cls icon"></i> $gameInLeaderboard['badge']</td>
+
+                            $if gameInLeaderboard['badge'] == "Ruby":
+                                $ cls = "diamond orange icon"
+                            $elif gameInLeaderboard['badge'] == "Sapphire":
+                                $ cls = "diamond blue icon"
+                            $elif gameInLeaderboard['badge'] == "Emerald":
+                                $ cls = "diamond green icon"
+                            $elif gameInLeaderboard['badge'] == "Diamond":
+                                $ cls = "diamond grey icon"
+                            $elif gameInLeaderboard['badge'] == "-":
+                                $ cls = ""
+
+                            <td><i class="$cls"></i> $gameInLeaderboard['badge']</td>
                         </tr>
                 </tbody>
             </tbody>  <!-- ???? -->
