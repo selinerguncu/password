@@ -44,10 +44,28 @@ $else:
     $ t = '*'
 
     $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
-    <div class="boxes">
-    $for i in range(length):
-        <div class="box"><pre data-pass="$password[i]">$m</pre></div>
-    </div>
+    $if length < 11:
+      <div class="boxes">
+      $for i in range(length):
+        <div class="box">
+          <pre data-pass="$password[i]">$m</pre>
+        </div>
+      </div>
+    $else:
+      <div class="boxes">
+      $for i in range(0, 7):
+        <div class="box">
+          <pre data-pass="$password[i]">$m</pre>
+        </div>
+      </div>
+
+      <div class="boxes">
+      $for i in range(7, length):
+        <div class="box">
+          <pre data-pass="$password[i]">$m</pre>
+        </div>
+      </div>
+
 
     $if hasWon:
         <h3 class="ui header">Congrats! You discovered the Password in $round rounds.</h3>

@@ -89,15 +89,36 @@ $else:
     $else:
       <div class="ui olive ribbon label">Level $game["level"]</div>
   <form class="guess" name="main" method="POST">
-    <div class="boxes">
     $ m = '*******\n*     *\n*     *\n*     *\n*     *\n*******'
     $ names = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth"]
-    $for i in range(length):
-      <div class="box">
-        <input type="$keyboardType" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
-        <pre class="azicik-asagida-olsun" data-pass="">$m</pre>
+
+
+    $if length < 11:
+      <div class="boxes">
+      $for i in range(length):
+        <div class="box">
+          <input type="$keyboardType" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
+          <pre class="azicik-asagida-olsun" data-pass="">$m</pre>
+        </div>
       </div>
-    </div>
+    $else:
+      <div class="boxes">
+      $for i in range(0, 7):
+        <div class="box">
+          <input type="$keyboardType" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
+          <pre class="azicik-asagida-olsun" data-pass="">$m</pre>
+        </div>
+      </div>
+
+      <div class="boxes">
+      $for i in range(7, length):
+        <div class="box">
+          <input type="$keyboardType" name="$names[i]" maxlength=1 size=1 placeholder="*" autocomplete="off" autocapitalize="none"/>
+          <pre class="azicik-asagida-olsun" data-pass="">$m</pre>
+        </div>
+      </div>
+
+    <input type="hidden" name="win" value="1"/>
     <div class="submit-field">
       <button type="submit" class="ui primary button"> Go! </button>
     </div>
