@@ -46,20 +46,21 @@ $def with (leaders, maxLeaders, error = None)
           <tbody>
             $if len(leaders) > 0:
               $ i = 1
+              $ cls = ''
               $for leader in leaders:
                 $if leader["badge"] == "Ruby":
-                  $ cls = "orange"
+                  $ cls = "orange diamond icon"
                 $elif leader["badge"] == "Sapphire":
-                  $ cls = "blue"
+                  $ cls = "blue diamond icon"
                 $elif leader["badge"] == "Emerald":
-                  $ cls = "green"
+                  $ cls = "green diamond icon"
                 $elif leader["badge"] == "Diamond":
-                  $ cls = "grey"
+                  $ cls = "grey diamond icon"
                 <tr>
                   <td>$(i)</td>
                   <td>$leader["username"]</td>
                   <td>$leader["score"]</td>
-                  <td><i class="diamond $cls icon"></i> $leader["badge"]</td>
+                  <td><i class="$cls"></i> $leader["badge"]</td>
                 </tr>
                 $ i = i + 1
             $else:
