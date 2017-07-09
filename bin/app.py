@@ -83,6 +83,12 @@ class Login():
             self.maxLeaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
 
     def GET(self):
+        params = web.input()
+        print params
+        if "register" in params.keys():
+            return render.login(self.leaders, self.maxLeaders, register = 'register')
+        if "forgot" in params.keys():
+            return render.login(self.leaders, self.maxLeaders, forgot = 'forgot')
         if session.player_id == 'guest':
             return render.login(self.leaders, self.maxLeaders)
         else:
@@ -94,8 +100,16 @@ class Login():
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
         data = parseFormData(web.data())
-        form_username = data["username"]
-        form_userPassword = data["userpassword"]
+        try:
+            form_username = data["username"]
+            form_userPassword = data["userpassword"]
+            form_registerEmail = data["registerEmail"]
+            form_registerUsername = data["registerUsername"]
+            form_registerUserpassword = data["registerUserpassword"]
+            form_registerConfirmpassword = data["registerConfirmpassword"]
+            form_forgotEmail = data["forgotEmail"]
+        except:
+            pass
 
         cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
         pass_and_id = cur.fetchone()

@@ -1,27 +1,108 @@
-$def with (leaders, maxLeaders, error = None)
+$def with (leaders, maxLeaders, error = None, register = None, forgot = None)
 
 <div class="login-page ui two column very relaxed stackable grid">
   <div class="column">
-    <h3 class="ui header">Welcome!</h3>
-    <p>Please login with your username and password. If you don't have an account yet it will create you one.</p>
+    <h3 class="ui header">Welcome to the Password Game!</h3>
     $if error:
       <div class="ui red message">
         <i class="warning sign icon"></i>$error
       </div>
-    <form method="POST" class="ui form attached fluid">
-      <div class="field">
-        <label>Username</label>
-        <input type="text" name="username" placeholder="Username..." />
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" name="userpassword" placeholder="Password..." />
-      </div>
-      <div class="field">
-        <button class="ui blue submit button" type="submit">Login</button>
-      </div>
-    </form>
-  </div>
+
+    $if register:
+      <table class="ui celled table">
+        <thead>
+          <tr><th><h3>Register</h3></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>
+              <form method="POST" class="ui form attached fluid">
+                <div class="field">
+                  <label>E-mail</label>
+                  <input type="text" name="registerEmail" placeholder="E-mail..." />
+                </div>
+                <div class="field">
+                  <label>Username</label>
+                  <input type="text" name="registerUsername" placeholder="Username..." />
+                </div>
+                <div class="field">
+                  <label>Password</label>
+                  <input type="password" name="registerUserpassword" placeholder="Password..." />
+                </div>
+                <div class="field">
+                  <label>Confirm Password</label>
+                  <input type="password" name="registerConfirmpassword" placeholder="Confirm Password..." />
+                </div>
+                <div class="field">
+                  <button class="ui blue submit button" type="submit">Register</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    $elif forgot:
+      <form method="POST" class="ui form attached fluid">
+        <div class="field">
+          <label>E-mail or Username</label>
+          <input type="text" name="forgotEmail" placeholder="E-mail or Username..." />
+        </div>
+        <div class="field">
+          <button class="ui orange submit button basic" type="submit">Recover my password</button>
+        </div>
+      </form>
+
+    $else:
+      <p>Please login with your username and password.</p>
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>
+              <h3>Login
+                  <a style="float: right; text-align: right; font-size:0.9rem" href="/login?forgot">Forgot your password?</a>
+              </h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <form method="POST" class="ui form attached fluid">
+                <div class="field">
+                  <label>Username</label>
+                  <input type="text" name="username" placeholder="Username..." />
+                </div>
+                <div class="field">
+                  <label>Password</label>
+                  <input type="password" name="userpassword" placeholder="Password..." />
+                </div>
+                <div class="inline field">
+                  <div class="ui checkbox">
+                    <input type="checkbox" tabindex="0" class="hidden">
+                    <label>Remember me</label>
+                  </div>
+                </div>
+                <div class="field">
+                  <button class="ui green submit button" type="submit">Login</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h4>Don't have an account?
+                <span>
+                    <a href="/login?register">Register Here</a>
+                </span>
+              </h4>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
   <div class="divider-column">
     <div class="ui vertical divider"></div>
   </div>
@@ -137,5 +218,9 @@ $def with (leaders, maxLeaders, error = None)
 </script>
 
 
-
+<script>
+  $$(document).ready(function () {
+    $$('.ui.checkbox').checkbox()
+  })
+</script>
 

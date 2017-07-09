@@ -1,7 +1,8 @@
 errors = {
-	"username": "Please insert a valid username.",
-	"password": "Please create a valid password.",
-	
+	"username": "Username has already been taken.",
+	"password": "The password you entered for your username is incorrect.",
+	"email": "You can only sign up for an account once with a given e-mail address.",
+
 	"goldAmount": "You have to have some amount of Gold coins in your bag.",
 	"silverAmount": "You have to have some amount of Silver coins in your bag.",
 	"goldSilverAmount": "You have to have some amount of Gold and Silver coins in your bag.",
