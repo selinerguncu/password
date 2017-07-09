@@ -76,7 +76,8 @@ class Login():
         for k in range(len(self.leaders)):
             self.leaders[k]["score"] = locale.format("%d", self.leaders[k]["score"], grouping=True)
 
-        cur.execute('''SELECT totalScore, wins, username FROM Player ORDER BY totalScore DESC LIMIT 5''')
+        cur.execute('''SELECT totalScore, wins, username FROM Player WHERE totalScore > 0
+            ORDER BY totalScore DESC LIMIT 5''')
         self.maxLeaders = rowsToDict(cur, cur.fetchall())
 
         for i in range(len(self.maxLeaders)):
