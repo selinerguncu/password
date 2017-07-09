@@ -13,6 +13,12 @@ $ levelComplexity = levelSet["complexity"]
 $ levelGoldCoins = levelSet["goldCoins"]
 $ levelSilverCoins = levelSet["silverCoins"]
 
+$if data:
+  $if data['goldCoins'] == None:
+    $ data['goldCoins'] = ""
+  $if data['silverCoins'] == None:
+    $ data['silverCoins'] = ""
+
 $if msg:
   $if isError:
     <div class="ui red message">

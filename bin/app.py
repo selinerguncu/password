@@ -328,55 +328,61 @@ class Setup(object):
         complexity = int(data["complexity"])
         digits = int(data["digits"])
 
-        if goldCoins > 120 or silverCoins > 120:
-            warning = "max100"
-        elif (goldCoins < 10 and goldCoins > 0) or (silverCoins < 10 and silverCoins > 0):
-            warning = "min20"
-        else:
-            if goldCoins < 50 and complexity == 1:
-                warning = "gold50complex"
-            elif goldCoins < 70 and complexity == 2:
-                warning = "gold70complex"
-            elif goldCoins < 100 and complexity == 3:
-                warning = "gold100complex"
-            if goldCoins < 30 and digits == 4:
-                warning = "gold30"
+        if 501 > goldCoins >= 5 and 501 > silverCoins >= 5:
+            if goldCoins < 56 and complexity == 1:
+                warning = "gold56complex"
+            elif goldCoins < 82 and complexity == 2:
+                warning = "gold82complex"
+            elif goldCoins < 136 and complexity == 3:
+                warning = "gold136complex"
+            if goldCoins < 20 and digits == 4:
+                warning = "gold20"
             elif goldCoins < 30 and digits == 5:
                 warning = "gold30"
-            elif goldCoins < 40 and digits == 6:
-                warning = "gold40"
-            elif goldCoins < 50 and digits == 7:
-                warning = "gold50"
-            elif goldCoins < 60 and digits == 8:
-                warning = "gold60"
-            elif silverCoins < 50 and complexity == 1:
-                warning = "silver50complex"
-            elif silverCoins < 70 and complexity == 2:
-                warning = "silver70complex"
-            elif silverCoins < 100 and complexity == 3:
-                warning = "silver100complex"
-            elif silverCoins < 30 and digits == 4:
-                warning = "silver30"
+            elif goldCoins < 37 and digits == 6:
+                warning = "gold37"
+            elif goldCoins < 42 and digits == 7:
+                warning = "gold42"
+            elif goldCoins < 46 and digits == 8:
+                warning = "gold46"
+            elif silverCoins < 56 and complexity == 1:
+                warning = "silver56complex"
+            elif silverCoins < 82 and complexity == 2:
+                warning = "silver82complex"
+            elif silverCoins < 136 and complexity == 3:
+                warning = "silver136complex"
+            elif silverCoins < 20 and digits == 4:
+                warning = "silver20"
             elif silverCoins < 30 and digits == 5:
                 warning = "silver30"
-            elif silverCoins < 40 and digits == 6:
-                warning = "silver40"
-            elif silverCoins < 50 and digits == 7:
-                warning = "silver50"
-            elif silverCoins < 60 and digits == 8:
-                warning = "silver60"
+            elif silverCoins < 37 and digits == 6:
+                warning = "silver37"
+            elif silverCoins < 42 and digits == 7:
+                warning = "silver42"
+            elif silverCoins < 46 and digits == 8:
+                warning = "silver46"
         return warning
 
     def validate(self, data):
         err = None
-        goldCoins = data["goldCoins"]
-        silverCoins = data["silverCoins"]
+        try:
+            goldCoins = int(data["goldCoins"])
+        except:
+            goldCoins = ""
+            data["goldCoins"] = None
+        try:
+            silverCoins = int(data["silverCoins"])
+        except:
+            silverCoins = ""
+            data["goldCoins"] = None
 
-        if goldCoins == "" and silverCoins != "" or goldCoins == '0' and silverCoins != '0':
+        if (goldCoins != "" and silverCoins != "") and (goldCoins > 500 or silverCoins > 500):
+            err = "max500"
+        elif (goldCoins == "" and silverCoins != "") or (goldCoins < 5 and silverCoins >= 5):
             err = "goldAmount"
-        elif silverCoins == "" and goldCoins != "" or silverCoins == '0' and goldCoins != '0':
+        elif (silverCoins == "" and goldCoins != "") or (silverCoins < 5 and goldCoins >= 5):
             err = "silverAmount"
-        elif silverCoins == "" and goldCoins == "" or silverCoins == '0' and goldCoins == '0':
+        elif (silverCoins == "" and goldCoins == "") or (silverCoins < 5 and goldCoins < 5):
             err = "goldSilverAmount"
         return err
 
