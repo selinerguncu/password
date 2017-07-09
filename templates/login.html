@@ -137,6 +137,8 @@ $def with (leaders, maxLeaders, error = None, register = None, forgot = None)
                   $ cls = "green diamond icon"
                 $elif leader["badge"] == "Diamond":
                   $ cls = "grey diamond icon"
+                $elif leader["badge"] == "-":
+                  $ cls = ""
                 <tr>
                   <td>$(i)</td>
                   <td>$leader["username"]</td>
