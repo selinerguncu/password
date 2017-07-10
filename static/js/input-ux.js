@@ -28,8 +28,19 @@ $(document).ready(function() {
       timer = null
     }
 
+    values = []
+    inputs.each(function(i, input){
+      values.push($(input).val());
+    });
+
     var input = $(this)
-    if (inputSet.indexOf(event.key) > -1) {
+    if (values.indexOf(event.key) > -1) {
+      event.preventDefault()
+      input.val(event.key)
+      timer = setTimeout(function() {
+        input.val('')
+      }, 100)
+    } else if (inputSet.indexOf(event.key) > -1) {
       if (input.val().length) {
         input.val('')
       } else {
