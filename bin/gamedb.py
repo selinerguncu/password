@@ -32,6 +32,8 @@ CREATE TABLE Player (
   id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   username  TEXT UNIQUE,
   userpassword  TEXT,
+  secretQuestion TEXT,
+  secretAnswer TEXT,
   games INTEGER DEFAULT 0,
   wins  INTEGER DEFAULT 0,
   losses   INTEGER DEFAULT 0,
