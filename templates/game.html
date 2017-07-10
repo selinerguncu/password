@@ -2,10 +2,10 @@ $def with (game, past = [], error = None)
 
 $var css: <link rel="stylesheet" href="/static/css/guess-form.css">
 
-$var link1: <a class="item" href="/setup"><i class="game icon"></i> Back to Levels</a>
+$var link1: <a class="item popup" href="/setup" data-content="You can come back to this game later!"><i class="game icon"></i> Back to Levels</a>
 
 $if not game["won"] in [0,1]:
-  $var link3: <a class="item" href="/quit"><i class="power icon"></i> Quit Game</a>
+  $var link3: <a class="item popup" href="/quit" data-content="You will lose this game!"><i class="power icon"></i> Quit Game</a>
 
 $var logout: True
 
