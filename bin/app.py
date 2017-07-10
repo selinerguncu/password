@@ -500,27 +500,27 @@ class Game(object):
         data = parseFormData(web.data())
         guess = []
 
-        if data["win"]:
-            for i in self.game["password"]:
-                guess.append(i)
-        else:
-            try:
-                guess.append(data["first"])
-                guess.append(data["second"])
-                guess.append(data["third"])
-                guess.append(data["fourth"])
-                guess.append(data["fifth"])
-                guess.append(data["sixth"])
-                guess.append(data["seventh"])
-                guess.append(data["eighth"])
-                guess.append(data["ninth"])
-                guess.append(data["tenth"])
-                guess.append(data["eleventh"])
-                guess.append(data["twelfth"])
-                guess.append(data["thirteenth"])
-                guess.append(data["fourteenth"])
-            except:
-                pass
+        # if data["win"]:
+        #     for i in self.game["password"]:
+        #         guess.append(i)
+        # else:
+        try:
+            guess.append(data["first"])
+            guess.append(data["second"])
+            guess.append(data["third"])
+            guess.append(data["fourth"])
+            guess.append(data["fifth"])
+            guess.append(data["sixth"])
+            guess.append(data["seventh"])
+            guess.append(data["eighth"])
+            guess.append(data["ninth"])
+            guess.append(data["tenth"])
+            guess.append(data["eleventh"])
+            guess.append(data["twelfth"])
+            guess.append(data["thirteenth"])
+            guess.append(data["fourteenth"])
+        except:
+            pass
 
         #check if all inputs are valid:
         onlyNumbers = Constants["onlyNumbers"]
