@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var inputs = $('form.guess input')
+  var inputs = $('form.guess .box input')
   var button = $('form.guess button')
   var timer = null
   var beingPressed = false
