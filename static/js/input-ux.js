@@ -49,6 +49,8 @@ $(document).ready(function() {
       input.val(event.key)
       if (!!input.parent().next().find('input').length) {
         input.parent().next().find('input').focus()
+      } else if (!!input.parent().parent().next().is('.boxes')) {
+        input.parent().parent().next().find('.box:first-child input').focus()
       } else {
         button.focus()
       }
@@ -62,11 +64,9 @@ $(document).ready(function() {
       if (!!input.parent().prev().find('input').length) {
         event.preventDefault()
         input.parent().prev().find('input').focus()
-      }
-    } else if (event.key == 'Backspace' && input.val().length == 0) {
-      if (!!input.parent().prev().find('input').length) {
+      } else if (!!input.parent().parent().prev().is('.boxes')) {
         event.preventDefault()
-        input.parent().prev().find('input').focus()
+        input.parent().parent().prev().find('.box:last-child input').focus()
       }
     }
   })
