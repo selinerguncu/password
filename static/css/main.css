@@ -268,3 +268,35 @@ svg.coin {
   max-width: 330px;
   margin: 0 auto;
 }
+
+
+.red1 {
+  color: rgba(237, 12, 12, .1);
+}
+.red2 {
+  color: rgba(237, 12, 12, .2);
+}
+.red3 {
+  color: rgba(237, 12, 12, .3);
+}
+.red4 {
+  color: rgba(237, 12, 12, .4);
+}
+.red5 {
+  color: rgba(237, 12, 12, .5);
+}
+.red6 {
+  color: rgba(237, 12, 12, .6);
+}
+.red7 {
+  color: rgba(237, 12, 12, .7);
+}
+.red8 {
+  color: rgba(237, 12, 12, .8);
+}
+.red9 {
+  color: rgba(237, 12, 12, .9);
+}
+.red10 {
+  color: rgba(237, 12, 12, 1);
+}

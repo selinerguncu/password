@@ -181,13 +181,13 @@ $def with (leaders, maxLeaders, error = None, register = None, forgot = None)
               $ i = 1
               $for maxLeader in maxLeaders:
                 $if maxLeader["wins"] >= 10:
-                  $ cls = "orange"
+                  $ cls = "red10"
                 $elif maxLeader["wins"] >= 6:
-                  $ cls = "blue"
+                  $ cls = "red7"
                 $elif maxLeader["wins"] >= 4:
-                  $ cls = "green"
+                  $ cls = "red4"
                 $else:
-                  $ cls = "grey"
+                  $ cls = "red1"
                 <tr>
                   <td>$(i)</td>
                   <td>$maxLeader["username"]</td>
