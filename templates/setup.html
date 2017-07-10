@@ -4,7 +4,7 @@ $var username: $player["username"]
 
 $var link1: <a class="item" href="/leaderboard"><i class="trophy icon"></i> Leaderboard</a>
 
-$ complexity = ["Only Numbers", "Only Letters", "Numbers and Lowercase Letters", "Numbers and All Lower and Uppercase Letters"]
+$ complexity = ["Only Numbers", "Only Small Letters", " Numbers and Small Letters", "Numbers, Small and Capital Letters"]
 
 $ level = levelSet["currentLevel"]
 $ levelLevels = levelSet["levels"]
@@ -178,9 +178,9 @@ $else:
               <label>Complexity</label>
               <select class="ui compact selection dropdown" name="complexity">
                 <option value="0" selected="selected">Only Numbers</option>
-                <option value="1">Only Letters</option>
-                <option value="2">Both Numbers and Letters</option>
-                <option value="3">Numbers and All Lower and Uppercase Letters</option>
+                <option value="1">Only Small Letters</option>
+                <option value="2">Numbers and Small Letters</option>
+                <option value="3">Numbers, Small and Capital Letters</option>
               </select>
             </div>
           </div>
