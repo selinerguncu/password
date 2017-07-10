@@ -189,6 +189,7 @@ class Profile():
 
         return render.profile(player, allGames)
 
+
 class Leaderboard():
 
     def GET(self):
@@ -386,6 +387,7 @@ class Setup(object):
             err = "goldSilverAmount"
         return err
 
+
 class Restart():
     def __init__(self):
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
@@ -436,7 +438,6 @@ class Quit(Restart):
         session.game_id = 0
 
         return web.seeother("/setup")
-
 
 
 class Game(object):
@@ -764,6 +765,7 @@ class GameOver():
         gameOver["score"] = locale.format("%d", game["score"], grouping=True)
 
         return render.gameover(gameOver, self.leaders, self.maxLeaders, session.game_id, session.player_id, gameInLeaderboard, gameInMaxLeaders)
+
 
 class Logout():
     def GET(self):
