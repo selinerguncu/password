@@ -591,6 +591,7 @@ class Game(object):
         goldInBag = lastRow[1]
         silverInBag = lastRow[2]
         totalRounds = lastRow[3]
+        badge = None
         hasWon = guess == game["password"]
 
         cur.execute("SELECT goldReceived, silverReceived FROM History WHERE game_id = ?", (session.game_id,))
