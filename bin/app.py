@@ -98,19 +98,28 @@ class Login():
 
     def POST(self):
 
+
+        data = parseFormData(web.data())
+
+        if 'registerEmail' in data.keys():
+            self.register(data)
+        elif 'forgotPassword' in data.keys():
+            self.forgotPassword(data)
+        else:
+            self.login(data)
+
+
+    def login(self, data):
+
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
-        data = parseFormData(web.data())
+
         try:
             form_username = data["username"]
             form_userPassword = data["userpassword"]
-            form_registerEmail = data["registerEmail"]
-            form_registerUsername = data["registerUsername"]
-            form_registerUserpassword = data["registerUserpassword"]
-            form_registerConfirmpassword = data["registerConfirmpassword"]
-            form_forgotEmail = data["forgotEmail"]
         except:
-            pass
+            # dogru erroru ver
+            return render.login(self.leaders, self.maxLeaders, errors["password"])
 
         cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
         pass_and_id = cur.fetchone()
@@ -125,11 +134,51 @@ class Login():
             else:
                 return render.login(self.leaders, self.maxLeaders, errors["password"])
 
-        else:
-            cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
-            conn.commit()
-            session.player_id = cur.lastrowid
-            return web.seeother('/setup')
+
+    def register(self, data):
+
+        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+        cur = conn.cursor()
+
+        try:
+            form_registerEmail = data["registerEmail"]
+            form_registerUsername = data["registerUsername"]
+            form_registerUserpassword = data["registerUserpassword"]
+            form_registerConfirmpassword = data["registerConfirmpassword"]
+        except:
+            # dogru erroru ver
+            return render.login(self.leaders, self.maxLeaders, errors["password"])
+
+
+        if form_registerConfirmpassword != form_registerUserpassword:
+            # dogru erroru ver
+            return render.login(self.leaders, self.maxLeaders, errors["password"])
+
+        # dogru seyleri yaz email falan da
+        cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
+        conn.commit()
+        session.player_id = cur.lastrowid
+        return web.seeother('/setup')
+
+
+    def forgotPassword(self, data):
+
+        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+        cur = conn.cursor()
+
+        try:
+            form_forgotPasswordEmail = data["forgotPasswordEmail"]
+        except:
+            # dogru erroru ver
+            return render.login(self.leaders, self.maxLeaders, errors["password"])
+
+        # emaile bak db'de
+        cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
+        # email varsa email gonder
+        # yoksa boyle bi email yok mesaji ver
+
+        # secret question yapmak daha mantikli
+
 
 class Profile():
 
