@@ -752,7 +752,7 @@ class GameOver():
         for i in range(len(self.leaders)):
             self.leaders[i]["score"] = locale.format("%d", self.leaders[i]["score"], grouping=True)
 
-        cur.execute('''SELECT totalScore, wins, username, id FROM Player ORDER BY totalScore DESC LIMIT 5''')
+        cur.execute('''SELECT totalScore, wins, username, id FROM Player WHERE wins > 0 ORDER BY totalScore DESC LIMIT 5''')
         maxLeaderRows = cur.fetchall()
         self.maxLeaders = rowsToDict(cur, maxLeaderRows)
 

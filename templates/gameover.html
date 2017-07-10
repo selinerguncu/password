@@ -203,18 +203,29 @@ $else:
                     </tr>
                 </thead>
                 <tbody>
-                    $ i = 1
-                    $for maxLeader in maxLeaders:
-                        $if maxLeader["wins"] >= 30:
-                            $ cls = 5
-                        $elif maxLeader["wins"] >= 20:
-                            $ cls = 4
-                        $elif maxLeader["wins"] >= 10:
-                            $ cls = 3
-                        $elif maxLeader["wins"] >= 5:
-                            $ cls = 2
-                        $else:
-                            $ cls = 1
+                    $if len(maxLeaders) > 0:
+                        $ i = 1
+                        $for maxLeader in maxLeaders:
+                            $if maxLeader["wins"] >= 45:
+                                $ cls = "red10"
+                            $elif maxLeader["wins"] >= 40:
+                                $ cls = "red9"
+                            $elif maxLeader["wins"] >= 35:
+                                $ cls = "red8"
+                            $elif maxLeader["wins"] >= 30:
+                                $ cls = "red7"
+                            $elif maxLeader["wins"] >= 25:
+                                $ cls = "red6"
+                            $elif maxLeader["wins"] >= 20:
+                                $ cls = "red5"
+                            $elif maxLeader["wins"] >= 15:
+                                $ cls = "red4"
+                            $elif maxLeader["wins"] >= 10:
+                                $ cls = "red3"
+                            $elif maxLeader["wins"] >= 5:
+                                $ cls = "red2"
+                            $else:
+                                $ cls = "red1"
 
                         $if maxLeader['id'] == playerID:
                             <tr class="warning">
@@ -225,10 +236,7 @@ $else:
 
                         <td>$maxLeader["username"]</td>
                         <td>$maxLeader["totalScore"]</td>
-                        <td>
-                        $for k in range(cls):
-                            <i class="star red icon"></i>
-                        $maxLeader["wins"]</td>
+                        <td><i class="star $cls icon"></i> $maxLeader["wins"]</td>
                         </tr>
                         $ i = i + 1
 

@@ -100,14 +100,26 @@ $else:
         $if len(players) > 0:
           $ i = 1
           $for maxLeader in players:
-            $if maxLeader["wins"] >= 10:
-              $ cls = "orange"
-            $elif maxLeader["wins"] >= 6:
-              $ cls = "blue"
-            $elif maxLeader["wins"] >= 4:
-              $ cls = "green"
+            $if maxLeader["wins"] >= 45:
+              $ cls = "red10"
+            $elif maxLeader["wins"] >= 40:
+              $ cls = "red9"
+            $elif maxLeader["wins"] >= 35:
+              $ cls = "red8"
+            $elif maxLeader["wins"] >= 30:
+              $ cls = "red7"
+            $elif maxLeader["wins"] >= 25:
+              $ cls = "red6"
+            $elif maxLeader["wins"] >= 20:
+              $ cls = "red5"
+            $elif maxLeader["wins"] >= 15:
+              $ cls = "red4"
+            $elif maxLeader["wins"] >= 10:
+              $ cls = "red3"
+            $elif maxLeader["wins"] >= 5:
+              $ cls = "red2"
             $else:
-              $ cls = "grey"
+              $ cls = "red1"
             <tr>
               <td>$((playerPage-1)*20+i)</td>
               <td>$maxLeader["username"]</td>
