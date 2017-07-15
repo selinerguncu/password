@@ -23,7 +23,7 @@ $if level == 0:
     $ buttonTitle = 'Play a New Game'
     $ levelNr = ''
 $else:
-    $ wonTitle = 'You WON and unlocked LEVEL'
+    $ wonTitle = 'YOU UNLOCKED LEVEL'
     $ buttonTitle = 'Continue to Level'
     $ levelNr = level + 1
     $if level == 20:
@@ -33,12 +33,13 @@ $else:
 <div class="ui gameover">
     $if hasWon:
         <img class="illu" src="/static/img/fireworks.svg" />
-        <h1 class="ui header">$wonTitle $levelNr</h1>
+        <h1 class="ui header">CONGRATS!</h1>
+        <h2 class="ui header">$wonTitle $levelNr</h2>
     $else:
         <img class="illu lost" src="/static/img/ghost.svg" />
-        <h1 class="ui header">You LOST!</h1>
+        <h1 class="ui header">YOU LOST!</h1>
 
-    <h1 class="ui header">Score: $score</h1>
+    <h2 class="ui header">Your Score: $score</h2>
     <br>
     $ m = '*' * 6
     $ t = '*'
@@ -68,7 +69,7 @@ $else:
 
 
     $if hasWon:
-        <h3 class="ui header">Congrats! You discovered the Password in $round rounds.</h3>
+        <h3 class="ui header">You discovered the Password in $round rounds.</h3>
     $else:
         <h3 class="ui header">You spent all of your Gold and Silver coins, yet couldn't discover the Password.</h3>
 
@@ -261,7 +262,7 @@ $else:
                             <div class="field">
                               <button class="ui button right floated" type="submit">See The Full Leaderboard</button>
                             </div>
-                        </form>>
+                        </form>
                         </th>
                     </tr>
                 </tfoot>
