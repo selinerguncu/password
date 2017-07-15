@@ -1,4 +1,6 @@
-$def with (leaders, maxLeaders, error = None, register = None, forgot = None)
+$def with (leaders, maxLeaders, error = None, register = None, forgot = None, secretQuestion = None)
+
+$ secretQuestions = ['What was your childhood nickname?', 'What is the name of your favorite childhood friend?', 'What is your favorite team?', 'What is your favorite movie?', 'What was your favorite sport in high school?', 'What was the last name of your third grade teacher?']
 
 <div class="login-page ui two column very relaxed stackable grid">
   <div class="column">
@@ -18,10 +20,6 @@ $def with (leaders, maxLeaders, error = None, register = None, forgot = None)
             <td>
               <form method="POST" class="ui form attached fluid">
                 <div class="field">
-                  <label>E-mail</label>
-                  <input type="text" name="registerEmail" placeholder="E-mail..." />
-                </div>
-                <div class="field">
                   <label>Username</label>
                   <input type="text" name="registerUsername" placeholder="Username..." />
                 </div>
@@ -33,6 +31,21 @@ $def with (leaders, maxLeaders, error = None, register = None, forgot = None)
                   <label>Confirm Password</label>
                   <input type="password" name="registerConfirmpassword" placeholder="Confirm Password..." />
                 </div>
+
+                <div class="field">
+                  <label>Security Question</label>
+                  <select class="ui compact selection dropdown" name="secretQuestion">
+                    $for i in range(0,6):
+                      <option value="$i">$secretQuestions[i]</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                  <label>Your Answer</label>
+                  <input type="text" name="secretAnswer" placeholder="Your Answer..." />
+                </div>
+
+
                 <div class="field">
                   <button class="ui blue submit button" type="submit">Register</button>
                 </div>
@@ -45,8 +58,20 @@ $def with (leaders, maxLeaders, error = None, register = None, forgot = None)
     $elif forgot:
       <form method="POST" class="ui form attached fluid">
         <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="Username..." />
+        </div>
+
+
+        <div class="field">
+          <label>Your Security Question</label>
+          <input type="text" name="secretQuestion" placeholder="E-mail or Username..." />
+        </div>
+
+
+        <div class="field">
           <label>E-mail or Username</label>
-          <input type="text" name="forgotPasswordEmail" placeholder="E-mail or Username..." />
+          <input type="text" name="secretAnswer" placeholder="Your Answer" />
         </div>
         <div class="field">
           <button class="ui orange submit button basic" type="submit">Recover my password</button>

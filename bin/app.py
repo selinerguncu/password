@@ -100,13 +100,16 @@ class Login():
 
 
         data = parseFormData(web.data())
+        print data
 
-        if 'registerEmail' in data.keys():
+        if 'registerEmail' or 'registerUsername' or 'registerUserpassword' or 'registerConfirmpassword' in data.keys():
             self.register(data)
         elif 'forgotPassword' in data.keys():
             self.forgotPassword(data)
-        else:
+        elif 'username' or 'userpassword' in data.keys():
             self.login(data)
+        else:
+            return render.login(self.leaders, self.maxLeaders, error = errors["allBlank"])
 
 
     def login(self, data):
@@ -116,23 +119,26 @@ class Login():
 
         try:
             form_username = data["username"]
+        except:
+            return render.login(self.leaders, self.maxLeaders, error = errors["usernameBlank"])
+
+        try:
             form_userPassword = data["userpassword"]
         except:
-            # dogru erroru ver
-            return render.login(self.leaders, self.maxLeaders, errors["password"])
+            return render.login(self.leaders, self.maxLeaders, error = errors["passwordBlank"])
 
         cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
         pass_and_id = cur.fetchone()
 
-        if pass_and_id != None:
-            db_userPassword = pass_and_id[0]
-            player_id = pass_and_id[1]
+        # if pass_and_id != None:
+        db_userPassword = pass_and_id[0]
+        player_id = pass_and_id[1]
 
-            if db_userPassword == form_userPassword:
-                session.player_id = player_id
-                return web.seeother('/setup')
-            else:
-                return render.login(self.leaders, self.maxLeaders, errors["password"])
+        if db_userPassword == form_userPassword:
+            session.player_id = player_id
+            return web.seeother('/setup')
+        else:
+            return render.login(self.leaders, self.maxLeaders, errors["password"])
 
 
     def register(self, data):
@@ -141,21 +147,20 @@ class Login():
         cur = conn.cursor()
 
         try:
-            form_registerEmail = data["registerEmail"]
+            form_secretQuestion = data["secretQuestion"]
+            form_secretAnswer = data["secretAnswer"]
             form_registerUsername = data["registerUsername"]
             form_registerUserpassword = data["registerUserpassword"]
             form_registerConfirmpassword = data["registerConfirmpassword"]
         except:
-            # dogru erroru ver
-            return render.login(self.leaders, self.maxLeaders, errors["password"])
+            return render.login(self.leaders, self.maxLeaders, error = errors["allBlank"], register = True)
 
 
         if form_registerConfirmpassword != form_registerUserpassword:
-            # dogru erroru ver
-            return render.login(self.leaders, self.maxLeaders, errors["password"])
+            return render.login(self.leaders, self.maxLeaders, errors["confirmPassword"], register = True)
 
-        # dogru seyleri yaz email falan da
-        cur.execute('''INSERT INTO Player(username, userpassword) VALUES (?, ?)''', (form_username, form_userPassword))
+        cur.execute('''INSERT INTO Player(username, userpassword, secretQuestion, secretAnswer)
+            VALUES (?, ?, ?, ?)''', (form_registerUsername, form_registerUserpassword, form_secretQuestion, form_secretAnswer))
         conn.commit()
         session.player_id = cur.lastrowid
         return web.seeother('/setup')
@@ -167,16 +172,21 @@ class Login():
         cur = conn.cursor()
 
         try:
-            form_forgotPasswordEmail = data["forgotPasswordEmail"]
+            form_secretQuestion = data["secretQuestion"]
+            form_secretAnswer = data["secretAnswer"]
+            form_username = data["username"]
         except:
             # dogru erroru ver
-            return render.login(self.leaders, self.maxLeaders, errors["password"])
+            return render.login(self.leaders, self.maxLeaders, error = errors["password"], forgot = True)
 
         # emaile bak db'de
-        cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
-        # email varsa email gonder
-        # yoksa boyle bi email yok mesaji ver
+        cur.execute('''SELECT secretQuestion, secretAnswer FROM Player WHERE username = ?''', (form_username,))
+        secretKeys = cur.fetchone()
 
+        secretQuestion = secretKeys[0]
+        secretAnswer = secretKeys[1]
+
+        return render.login(self.leaders, self.maxLeaders, error = errors["password"], forgot = True, secretQuestion = secretQuestion)
         # secret question yapmak daha mantikli
 
 
@@ -425,6 +435,9 @@ class Setup(object):
         except:
             silverCoins = ""
             data["goldCoins"] = None
+            #burayi okumuyor!!!!
+        if int(data["digits"]) > 10 and int(data["complexity"]) == 1:
+            err = "outOfRange"
 
         if (goldCoins != "" and silverCoins != "") and (goldCoins > 500 or silverCoins > 500):
             err = "max500"

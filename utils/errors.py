@@ -1,7 +1,12 @@
 errors = {
 	"username": "Username has already been taken.",
-	"password": "The password you entered for your username is incorrect.",
+	"password": "Username and password do not match.",
 	"email": "You can only sign up for an account once with a given e-mail address.",
+	"passwordBlank" : "Password can't be blank.",
+	"usernameBlank": "Username can't be blank.",
+	"confirmPassword": "Passwords do not match, please retype.",
+	"allBlank": "Please fill in all fields.",
+	"forgotBlank": "Answer can't be blank.",
 
 	"goldAmount": "You have to have at least 5 Gold coins in your bag.",
 	"silverAmount": "You have to at least 5 Silver coins in your bag.",
@@ -36,5 +41,7 @@ errors = {
 	"onlyNumbers": "Digits cannot be blank.",
 	"onlyLetters": "Digits cannot be blank.",
 	"numbersLetters": "Digits cannot be blank.",
-	"numbersAllLetters": "Digits cannot be blank."
+	"numbersAllLetters": "Digits cannot be blank.",
+
+	"outOfRange": "Password length cannot be more than 10 for 'Only Numbers'."
 }
