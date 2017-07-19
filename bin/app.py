@@ -166,28 +166,30 @@ class Login():
         return web.seeother('/setup')
 
 
-    def forgotPassword(self, data):
+    # def forgotPassword(self, data):
 
-        conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
-        cur = conn.cursor()
+    #     conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
+    #     cur = conn.cursor()
 
-        try:
-            form_secretQuestion = data["secretQuestion"]
-            form_secretAnswer = data["secretAnswer"]
-            form_username = data["username"]
-        except:
-            # dogru erroru ver
-            return render.login(self.leaders, self.maxLeaders, error = errors["password"], forgot = True)
+    #     try:
+    #         form_secretQuestion = data["secretQuestion"]
+    #         form_secretAnswer = data["secretAnswer"]
+    #         form_username = data["username"]
+    #     except:
+    #         return web.seeother('/login?error=allBlank&forgot')
 
-        # emaile bak db'de
-        cur.execute('''SELECT secretQuestion, secretAnswer FROM Player WHERE username = ?''', (form_username,))
-        secretKeys = cur.fetchone()
+    #     cur.execute('''SELECT secretQuestion, secretAnswer FROM Player WHERE username = ?''', (form_username,))
+    #     secretKeys = cur.fetchone()
 
-        secretQuestion = secretKeys[0]
-        secretAnswer = secretKeys[1]
+    #     secretQuestion = secretKeys[0]
+    #     secretAnswer = secretKeys[1]
 
-        return render.login(self.leaders, self.maxLeaders, error = errors["password"], forgot = True, secretQuestion = secretQuestion)
-        # secret question yapmak daha mantikli
+    #     if secretQuestion is form_secretQuestion and secretAnswer is form_secretAnswer:
+    #         return
+
+    #     # return "yarim"
+    #     # return render.login(self.leaders, self.maxLeaders, error = errors["secretQuestion"], forgot = True, secretQuestion = secretQuestion)
+    #     # secret question yapmak daha mantikli
 
 
 class Profile():
