@@ -1,4 +1,4 @@
-$def with (leaders, maxLeaders, error = None, register = None, forgot = None, secretQuestion = None)
+$def with (leaders, maxLeaders, error = None, page = 'login', secretQuestion = None)
 
 $ secretQuestions = ['What was your childhood nickname?', 'What is the name of your favorite childhood friend?', 'What is your favorite team?', 'What is your favorite movie?', 'What was your favorite sport in high school?', 'What was the last name of your third grade teacher?']
 
@@ -10,7 +10,7 @@ $ secretQuestions = ['What was your childhood nickname?', 'What is the name of y
         <i class="warning sign icon"></i>$error
       </div>
 
-    $if register:
+    $if page is 'register':
       <table class="ui celled table">
         <thead>
           <tr><th><h3>Register</h3></th>
@@ -55,7 +55,7 @@ $ secretQuestions = ['What was your childhood nickname?', 'What is the name of y
         </tbody>
       </table>
 
-    $elif forgot:
+    $elif page is 'forgot':
       <form method="POST" class="ui form attached fluid">
         <div class="field">
           <label>Username</label>
