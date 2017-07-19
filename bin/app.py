@@ -83,49 +83,65 @@ class Login():
         for i in range(len(self.maxLeaders)):
             self.maxLeaders[i]["totalScore"] = locale.format("%d", self.maxLeaders[i]["totalScore"], grouping=True)
 
+    def getPage(self):
+        params = web.input()
+        if "register" in params.keys():
+            return 'register'
+        if "forgot" in params.keys():
+            return 'forgot'
+        if session.player_id == 'guest':
+            return 'login'
+
+    def getError(self):
+        params = web.input()
+        if "error" in params.keys():
+            return errors[params["error"]]
+        else:
+            return None
+
     def GET(self):
         params = web.input()
-        print params
-        if "register" in params.keys():
-            return render.login(self.leaders, self.maxLeaders, register = 'register')
-        if "forgot" in params.keys():
-            return render.login(self.leaders, self.maxLeaders, forgot = 'forgot')
+        page = self.getPage()
+        error = self.getError()
+
+        # if page in [ 'register', 'forgot' ]:
+        if page in [ 'register' ]:
+            return render.login(self.leaders, self.maxLeaders, page = page, error = error)
         if session.player_id == 'guest':
-            return render.login(self.leaders, self.maxLeaders)
+            return render.login(self.leaders, self.maxLeaders, error = error)
         else:
             return web.seeother('/setup')
 
 
     def POST(self):
-
-
         data = parseFormData(web.data())
-        print data
 
-        if 'registerEmail' or 'registerUsername' or 'registerUserpassword' or 'registerConfirmpassword' in data.keys():
+        if 'registerForm' in data.keys():
             self.register(data)
-        elif 'forgotPassword' in data.keys():
+        elif 'forgotForm' in data.keys():
             self.forgotPassword(data)
-        elif 'username' or 'userpassword' in data.keys():
+        elif 'loginForm' in data.keys():
             self.login(data)
         else:
-            return render.login(self.leaders, self.maxLeaders, error = errors["allBlank"])
+            return web.seeother('/login?error=allBlank')
 
 
     def login(self, data):
 
+        data = parseFormData(web.data())
         conn = sqlite.connect(appPath + '/data/gamedb.sqlite')
         cur = conn.cursor()
 
-        try:
-            form_username = data["username"]
-        except:
-            return render.login(self.leaders, self.maxLeaders, error = errors["usernameBlank"])
+        if not "username" in data.keys() and not "userpassword" in data.keys():
+            return web.seeother('/login?error=allBlank')
 
-        try:
-            form_userPassword = data["userpassword"]
-        except:
-            return render.login(self.leaders, self.maxLeaders, error = errors["passwordBlank"])
+        if not "username" in data.keys():
+            return web.seeother('/login?error=usernameBlank')
+        form_username = data["username"]
+
+        if not "userpassword" in data.keys():
+            return web.seeother('/login?error=passwordBlank')
+        form_userPassword = data["userpassword"]
 
         cur.execute('''SELECT userpassword, id FROM Player WHERE username = ?''', (form_username,))
         pass_and_id = cur.fetchone()
@@ -138,7 +154,7 @@ class Login():
             session.player_id = player_id
             return web.seeother('/setup')
         else:
-            return render.login(self.leaders, self.maxLeaders, errors["password"])
+            return web.seeother('/login?error=password')
 
 
     def register(self, data):
@@ -147,17 +163,23 @@ class Login():
         cur = conn.cursor()
 
         try:
-            form_secretQuestion = data["secretQuestion"]
-            form_secretAnswer = data["secretAnswer"]
+            # form_secretQuestion = data["secretQuestion"]
+            # form_secretAnswer = data["secretAnswer"]
+            form_secretQuestion = None
+            form_secretAnswer = None
             form_registerUsername = data["registerUsername"]
             form_registerUserpassword = data["registerUserpassword"]
             form_registerConfirmpassword = data["registerConfirmpassword"]
         except:
-            return render.login(self.leaders, self.maxLeaders, error = errors["allBlank"], register = True)
-
+            return web.seeother('/login?error=allBlank&register')
 
         if form_registerConfirmpassword != form_registerUserpassword:
-            return render.login(self.leaders, self.maxLeaders, errors["confirmPassword"], register = True)
+            return web.seeother('/login?error=confirmPassword&register')
+
+        cur.execute('''SELECT id FROM Player WHERE username = ?''', (form_registerUsername,))
+        idRow = cur.fetchone()
+        if idRow:
+            return web.seeother('/login?error=existingUser&register')
 
         cur.execute('''INSERT INTO Player(username, userpassword, secretQuestion, secretAnswer)
             VALUES (?, ?, ?, ?)''', (form_registerUsername, form_registerUserpassword, form_secretQuestion, form_secretAnswer))

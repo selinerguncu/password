@@ -7,6 +7,7 @@ errors = {
 	"confirmPassword": "Passwords do not match, please retype.",
 	"allBlank": "Please fill in all fields.",
 	"forgotBlank": "Answer can't be blank.",
+	"existingUser": "Username taken, please choose another one.",
 
 	"goldAmount": "You have to have at least 5 Gold coins in your bag.",
 	"silverAmount": "You have to at least 5 Silver coins in your bag.",
